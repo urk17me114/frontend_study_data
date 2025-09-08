@@ -1,0 +1,5 @@
+git learnings
+
+git branch -M main → Rename your local branch to main.
+
+git push -u origin main → Upload your local main branch to GitHub and set it as the upstream branch.
