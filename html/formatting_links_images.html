@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head> <!-- head and body are childs of html tag--> 
+        <meta charset="UTF-8">
+        <meta name = "description" content = "Formatting, links and images in html">
+        <title>Formatting, links and images in html</title> <!-- title is a child of head tag-->
+    
+        <!-- CSS stands for cascading style sheet-->
+        <body style="background-color: #00FFFF;"> <!--Header , main anf footer are child tags of body tag-->
+            <header> <!-- Nav tag is the child of header tag-->
+                <nav>
+                  <p> Navigation content or navigation list come under nav tag. nav contents like links to contact us page etc</p>  
+                </nav>
+                <br>
+                <h1>usage of link tags</h1>
+                <h2>we will learn how to naviagte with the external websites, internal html pages and other files</h2>
+                <br>
+                <h3>naviagting to external websites</h3>
+                <p>Clicking the below link will open amazon website in the same tab</p>
+                <a href ="https://www.amazon.in/"><p>amazon website</p></a>
+                <br><p>Clicking the below link will open amazon website in a separate tab.For this use target = "_blank"</p>
+                <a href ="https://www.amazon.in/" target="_blank" ><p>amazon website</p></a>
+                <hr>
+                <h3>naviagting to internal html pages</h3>
+                <a href="basictags.html" target = "_blank"><p>clicking this link will open the basictags.html page</p></a>
+                <hr>
+                <h3>naviagting to other files like jpeg image</h3> <!-- the image must be stored in the same location where the formatting_links_images.html file is stored-->
+                <a href="images/pexels-roman-odintsov-5320340.jpg" target = "_blank"><p>clicking this link will open the jpeg image in a separate tab</p></a>
+                <hr>
+                <br>
+                <h2>usage of image tags</h2>
+                <!-- Give only the width, image size height will be automatically adjusted as per the aspect ratio of the image-->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Ferrari_Purosangue_IMG_9554.jpg/1920px-Ferrari_Purosangue_IMG_9554.jpg" alt="image not found" width="500">
+ <!-- img tag is used to insert images in the html page. src attribute is used to specify the path of the image. alt attribute is used to specify the text to be displayed if the image is not found. width and height attributes are used to specify the width and height of the image-->
+                <br>
+            </header>
+            
+            <main>
+                <article>
+                    <p>inside the article tag we can put all the text for your article</p>
+                    <section> <p> section tags can be used to break up the article</p>
+                        <aside>
+                            <p> aside tag is used for content that is related to the article but not part of the article. Like an advertisement</p>
+                        </aside>
+                    </section><!--section tag is the child of article tag-->
+                </article>
+            
+            </main>
+            
+            <footer>
+
+            
+            </footer>    
+                
+            
+        
+       
+    </body>
+    </head> 
+    
+</html>
