@@ -1,0 +1,17 @@
+body {
+    font-size: 22px;
+    background-color: black;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    color: orange;
+}
+h3 {
+    color: violet;
+    text-decoration: underline;
+}
+
+/*There are 3 ways tp pick colors*/ 
+/* use rgb, hexadecimal, color names*/

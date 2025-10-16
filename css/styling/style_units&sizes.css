@@ -1,0 +1,15 @@
+p {
+    text-align: justify;
+    width: 100%; /* 50% of the parent container */
+    font-size: 1rem; /* Base font size is 16px = 1rem (root element)*/
+    margin: 0 auto; 
+}
+
+h1 {
+    text-align: center;
+    border: 2px dashed red;
+    width: 100%; /* Full width of the parent container */
+    width: 20%;
+    padding: 0.5rem;
+    margin: 0 auto; /* Centering the element */
+}

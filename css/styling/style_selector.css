@@ -1,0 +1,44 @@
+/* To check errors in css go to the website css validation service and upload the css file */
+
+body {
+    font-size: 22px;
+    border: 4px solid black;
+}
+
+p {
+    color: blue;
+    
+}
+
+/* Always define a class with a dot(.) before the class name and then call it in html*/
+.grey_colour {
+    color: grey;
+}
+h1, h3 {
+    text-align: center;
+    color: green;
+}
+
+/* <span> is an inline container used to group or style small portions of text within other elements (like a <p>, <div>, etc.). */
+p span {
+    font-size: 24px;
+    color: red;
+    text-transform: uppercase;
+}
+
+.span_class {
+    font-size: 24px;
+    color: gold;
+    text-transform: uppercase;
+}
+
+.text_center {
+    text-align: center;
+}
+
+/* try deleting the below code to see the difference */
+/* By default button has its own font style so to override it we use font: inherit; */
+/* inherits the font size of the parent element which is body in this case */
+button {
+    font: inherit;
+}
