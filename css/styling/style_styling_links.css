@@ -1,0 +1,43 @@
+body{
+    background-color: black;
+}
+p {
+    text-align: justify;
+    width: 50%; /* 50% of the parent container */
+    font-size: 1rem; /* Base font size is 16px = 1rem (root element)*/
+    margin: 0 auto;
+    margin-top: 2rem; 
+    margin-left: 100 rem;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    border: 2px dashed red;
+    width: 100%; /* Full width of the parent container */
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0 auto; /* Centering the element */
+    color: white;
+}
+
+/* a (anchor tag) is to apply for the links in html */
+a{
+    text-decoration: none; /* Remove underline from links */
+    color: steelblue; /* Link color */
+    font-size: 1.2rem; /* Slightly larger font size for links */}
+
+/* This is called as pseudo-class in css */
+a:visited {
+    color: gold;} /* Color for visited links */
+
+a:hover,a:focus {
+    color: darkblue;
+    opacity: 0.1;
+} /* Color change on hover */
+
+a:active {
+    color: red;} /* Color when link is being clicked */
+
+/* The order of pseudo-classes matters! and it should be in this order: */
+/* Link - Visited - Hover - Active */
