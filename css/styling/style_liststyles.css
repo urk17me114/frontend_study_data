@@ -1,0 +1,34 @@
+/* Typography is the way text is styled and 
+    presented on a webpage. It involves the 
+    selection of fonts, sizes, line heights, 
+    letter spacing, and other text properties 
+    to enhance readability and visual appeal. */
+
+
+    body{
+        font-family: BBH Sans Hegarty;
+        margin: auto;
+        width: 50%;
+        font-size: 2rem;
+    }
+    
+    ol {
+        /* list-style-type: upper-roman; */
+        list-style-type: lower-alpha ; /* here it starts in z as in html the value attribute given. */
+        /* list-style-type: decimal-leading-zero */;
+        /* list-style-type: none */;
+        /* list-style-image: url('images/checkmark.png');
+        border-image-width: 10 px; */
+    }
+    ul :nth-child(2){ /* This nth-child pseudo class is used to select the second child of the ul */
+        /* list-style-type: square; */
+        list-style-type: circle ;
+        /* list-style-type: disc; */
+        /* list-style-type: none ; */
+        color: red;
+    }
+    ul ::marker{ /* This marker pseudo-element is used to style the bullet points of the unordered list */
+        color: green;
+        font-size: 2rem;
+        content: "✅ ";
+    } /* Press windows + . to open emoji panel and select any emoji you want as bullet point. */
