@@ -1,0 +1,58 @@
+body{
+    font-size: 2rem;
+}
+
+/* p{
+    background-color: lightgray;
+}
+
+.opposite{
+    display: inline-block;
+    color: white;
+    background-color: black;
+    padding: 4rem;
+    margin-top: 100px;
+    height: 200px;
+} */
+
+/* .opposite{
+    display: block;
+    color: white;
+    background-color: black;
+    padding: 4rem;
+    margin-top: 100px;
+    height: 200px;
+} */
+
+/* The above code is to play with the paragragh elements in html */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ul{
+    list-style-type: none;
+    padding: 0%;
+    background-color: lightgray;
+    margin: 0;
+    text-align: right;
+}
+
+li{
+    display: inline-block;
+    padding: 2rem;
+    
+}
+
+/* Inorder to remove the underline from the links in the navigation bar use text-decoration as none in anchor tag */
+a{
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+a:hover,:focus{
+    color: black;
+    text-decoration: underline;
+}
