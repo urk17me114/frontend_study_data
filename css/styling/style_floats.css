@@ -1,0 +1,38 @@
+
+/* Float is used to position elements to the left or right within a container, 
+allowing text and inline elements to wrap around it. 
+This is commonly used for images or sidebars in web design. */
+body{   
+    font-size: 2rem;
+}
+
+.block{
+    width: 30vw;
+    height: 30vw;
+    background-color: coral;
+    padding: 2rem;
+    
+   
+}   
+
+.left{
+    float: left;
+    margin-right: 2rem;
+    
+}
+
+.right{
+    float: right;
+    margin-left: 2rem;
+    margin-top: 2rem;
+}
+
+.clear{
+    background-color: green;
+    /* display: flow-root; */ /* creates a new block formatting context */
+    /* To undersrand display flow root comment the 2nd and 3rd para in html file */
+    border: 20px solid black;
+}
+.margin_10{
+    margin-left: 50%;
+}

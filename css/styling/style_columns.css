@@ -1,0 +1,40 @@
+body{
+    font-size: 2rem;
+    background-color: antiquewhite;
+    
+}
+
+/* here although column width is 7 but since the width of the container is less only 
+3 columns are created as the width of the container is not sufficient to create more columns
+ */
+.columns{
+    column-count: 3;
+    column-width: 250px;
+    column-rule: 5px solid black;/*  Those red lines are called as column rules */
+    
+    } 
+    
+/* section{
+    background-color: lightblue;
+} */
+
+section p{
+    margin-top: 0px;
+}
+
+/* .columns p has the same effect as section p because section is the parent of columns */
+.columns p{
+    margin-top: 0px;
+}
+
+.columns h1{
+    margin-top: 5px;
+    color: darkblue;
+    break-before: column; /* this will force the heading to appear in the next column */
+    background-color: lightgrey;
+    padding: 1rem;
+} 
+
+.align{
+       text-align: center;
+}
