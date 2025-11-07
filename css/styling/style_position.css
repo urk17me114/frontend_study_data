@@ -1,0 +1,144 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.outer_container{
+    position: relative;
+    width: 75vw;
+    height: 85vw;
+    background-color: lightgray;
+    border: 3px dashed black;
+    margin: 40px auto;
+    }
+
+.inner_container{
+    /* position: relative; */
+    width: 40vw;
+    height: 50vw;
+    /* background-color: lightgray; */
+    border: 2px dashed black;
+    margin: 200px auto;
+}
+
+.box{
+    width: 150px;
+    height: 150px;
+    color: white;
+    padding: 1rem;
+    
+}
+
+/* Relative (position: relative)
+
+Moves the element relative to where it would normally be.
+
+Other elements still treat it as if it’s in its original spot.
+
+Parent container’s position usually does NOT matter for relative elements.
+
+Absolute (position: absolute)
+
+Removed from normal flow.
+
+Positioned relative to the nearest “positioned ancestor” (an ancestor with position: relative | absolute | fixed | sticky).
+
+If no ancestor is positioned, it defaults to the viewport (page).
+
+ */
+
+
+
+/* Do you need position: relative on the parent?
+
+Yes, if you want your absolutely positioned child to be placed relative to the parent.
+ */
+
+ /* If no ancestor has position: relative | absolute | fixed | sticky, it uses the viewport (the entire page). */
+
+ .absolute{
+    background-color: blue;
+    position: absolute;
+    top: 0;
+    left: 80px;
+    /* z-index: 1; */ /* Try uncommenting this line to see how it works. */
+    
+    
+    
+}
+
+.relative{
+    background-color: green;
+    position: relative;
+    top: 20px;
+    
+    
+}
+
+/* Doesnot move the element from normal flow even when scrolled */
+.fixed{
+    background-color: red;
+    position: fixed;
+    top: 130px;
+    
+    
+}
+
+section{
+    
+    height: 100vw;
+
+}
+
+h2{
+    font-size: 2rem;
+}
+
+.blue{
+    background-color: blue;
+
+}
+.red{
+    background-color: red;
+}
+
+.green{
+    background-color: green;
+}
+
+header{
+    background-color: black;
+    color: white;
+    text-align: center;
+    
+    font-size: 5rem;
+    position:sticky ;
+    top:0;
+}
+
+footer{
+ position: fixed;
+ bottom: 0;
+ background-color: black;
+ font-size: 5rem;
+ color: white;
+ width: 100%;
+}
+
+a:visited{
+    color:inherit;
+}
+
+.social{
+    font-size: 3rem;
+    
+    background-color: black;
+    position: fixed;
+    z-index: 1;
+    top: 50%;
+}
+
+html{
+    scroll-behavior: smooth;
+}
