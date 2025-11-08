@@ -1,0 +1,66 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Flexbox froggy is a fun game to learn flexbox layout: */
+
+
+.container{
+    
+    background-color: black;
+    padding: 20px;
+    /* height: 100vw; */
+    max-width: 800px;
+    min-height: 400px;
+    margin-inline: auto;
+    border: solid 5px white;
+    font-size: 5rem;
+    color: white;
+    display: flex; /* Makes the container a flexbox, aligning and spacing its child elements easily from column to row */
+    gap: 1rem; /* Adds space between child elements */
+    justify-content: flex-start; /* Aligns child elements to the start of the main axis (horizontally in this case) */
+    justify-content: flex-end; /* Aligns child elements to the end of the main axis (horizontally in this case) */
+    justify-content: center; /* Aligns child elements to the center of the main axis (horizontally in this case) */
+    justify-content: space-around; /* Distributes child elements evenly with space around them */
+    justify-content: space-between; /* Distributes child elements evenly with space between them */
+    justify-content: space-evenly; /* Distributes child elements evenly with equal space around them */
+    align-items: flex-start; /* Aligns child elements to the start of the cross axis (vertically in this case) */
+    align-items: flex-end; /* Aligns child elements to the end of the cross axis*/
+    align-items: center; /* Aligns child elements to the center of the cross axis (vertically in this case) */
+    flex-direction: column; /* Changes the main axis to vertical, stacking child elements in a column */
+    flex-direction: row; /* Changes the main axis to horizontal, arranging child elements in a row */
+    /* flex-direction: row-reverse; */ /* Arranges child elements in a row but in reverse order */
+    flex-wrap: wrap; /* Allows child elements to wrap onto multiple lines if they exceed the container's width */
+}
+
+/* justify-content : controls alignment along the main axis (left–right by default) */
+ /* align-content : controls spacing between rows or columns along the cross axis(top–bottom by default). */
+
+
+.box{
+    background-color: red;
+    padding: 20px;
+    margin: 10px;
+    border: 2px solid white;
+    text-align: center;
+    height: 100px;
+
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Allows the box to grow and fill available space proportionally */
+    flex-basis: 150px; /* Sets the initial size of the box before any growing or shrinking occurs */
+    flex: 150px 1 1; /* shorthand for flex-grow, flex-shrink, and flex-basis */
+}
+
+.box:nth-child(2){
+    background-color: blue;
+    /* flex-grow: 2; */ /* This box will grow twice as much as the others */
+    flex-shrink: 2; /* This box will shrink twice as much as the others */
+    order: -1;
+}
+
