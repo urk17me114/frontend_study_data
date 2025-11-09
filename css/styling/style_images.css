@@ -1,0 +1,98 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    /* background-color: aliceblue; */
+    /* background-image: linear-gradient(steelblue,white); */ /* starts from top to bottom */
+    background-image: linear-gradient(to left, steelblue,white); 
+    background-image: linear-gradient(to right, steelblue,white); 
+    background-image: url(../styling/images/bg.png), linear-gradient(to top, steelblue,white); 
+    background-repeat: repeat;
+    background-position: right center;
+}
+
+.example{
+    border: 1rem solid black;
+    margin: 1rem;
+    padding-left: 20px;
+
+}
+
+.example img{
+    width: 25%;
+    height: auto;
+}
+
+/* Block Element: Starts on a new line and stretches the full width available
+Inline Element: Sits inline with surrounding text and only takes up as much width as its content */
+
+img{
+     /* without using display block the image and text appear in the same line as inline element 
+     */display: block;/*   makes the image a block element */ 
+     border-radius: 50%;
+    
+}
+
+/* Always use an image that is twicwe the size you want to display it at for better quality */
+
+.hero{
+    border-bottom: 2px solid red;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 30px;
+    background-color: red;
+    background-image: url('../styling/images/scenery.jpg');
+    /* background-repeat: no-repeat; */ /* To understand this pprty try with the stickerbg image */
+    /* background-repeat: repeat-x; */
+    /* background-repeat: repeat-y; */
+    
+    
+    background-size: cover; /* cover makes sure the image covers the entire area */
+    /* To understand this pprty try with the scenery image */
+
+    background-size: contain;
+
+
+
+}   
+
+.h1{
+    font-size: 3rem;
+    color:black;
+}
+
+.nowrap{
+    white-space: nowrap;
+    /* prevents the text from wrapping to the next line */
+}
+
+.offscreen{
+    position: absolute;
+    left: -9999px;
+    /* hides the element visually but keeps it accessible for screen readers */
+}
+
+.container{
+    border: 2px solid blue;
+    padding: 10px;
+    margin: 10px;
+}
+
+.clip{
+    font-weight: 800;/*  Boldness of the font */
+    font-size: 8rem;
+    text-align: center;
+    background-image: url('../styling/images/scenery.jpg');
+    background-size: 100% ;
+    text-transform: uppercase;
+    -webkit-background-clip: text; /* clips the background to the text */
+    background-clip: text; /* this is for mozilla firefox browser */
+    color: transparent;
+    
+}
