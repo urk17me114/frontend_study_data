@@ -1,0 +1,77 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    background-color: #475569;
+    /* background-image: radial-gradient(whitesmoke,#475569); */
+    display: flex;
+    flex-direction: column;
+}
+
+header,nav,main,footer{
+    display: grid;
+    place-content: center;
+    grid-template-columns: 100%;
+    text-align: center;
+    
+}
+
+header,footer{
+    background-color: darkblue;
+    color: white;
+    position: sticky;
+}
+
+footer{
+    
+    bottom: 0;
+}
+
+main{
+    flex-grow: 1;   /*To make main take available space. understand by commenting */
+}
+
+nav{
+    background-color: darkcyan;
+    color: black;
+    padding: 0.5rem;
+    border-bottom: 2px solid black;
+}
+/* Syntax of a media query: */
+
+/* @media media type   and (condition: breakpoint) {
+    CSS rules to apply when the condition is met 
+    
+    
+} */
+
+
+            /* Small */
+@media screen and (min-width: 576px) {
+    body{
+        background-color: lightcoral;/*  The background color doesn’t appear because of the background image
+                                        That radial gradient image sits on top of your background-color. */
+    }
+    nav{
+        display: none;
+    }
+}
+
+  
+           /* Medium */
+@media screen and (min-width: 768px) {
+    body{
+        background-color: lightseagreen;
+    }
+}
+
+              /* Large */
+@media screen and (min-width: 992px) {
+    body{
+        background-color: firebrick;
+    }   
+}

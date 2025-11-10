@@ -22,6 +22,7 @@ body{
     color: white;
     display: grid;
     align-content: center;
+    
     justify-content: center;
 }
 
