@@ -1,0 +1,188 @@
+        /* Responsive layouts */
+
+        /* General styles */
+        *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+    /* Variables */
+:root{  /* :root iS a pseudo class */
+    /* color */
+    --BGCOLOR: #475569;
+    --PLAINCOLOR: white;
+    --BGCOLOR2: whitesmoke;
+    
+
+    /* Font */
+    --BODY_FONT: Arial,  sans-serif;
+    --FS: 2rem;
+
+    /* General */
+    --PADDING: 1.25rem;
+    --BORDER: 5px solid var(--PLAINCOLOR);
+
+}
+
+
+/* Now your page automatically switches between light and dark mode based on the user’s system preference. */
+/* To understand this better, try changing your system theme from light to dark by right click on homescreen >>personalise>>color>> theme>>dark. */
+@media(prefers-color-scheme: dark){
+    :root{
+        --BGCOLOR2: black;
+        --PLAINCOLOR: whitesmoke;
+    }
+}
+
+.container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(4, 20vw); 
+    gap: 1rem;
+    place-content: space-evenly;
+    padding: var(--PADDING);
+}
+.square{
+    
+    display: grid;
+    
+    /* justify-content: center;
+    align-items: center; */
+    place-content: center;
+    width: 20vw;
+    height: 20vw;
+    background-color: var(--BGCOLOR2);
+    border: 5px solid black;
+    margin: 1rem;
+    border-radius: 15px;
+    font-size: 5rem;
+}
+
+
+    /* Very imp concept */
+.square--highlight{
+    --BGCOLOR2: coral; /* overriding the variable for this class only */
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+
+/* header,nav,main,footer{
+    display: grid;
+    place-content: center;
+    grid-template-columns: 100%;
+    place-items: center;
+    text-align: center;
+    width: 100%;
+    font-size: 1.5rem;    
+    
+    
+} */
+
+header,footer{
+    font-family: var(--BODY_FONT);
+    font-size: var(--FS);
+    background-color: #1e293b;
+    color: var(--PLAINCOLOR);
+    position: sticky;
+    text-align: center;
+}
+
+p{
+    padding: var(--PADDING);
+    font-size: var(--FS);
+}
+footer{
+    
+    bottom: 0;
+}
+
+div{
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-flow: row wrap;
+}
+
+
+
+nav{
+    background-color: whitesmoke;
+    color: black;
+    padding: 0.5rem;
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-evenly;
+    }
+
+img{
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+
+/* Psedo classes and elements: */
+
+.card img[alt]{ /* selects img elements with alt attribute */
+    border: 8px solid black;
+}
+.card img:not([alt]){ /* selects img elements without alt attribute */
+    border: 8px solid red;
+}
+
+
+.card:target{
+    border: 5px solid red;/*  highlights the card when clicked */
+}
+
+.card:nth-child(odd){ /* it is according to the order in the html file; */
+    background-color: papayawhip;
+}
+
+.card figcaption::after{
+    content: "😊";
+    display: block;
+    
+}
+.card figcaption::before{
+    content: "Name:\00a0"; /* \00a0 is unicode for non-breaking space */
+    
+}
+.card p::after {
+    content: close-quote;
+}
+
+.card figcaption::first-line{
+    font-size: 3rem;
+}
+
+/* Profile Cards */
+.card{
+    padding: 1rem;
+    border-radius: 15px;
+    background-color: #cbd5e1;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+
+.card figcaption{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+}
+
+
+
+
+

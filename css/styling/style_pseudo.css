@@ -1,0 +1,176 @@
+        /* Responsive layouts */
+
+        /* General styles */
+        *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+body{
+    min-height: 100vh;
+    background-color: #475569;
+    /* background-image: radial-gradient(whitesmoke,#475569); */
+    display: flex;
+    flex-direction: column;
+    
+}
+
+/* header,nav,main,footer{
+    display: grid;
+    place-content: center;
+    grid-template-columns: 100%;
+    place-items: center;
+    text-align: center;
+    width: 100%;
+    font-size: 1.5rem;    
+    
+    
+} */
+
+header,footer{
+    background-color: #1e293b;
+    color: white;
+    position: sticky;
+    text-align: center;
+}
+
+footer{
+    
+    bottom: 0;
+}
+
+main{
+    display: flex;
+    flex-grow: 1;   /*To make main take available space. understand by commenting */
+    padding: 0.5rem;
+}
+
+nav{
+    background-color: whitesmoke;
+    color: black;
+    padding: 0.5rem;
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-evenly;
+    }
+
+img{
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+
+/* Psedo classes and elements: */
+
+.card img[alt]{ /* selects img elements with alt attribute */
+    border: 8px solid black;
+}
+.card img:not([alt]){ /* selects img elements without alt attribute */
+    border: 8px solid red;
+}
+
+
+.card:target{
+    border: 5px solid red;/*  highlights the card when clicked */
+}
+
+.card:nth-child(odd){ /* it is according to the order in the html file; */
+    background-color: papayawhip;
+}
+
+.card figcaption::after{
+    content: "😊";
+    display: block;
+    
+}
+.card figcaption::before{
+    content: "Name:\00a0"; /* \00a0 is unicode for non-breaking space */
+    
+}
+.card p::after {
+    content: close-quote;
+}
+
+.card figcaption::first-line{
+    font-size: 3rem;
+}
+
+/* Profile Cards */
+.card{
+    padding: 1rem;
+    border-radius: 15px;
+    background-color: #cbd5e1;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+
+.card figcaption{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+}
+
+
+/* Syntax of a media query: */
+
+/* @media media type   and (condition: breakpoint) {
+    CSS rules to apply when the condition is met 
+    
+    
+} */
+
+
+            /* Small */
+@media screen and (min-width: 576px) {
+    main{
+        justify-content: center;
+        flex-flow: row wrap;
+        padding: 1rem;
+        }
+    .card{
+        width: min(100%, 400px);
+    }
+    .card:last-child{
+        order: -1;
+    }
+}
+
+  
+           /* Medium */
+@media screen and (min-width: 768px) {
+    /* nav{ 
+        display: none;
+    } */
+    .card{
+        width: min(100%, 325px);
+    }
+    /* figure{
+        display: flex;
+        flex-flow: column-reverse;
+        flex-direction: column;
+    } */
+}
+
+              /* Large */
+@media screen and (min-width: 992px) {
+    .card{
+        width: min(100%, 400px);
+        }
+    .card :nth-child(2){
+        order: -1;
+    }
+}
+
+
+
