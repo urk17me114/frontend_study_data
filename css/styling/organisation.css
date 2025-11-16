@@ -1,0 +1,66 @@
+/* to sort the loc in ascneding order selct the loc and ctrl p then in the 
+command pallete type >sort lines ascending */
+
+/* before */
+nav{
+    background-color: whitesmoke;
+    color: black;
+    padding: 0.5rem;
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-evenly;
+    }
+
+    /* after */
+    nav{
+    background-color: whitesmoke;
+    border-bottom: 2px solid black;
+    color: black;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0.5rem;
+    }
+
+
+
+
+    /* Larger projects follow a naming convention methodology called BEM(block element modifier)*/
+Button is a block element
+.btn{
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+}
+
+
+
+/* A part of the block — it cannot exist on its own.It depends on the block.
+Named as: block__element (double underscore __).
+ */
+/*  <div class="menu">
+    <ul class="menu__list">
+        <li class="menu__item">Home</li>
+        <li class="menu__item">About</li>
+    </ul>
+</div> */
+
+
+
+/* modifiers are those that lead to incremental changes in the block or element */
+.btn--secondary{ /* Modifiers start with double hyphen */
+    background-color: yellow;
+}
+
+
+
+/* A part of the block — it cannot exist on its own.It depends on the block.
+Named as: block__element (double underscore __).
+ */
+/*  <div class="menu">
+    <ul class="menu__list">
+        <li class="menu__item">Home</li>
+        <li class="menu__item">About</li>
+    </ul>
+</div> */
+
+
