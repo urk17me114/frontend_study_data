@@ -1,0 +1,151 @@
+
+
+    /* Here we learn about CSS Transforms, Transitions and Animations. */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html{
+    font-size: 1.5rem;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column  nowrap;
+
+}
+
+main{
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column  nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+div{
+    width: 200px;
+    height: 200px;
+    border: solid 2px black;
+    display: grid;
+    place-content: center;
+}
+
+
+    /* All other trasnsformations are there in the github link >> in resources folder */
+
+
+
+div:nth-child(1){
+    background-color: dodgerblue;
+    /* transform: translateX(-50%) */
+    /* transform: rotateX(180deg); */
+   /*  transform: scaleX(120%); */
+   /* ransform: skewX(-10deg); */
+    
+}
+
+div:nth-child(2){
+    background-color: yellow;
+    /* transform: translateY(-2rem); */
+    /* transform: rotateY(180deg); */
+    /* transform: scaleY(120%); */
+    /* transform: skewY(10deg); */
+}
+
+div:nth-child(3){
+    background-color: limegreen;
+    /* transform: translate(100%, -2rem); */
+    /* transform: rotatez(180deg); */
+    /* transform: scale(50%); */
+    /* transform: skew(-10deg); */
+    
+}
+
+div:hover:nth-child(1){
+    background-color: midnightblue;
+    transition-property: background-color;
+    transition-duration: 2s;
+    transition-delay: 0.5s;
+
+}
+
+div:hover:nth-child(1){
+    background-color: midnightblue;
+    transition-property: background-color,transform;
+    /* transition-duration: 2s;
+    transition-delay: 0.5s; */
+    transition: all 2s 0.5s;
+
+}
+div:hover:nth-child(2){
+    transform: rotate(45deg);
+    transition-property: transform;
+    transition-duration: 2s;
+    transition-delay: 0.5s;
+
+}
+
+
+        /* Animations very important */
+
+/* .animate{
+    animation-name: colorchange;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes  colorchange {
+    0%{
+        background-color: red;
+    }
+    25%{
+        background-color: yellow;
+    }
+    50%{
+        background-color: blue;
+    }
+    75%{
+        background-color: green;
+    }
+    100%{
+        background-color: red;
+    }
+    
+}
+ */
+
+
+ .animate{
+   /*  animation-name: Slide;
+    animation-duration: 5s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 1s;
+    animation-iteration-count: 5;
+    animation-direction: alternate;
+    animation-fill-mode: forwards; *//*  this makes the last frame to persist */
+    animation: 5s ease-in-out 1s 5 alternate forwards Slide; /* shorthand version */
+ }
+
+    @keyframes Slide {
+        0%{
+            transform: translateX(0);
+        }
+        33%{
+            transform: translateX(600px) rotate(180deg);
+        }
+        66%{
+            transform: translateX(-600px) rotate(-180deg);
+        }
+        100%{
+            transform: translateX(0);
+            background-color: rebeccapurple;
+        }
+    }

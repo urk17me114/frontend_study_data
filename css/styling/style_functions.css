@@ -1,0 +1,129 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header,footer{
+    font-family: Arial, sans-serif;
+    background-color:darkblue;
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+    
+
+}
+
+body{
+    background-color: lightgray;
+    font-size: 1.5rem;
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    
+    
+}
+
+nav{
+    font-size: 2.25rem;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background-color: white;
+}
+.container1{
+    background-color: lightgray;
+    font-size: 1.5rem;
+    padding-left: 10px;
+    text-align: justify;
+    padding-right: 10px;
+    
+    
+    
+}
+.container2{
+    
+    background-color: darkolivegreen;
+    font-size: 1.5rem;
+    padding-left: 10px;
+    text-align: justify;
+    max-width: 40%;
+    padding-right: 10px;
+    
+    
+}
+.container3{
+    background-color: lightgray;
+    font-size: 1.5rem;
+    display: flex;
+    flex-flow: row nowrap;
+    min-height: 100vh;
+    
+    
+    
+}
+
+a:any-link{ /* this gives both the visited and unvisited links the same style */
+    text-decoration: none;
+    color: firebrick;
+}
+
+
+    /* Very very important concept about the functions in css */
+
+/* a:hover,a:focus{
+ */    /* opacity: 0.5; */
+    /* filter: brightness(150%); */
+    /* filter: hue-rotate(180deg) ; */
+    /* color: skyblue; */
+/* } */
+
+.tooltip_class{
+    
+    border-bottom: 1px dotted black;
+    white-space: nowrap;
+    position: relative;
+}
+
+.tooltip_class:hover::before{
+    content: attr(data-tooltip);
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    font-style: italic;
+    position: absolute;
+    
+}
+
+.square{
+    /* width: 300px;
+    height: 300px; */
+    background-color: coral;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    font-size: 3rem;
+    /* flex-flow: column ; */
+    /* flex-grow: 1; */
+    padding: 20px;
+    
+}
+
+.container{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(100px,300px));
+    /* flex-wrap: wrap; */
+    gap: min(2vw, 20px);
+    margin: 20px;
+    justify-content: center;
+    place-content: center;
+}
+
+
+  /* Functions with grid layouts */
