@@ -1,0 +1,17 @@
+Last meeting  we discussed on the things expected for version 2 of the bobby tables project.
+
+The suggestions included:
+Improvement on the current code quality and documentation
+More vulnerabilities to be implemented (expected a total of 15 attacks including the ones already implemented)
+Since most of the vulnerabilities implemented are based on the HTTP request manipulation, the ones yet to be implemented should be diverse from those existing ones...
+Implement the bobby table attack which is in the comic.
+Proper error handling need to be done other than the default Django error page that loads in case of error
+A visible que for the user to know about the vulnerability. For example if  the DB is dropped as a part of the attack then the user should see the timetable has gone blank...
+One additional configuration needs to be done by splitting the vulnerabilities / Containerisation (like using a docker) needs to be done.
+
+
+Things to do for the next meeting:
+ A detailed summary of the roadmap for version 2 needs to be done which states what every team member will do from July 24 to aug 25th .
+ 
+
+ 

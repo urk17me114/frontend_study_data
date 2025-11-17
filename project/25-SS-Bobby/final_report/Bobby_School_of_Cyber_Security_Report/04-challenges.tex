@@ -1,0 +1,24 @@
+\subsection{Challenges Faced During Docker Implementation}
+
+During the implementation phase of Docker for the Django and MySQL-based web application, several technical and configuration-related challenges were encountered that impacted the successful completion of the containerization process. These challenges primarily involved database connectivity, port conflicts, service initialization, and dependency management in hybrid Windows–Linux environments.
+
+\begin{enumerate}
+\item \textbf{Plugin Installation and Repository Configuration in WSL} \\
+    Installing Docker components in the WSL environment presented additional challenges. The official Docker repository had not been added to the package manager’s sources, preventing proper installation. This was resolved by manually adding the repository and reinstalling the components, highlighting the sensitivity of dependency management in hybrid Windows–Linux setups.
+    \item \textbf{MySQL Service Initialization and Port Conflicts} \\
+    A major challenge arose when starting the MySQL service within the Windows Subsystem for Linux (WSL) environment. Executing \texttt{sudo service mysql start} resulted in a control process failure, as the MySQL data directory could not be initialized correctly. Further investigation revealed that port 3306, the default MySQL port, was already in use by a native Windows MySQL instance. Modifying the MySQL configuration to use an alternate port (3307) temporarily resolved the issue, but inconsistencies persisted when connecting from Docker containers due to mismatched environment configurations.
+
+    \item \textbf{Database Connectivity Between Django and MySQL} \\
+    The Django application initially failed to connect to the MySQL container. This was due to the database host settings in \texttt{settings.py} pointing to \texttt{localhost}, which refers to the Django container itself rather than the MySQL container. Updating the host to the Docker service name partially resolved the issue; however, intermittent failures continued because the MySQL service was not fully initialized when Django attempted to connect.
+
+    
+
+    \item \textbf{Service Initialization Dependencies} \\
+    Even after correcting configuration issues, the order of service initialization remained problematic. The Django container often started before the MySQL service was fully operational, leading to repeated \textit{connection refused} errors. Adjusting the container orchestration sequence and adding health checks was required to ensure proper startup order.
+
+    \item \textbf{Volume Mounting and Data Persistence Issues} \\
+    Attempts to mount the MySQL data directory from the host system using relative paths caused permission errors and risked data loss due to overwriting on container restarts. Configuring Docker volumes correctly and ensuring proper file permissions were necessary to maintain persistent and consistent data across container lifecycles.
+\end{enumerate}
+
+
+These challenges underscored the complexities of containerizing multi-service applications, particularly in hybrid Windows–Linux environments. Although the Docker setup is still incomplete, working through these issues has provided valuable insights into dependency management, service orchestration, container configuration, and the importance of careful planning when deploying multi-service systems.

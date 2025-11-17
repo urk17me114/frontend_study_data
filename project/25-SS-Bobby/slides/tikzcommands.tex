@@ -1,0 +1,973 @@
+\tikzset{
+    cross/.pic = {
+    \draw[rotate = 45] (-#1,0) -- (#1,0);
+    \draw[rotate = 45] (0,-#1) -- (0, #1);
+    }
+}
+
+\newcommand\trichter[1]{
+  \draw  #1 -- ++(1,0) -- ++(0,-0.5) -- ++(0.5,-0.75) -- ++(-2,0) -- ++(0.5,0.75) -- #1;
+  \node at ($#1 + (0.5,-0.75)$) {\large{$F_K$}};
+}
+
+\newcommand\rpaefad[2]{
+  \node at (#1,#2) (null) {$0^n$};
+  \node [XOR] at ($(null) + (3,0)$) (x1) {};
+  \node [XOR] at ($(x1) + (3.1,0)$) (x2) {};
+  \node at ($(x2) + (3,0)$) (xdots) {$\dots$};
+  \node [XOR] at ($(xdots) + (2.5,0)$) (x3) {};
+  \node [XOR] at ($(x3) + (3.5,0)$) (x4) {};
+  \node at ($(x4) + (3,0)$) (ta) {$T_A$};
+  \draw [->] (null) -- (x1) -- (x2) -- (xdots) -- (x3) -- (x4) -- (ta);
+
+  \trichter{($(x1) + (0,2)$)}
+  \node at ($(x1) + (0.5,2.5)$) (a1) {$A_1$};
+  \draw [->] (a1) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x2) + (0,2)$)}
+  \node at ($(x2) + (0.5,2.5)$) (a2) {$A_2$};
+  \draw [->] (a2) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(xdots) + (0, 1.25)$) {\Large$\dots$};
+  \trichter{($(x3) + (0,2)$)}
+  \node at ($(x3) + (0.5,2.5)$) (a3) {$A_a$};
+  \draw [->] (a3) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x4) + (0,2)$)}
+  \node at ($(x4) + (0.5,2.5)$) (a4) {$A_*$};
+  \draw [->] (a4) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(x1)+(2.0, 1.75)$) (c2) {\tiny$N||000||\langle2\rangle||0^n$};
+  \node at ($(c2)+(-3.2,0)$) (c1) {\tiny$N||000||\langle1\rangle||0^n$};
+  \draw [->] (c1.east) -- +(-0.1,0) --  ++(0.24,0);
+  \draw [->] (c2.east) -- +(-0.1,0) --  ++(0.14,0);
+  \node at ($(x3)+(2.1, 1.75)$) (c4) {\tiny$N||001||\langle a{+}1\rangle||0^n$};
+  \node at ($(c4)+(-3.3,0)$) (c3) {\tiny$N||000||\langle a\rangle||0^n$};
+  \draw [->] (c3.east) -- +(-0.1,0) --  ++(0.23,0);
+  \draw [->] (c4.east) -- +(-0.1,0) --  ++(0.28,0);
+
+  \draw [->] ($(x1) + (0,0.75)$) -- (x1);
+  \draw [->] ($(x2) + (0,0.75)$) -- (x2);
+  \draw [->] ($(x3) + (0,0.75)$) -- (x3);
+  \draw [->] ($(x4) + (0,0.75)$) -- (x4);
+
+  \draw [-, thick] ($(x1) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x2) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x3) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x4) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+}
+
+\newcommand\rpaefmd[2]{
+  \node at (#1,#2) (null) {$T_A$};
+  \node [XOR] at ($(null) + (3,0)$) (x1) {};
+  \node [XOR] at ($(x1) + (3,0)$) (x2) {};
+  \node at ($(x2) + (3,0)$) (xdots) {$\dots$};
+  \node [XOR] at ($(xdots) + (3,0)$) (x3) {};
+  \node at ($(x3) + (1,0)$) (s) {\color{blue}$S$};
+  \draw [->] (null) -- (x1) -- (x2) -- (xdots) -- (x3) -- (s);
+
+
+  \node at ($(x1) - (0.75,0.75)$) (m1) {$M_1$};
+  \draw [->] (m1) -- ++(0.75,0) -- (x1);
+  \draw [->] (m1) -- ++(0,-0.75);
+  \node at ($(x2) - (0.75,0.75)$) (m2) {$M_2$};
+  \draw [->] (m2) -- ++(0.75,0) -- (x2);
+  \draw [->] (m2) -- ++(0,-0.75);
+  \node at ($(x3) - (0.75,0.75)$) (m3) {$M_m$};
+  \draw [->] (m3) -- ++(0.75,0) -- (x3);
+  \draw [->] (m3) -- ++(0,-0.75);
+
+  \node at ($(m3) + (5,0)$) (m4) {$M_*$};
+  \draw [->] (m4) -- ++(0,-0.75);
+
+  \trichter{($(m1) + (-0.5,-0.75)$)}
+  \node at ($(m1)+(-1.75,-1)$) (ctr1) {\tiny$N||100||\langle1\rangle||0^n$};
+  \draw [->] (ctr1) -- ++(0.75,0) -- ++(0.5,0);
+  \trichter{($(m2) + (-0.5,-0.75)$)}
+  \node at ($(m2)+(-1.65,-1)$) (ctr2) {\tiny$N||100||\langle2\rangle||0^n$};
+  \draw [->] (ctr2) -- ++(0.75,0) -- ++(0.4,0);
+  \trichter{($(m3) + (-0.5,-0.75)$)}
+  \node at ($(m3)+(-1.65,-1)$) (ctr3) {\tiny$N||100||\langle m\rangle||0^n$};
+  \draw [->] (ctr3) -- ++(0.75,0) -- ++(0.4,0);
+  \trichter{($(m4) + (-0.5,-0.75)$)}
+  \node at ($(m4)+(-2,-1)$) (ctr4) {\tiny$N||101||\langle m{+}1\rangle||\color{blue}S$};
+  \draw [->] (ctr4) -- ++(1,0) -- ++(0.5,0);
+
+
+  \draw [->] ($(m1) - (0.5, 2)$) -- ++(0,-0.5) node[pos=1.5] {$C_1$};
+  \draw [-, thick] ($(m1) - (-0.5, 2)$) -- ++(0,-0.2)  -- +(-0.1,0) -- +(0.1,0);
+  \draw [->] ($(m2) - (0.5, 2)$) -- ++(0,-0.5) node[pos=1.5] {$C_2$};
+  \draw [-, thick] ($(m2) - (-0.5, 2)$) -- ++(0,-0.2)  -- +(-0.1,0) -- +(0.1,0);
+  \draw [->] ($(m3) - (0.5, 2)$) -- ++(0,-0.5) node[pos=1.5] {$C_m$};
+  \draw [-, thick] ($(m3) - (-0.5, 2)$) -- ++(0,-0.2)  -- +(-0.1,0) -- +(0.1,0);
+  \draw [->] ($(m4) - (0.5, 2)$) -- ++(0,-0.5) node[pos=1.5] {$C_*$};
+  \draw [->] ($(m4) - (-0.5, 2)$) -- ++(0,-0.5) node[pos=1.5] {$T$};
+
+}
+
+
+\newcommand\rpaef[2]{
+  \rpaefad{#1}{#2}
+  \rpaefmd{#1}{#2-2}
+}
+
+
+
+\newcommand\paefad[2]{
+  \node at (#1,#2) (null) {$0^n$};
+  \node [XOR] at ($(null) + (3,0)$) (x1) {};
+  \node [XOR] at ($(x1) + (3,0)$) (x2) {};
+  \node at ($(x2) + (3,0)$) (xdots) {$\dots$};
+  \node [XOR] at ($(xdots) + (3,0)$) (x3) {};
+  \node [XOR] at ($(x3) + (3,0)$) (x4) {};
+  \node at ($(x4) + (3,0)$) (ta) {$T_A$};
+  \draw [->] (null) -- (x1) -- (x2) -- (xdots) -- (x3) -- (x4) -- (ta);
+
+  \trichter{($(x1) + (0,2)$)}
+  \node at ($(x1) + (0.5,2.5)$) (a1) {$A_1$};
+  \draw [->] (a1) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x2) + (0,2)$)}
+  \node at ($(x2) + (0.5,2.5)$) (a2) {$A_2$};
+  \draw [->] (a2) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(xdots) + (0, 1.25)$) {\Large$\dots$};
+  \trichter{($(x3) + (0,2)$)}
+  \node at ($(x3) + (0.5,2.5)$) (a3) {$A_a$};
+  \draw [->] (a3) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x4) + (0,2)$)}
+  \node at ($(x4) + (0.5,2.5)$) (a4) {$A_*$};
+  \draw [->] (a4) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(x1)+(1.8, 1.75)$) (c2) {\tiny$N||000||\langle2\rangle$};
+  \node at ($(c2)+(-3,0)$) (c1) {\tiny$N||000||\langle1\rangle$};
+  \draw [->] (c1.east) -- +(-0.1,0) --  ++(0.4,0);
+  \draw [->] (c2.east) -- +(-0.1,0) --  ++(0.4,0);
+  \node at ($(x3)+(1.8, 1.75)$) (c4) {\tiny$N||001||\langle a{+}1\rangle$};
+  \node at ($(c4)+(-3,0)$) (c3) {\tiny$N||000||\langle a\rangle$};
+  \draw [->] (c3.east) -- +(-0.1,0) --  ++(0.4,0);
+  \draw [->] (c4.east) -- +(-0.1,0) --  ++(0.3,0);
+
+  \draw [->] ($(x1) + (0,0.75)$) -- (x1);
+  \draw [->] ($(x2) + (0,0.75)$) -- (x2);
+  \draw [->] ($(x3) + (0,0.75)$) -- (x3);
+  \draw [->] ($(x4) + (0,0.75)$) -- (x4);
+
+  \draw [-, thick] ($(x1) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x2) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x3) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(x4) + (1,0.75)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+}
+
+\newcommand\paefmd[2]{
+  \node at (#1,#2) (null) {$T_A$};
+  \node [XOR] at ($(null) + (3,0)$) (x1) {};
+  \draw [->] ($(x1)+(-1,0.75)$) -- ++(0,-0.3) node [pos=1.6] {$C_1$};
+  \node [XOR] at ($(x1) + (3,0)$) (x2) {};
+  \draw [->] ($(x2)+(-1,0.75)$) -- ++(0,-0.3) node [pos=1.6] {$C_2$};
+  \node at ($(x2) + (3,0)$) (xdots) {$\dots$};
+  \node [XOR] at ($(xdots) + (3,0)$) (x3) {};
+  \draw [->] ($(x3)+(-1,0.75)$) -- ++(0,-0.3) node [pos=1.6] {$C_m$};
+  \node [XOR] at ($(x3) + (3,0)$) (x4) {};
+  \draw [->] ($(x4)+(1,0.75)$) -- ++(0,-0.3) node [pos=1.6] {$T$};
+  \node at ($(x4) + (3,0)$) (ta) {$C_*$};
+  \draw [->] (null) -- (x1) -- (x2) -- (xdots) -- (x3) -- (x4) -- (ta);
+
+  \trichter{($(x1) + (-1,2)$)}
+  \node at ($(x1) + (-0.5,2.5)$) (m1) {$M_1$};
+  \draw [->] (m1) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x2) + (-1,2)$)}
+  \node at ($(x2) + (-0.5,2.5)$) (a2) {$M_2$};
+  \draw [->] (a2) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(xdots) + (0, 1.25)$) {\Large$\dots$};
+  \trichter{($(x3) + (-1,2)$)}
+  \node at ($(x3) + (-0.5,2.5)$) (a3) {$M_m$};
+  \draw [->] (a3) -- +(0,-0.2) -- ++(0,-0.5);
+  \trichter{($(x4) + (0,2)$)}
+  \node at ($(x4) + (0.5,2.5)$) (a4) {$M_*$};
+  \draw [->] (a4) -- +(0,-0.2) -- ++(0,-0.5);
+  \node at ($(x1)+(0.8, 1.75)$) (c2) {\tiny$N||100||\langle2\rangle$};
+  \node at ($(c2)+(-3,0)$) (c1) {\tiny$N||100||\langle1\rangle$};
+  \draw [->] (c1.east) -- +(-0.1,0) --  ++(0.4,0);
+  \draw [->] (c2.east) -- +(-0.1,0) --  ++(0.4,0);
+  \node at ($(x3)+(1.8, 1.75)$) (c4) {\tiny$N||101||\langle m{+}1\rangle$};
+  \node at ($(c4)+(-4,0)$) (c3) {\tiny$N||100||\langle m\rangle$};
+  \draw [->] (c3.east) -- +(-0.1,0) --  ++(0.4,0);
+  \draw [->] (c4.east) -- +(-0.1,0) --  ++(0.3,0);
+
+  \draw [->] ($(x1) + (0,0.75)$) -- (x1);
+  \draw [->] ($(x2) + (0,0.75)$) -- (x2);
+  \draw [->] ($(x3) + (0,0.75)$) -- (x3);
+  \draw [->] ($(x4) + (0,0.75)$) -- (x4);
+}
+
+
+\newcommand\paef[2]{
+  \paefad{#1}{#2}
+  \paefmd{#1}{#2-4}
+}
+
+
+\newcommand\saefad[2]{
+  \node at (#1, #2) (t1) {};
+  \node at ($(t1) + (3,0)$) (t2) {};
+  \node at ($(t2) + (4,0)$) (t3) {};
+  \node at ($(t3) + (3,0)$) (t4) {};
+  \trichter{(t1.center)}
+  \trichter{(t2.center)}
+  \trichter{(t3.center)}
+  \trichter{(t4.center)}
+
+  \node at ($(t1) + (0.5, 1.5)$) (a1) {$A_1$};
+  \node at ($(t2) + (0.5, 1.5)$) (a2) {$A_2$};
+  \node at ($(t2) + (2.5, -0.75)$) (dots) {\huge$\dots$};
+  \node at ($(t3) + (0.5, 1.5)$) (a3) {$A_a$};
+  \node at ($(t4) + (0.5, 1.5)$) (a4) {$A_*$};
+  \node [XOR] at ($(a2) - (0, 0.75)$) (x2) {};
+  \node [XOR] at ($(a3) - (0, 0.75)$) (x3) {};
+  \node [XOR] at ($(a4) - (0, 0.75)$) (x4) {};
+  \draw [->] (a1) -- +(0, -0.2) -- ++(0, -1.5);
+  \draw [->] (a2) -- +(0, -0.2) -- (x2) -- ++(0, -0.75);
+  \draw [->] (a3) -- +(0, -0.2) -- (x3) -- ++(0, -0.75);
+  \draw [->] (a4) -- +(0, -0.2) -- (x4) -- ++(0, -0.75);
+
+  \draw [->] ($(t1) + (0, -1.25)$) -- ++(0, -0.5) -- ++(2,0) -- ++(0,2.5) -- (x2);
+  \draw [-] ($(t2) + (0, -1.25)$) -- ++(0, -0.5) -- ++(2.5,0) -- ++(0,0.5);
+  \draw [<-] (x3) -- ++(-2,0) -- ++(0, -1);
+  \draw [->] ($(t3) + (0, -1.25)$) -- ++(0, -0.5) -- ++(2,0) -- ++(0,2.5) -- (x4);
+
+  \node at ($(t1) - (1,0.2)$) (n1) {\tiny$N||100$};
+  \draw [->] (n1) -- ++(1, 0);
+  \node at ($(t2) - (0.75,0.2)$) (n2) {\tiny$0^n$};
+  \draw [->] (n2) -- ++(0.75, 0);
+  \node at ($(t3) - (1,0.2)$) (n3) {\tiny$0^n$};
+  \draw [->] (n3) -- ++(1, 0);
+  \node [font=\fontsize{4.5}{4}\selectfont, fill=white] at ($(t4) - (1,0.2)$) (n4) {$0^{n-3}||\text{noM}||10$};
+  \draw [->] (n4) -- +(0.7,0) -- ++(1, 0);
+
+
+  \draw [-, thick] ($(t1) + (1,-1.25)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(t2) + (1,-1.25)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(t3) + (1,-1.25)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+  \draw [-, thick] ($(t4) + (0,-1.25)$) -- ++(0,-0.2) -- +(-0.1,0) -- +(0.1,0);
+
+
+  \draw [->] ($(t4) + (1,-1.25)$) -- ++(0,-0.5) node[label={[font=\tiny,align=left, pos=2.2]{if noM: $T$\\~~~else: $T_A$}}] {};
+
+
+}
+
+\newcommand\saefmd[2]{
+  \node at (#1, #2) (t1) {};
+  \node at ($(t1) + (3,0)$) (t2) {};
+  \node at ($(t2) + (4,0)$) (t3) {};
+  \node at ($(t3) + (3,0)$) (t4) {};
+  \trichter{(t1.center)}
+  \trichter{(t2.center)}
+  \trichter{(t3.center)}
+  \trichter{(t4.center)}
+
+  \node at ($(t1) + (0.5, 1.5)$) (a1) {$M_1$};
+  \node at ($(t2) + (0.5, 1.5)$) (a2) {$M_2$};
+  \node at ($(t3) + (0.5, 1.5)$) (a3) {$M_m$};
+  \node at ($(t4) + (0.5, 1.5)$) (a4) {$M_*$};
+  \node [XOR] at ($(a1) - (0, 0.75)$) (x1) {};
+  \node [XOR] at ($(a2) - (0, 0.75)$) (x2) {};
+  \node [XOR] at ($(a3) - (0, 0.75)$) (x3) {};
+  \node [XOR] at ($(a4) - (0, 0.75)$) (x4) {};
+  \node at ($(t1) - (1.5, -1.5)$) (iv) {$T_A$ or $0^n$};
+  \node at ($(t1) + (0, -2.5)$) (c1) {$C_1$};
+  \node at ($(t2) + (0, -2.5)$) (c2) {$C_2$};
+  \node at ($(t3) + (0, -2.5)$) (c3) {$C_m$};
+  \node at ($(t4) + (0, -2.5)$) (c4) {$C_*$};
+  \node [XOR] at ($(c1) + (0,0.75)$) (cx1) {};
+  \node [XOR] at ($(c2) + (0,0.75)$) (cx2) {};
+  \node [XOR] at ($(c3) + (0,0.75)$) (cx3) {};
+  \node [XOR] at ($(c4) + (0,0.75)$) (cx4) {};
+  \draw [->] (a1) -- +(0, -0.2) -- (x1) -- ++(0, -0.75);
+  \draw [->] (a2) -- +(0, -0.2) -- (x2) -- ++(0, -0.75);
+  \draw [->] (a3) -- +(0, -0.2) -- (x3) -- ++(0, -0.75);
+  \draw [->] (a4) -- +(0, -0.2) -- (x4) -- ++(0, -0.75);
+  \draw [<-] (c1) -- (cx1); \draw [-] (cx1) -- ++(0,0.5);
+  \draw [<-] (c2) -- (cx2); \draw [-] (cx2) -- ++(0,0.5);
+  \draw [<-] (c3) -- (cx3); \draw [-] (cx3) -- ++(0,0.5);
+  \draw [<-] (c4) -- (cx4); \draw [-] (cx4) -- ++(0,0.5);
+  \draw [<-] (cx2) -- ++(-1.32,0);
+  \draw [<-] (cx3) -- ++(-1.57,0);
+  \draw [<-] (cx4) -- ++(-1.38,0);
+  \draw [->] (iv) -- ++(0, -3.25) -- (cx1);
+  \draw [<-] (x1) -- ++(-2,0);
+  \node [dot] at ($(x1) -(2,0)$) {};
+  \node [dot] at ($(cx2) -(1.32,0)$) {};
+  \node [dot] at ($(cx3) -(1.57,0)$) {};
+  \node [dot] at ($(cx4) -(1.38,0)$) {};
+
+  \draw [->] ($(t1) + (1, -1.25)$) -- ++(0, -0.5) -- ++(0.68,0) -- ++(0,2.5) -- (x2);
+  \draw [->] ($(t2) + (1, -1.25)$) -- ++(0, -0.5) -- ++(0.75,0) -- ++(0,0.5);
+  \draw [<-] (x3) -- ++(-2.07,0) -- ++(0,-2.5) -- ++(-0.2,0);
+  \draw [->] ($(t3) + (1, -1.25)$) -- ++(0, -0.5) -- ++(0.62,0) -- ++(0,2.5) -- (x4);
+
+  \node at ($(t1) - (1,0.2)$) (n1) {\tiny$N||1001$};
+  \draw [->] (n1) -- ++(1, 0);
+  \node [fill=white] at ($(t2) - (0.75,0.2)$) (n2) {\tiny$0^{n-1}||1$};
+  \draw [->] (n2) -- ++(0.75, 0);
+  \node [fill=white] at ($(t3) - (1,0.2)$) (n3) {\tiny$0^{n-1}||1$};
+  \draw [->] (n3) -- ++(1, 0);
+  \node [font=\fontsize{4.5}{4}\selectfont, fill=white] at ($(t4) - (0.8,0.2)$) (n4) {$0^{n-3}||100$};
+  \draw [->] (n4) -- +(0.5,0) -- ++(0.8, 0);
+
+
+  \draw [->] ($(t4) + (1,-1.25)$) -- ++(0,-1) node[pos=1.25] {$T$};
+  \node [fill=white] at ($(t2) + (2.2, -0.75)$) (dots) {\huge$\dots$};
+
+
+}
+
+\newcommand\saef[2]{
+  \saefad{#1}{#2}
+  \saefmd{#1}{#2-4.7}
+}
+
+
+\newcommand\forkskinny[2]{
+  \node at (#1, #2) (m) {$M$};
+  \node [square] at (#1+2, #2) (rf) {RF};
+  \node at ($(rf) + (2,0)$) (rfdots) {$\dots$};
+  \node [square] at ($(rfdots) + (2,0)$) (rf2) {RF};
+  \node at ($(rf2) + (0.75,0)$) (fork) {};
+  \node [square] at ($(rf2) + (3,2)$) (rfu1) {RF};
+  \node at ($(rfu1) + (2,0)$) (rfudots) {$\dots$};
+  \node [square] at ($(rfudots) + (2,0)$) (rfu2) {RF};
+  \node at ($(rfu2) + (2,0)$) (c0) {$C_0$};
+  \draw [-] (m) -- (rf) -- (rfdots) -- (rf2) -- (fork.center) -- ($(rfu1.west) - (1,0)$) -- (rfu1);
+  \draw [->] (rfu1.east) -- (rfudots) -- (rfu2) -- (c0);
+
+
+  \node [square] at ($(rf2) + (3,-2)$) (rfl1) {RF};
+  \node [XOR] at ($(rfl1) - (1,0)$) (bcx) {};
+  \node at ($(rfl1) + (2,0)$) (rfldots) {$\dots$};
+  \node [square] at ($(rfldots) + (2,0)$) (rfl2) {RF};
+  \node at ($(rfl2) + (2,0)$) (c1) {$C_1$};
+  \draw [->] (fork.center) -- ($(bcx.west) - (0.25,0)$) -- (bcx) -- (rfl1) -- (rfldots) -- (rfl2) -- (c1);
+
+  \node at ($(bcx) + (0,1)$) (bc) {BC};
+  \draw [->] (bc) -- (bcx);
+
+
+  \node at (#1, #2+3.5) (tk) {$K||T$};
+  \node [square] at (#1+2, #2+3.5) (tks) {TKS};
+  \node at ($(tks) + (2,0)$) (tkdots) {$\dots$};
+  \node [square] at ($(tkdots) + (2,0)$) (tks2) {TKS};
+  \node [square] at ($(tks2) + (3,0)$) (tks3) {TKS};
+  \node at ($(tks3) + (2,0)$) (tks4) {$\dots$};
+  \node [square] at ($(tks4) + (2,0)$) (tks5) {TKS};
+  \node at ($(tks5) + (2,0)$) (tw) {$T_w$};
+  \draw [->] (tk) -- (tks) -- (tkdots) -- (tks2) -- (tks3) -- (tks4) -- (tks5) -- (tw);
+
+  \node at ($(bcx) - (1,1.5)$) (tw2) {$T_w$};
+  \node [square] at ($(rfl1) - (0,1.5)$) (tkl1) {TKS};
+  \node at ($(tkl1) + (2,0)$) (tkldots) {$\dots$};
+  \node [square] at ($(tkldots) + (2,0)$) (tkl2) {TKS};
+
+  \draw [->] (tks) -- (rf);
+  \draw [->] (tks2) -- (rf2);
+  \draw [->] (tks3) -- (rfu1);
+  \draw [->] (tks5) -- (rfu2);
+  \draw [->] (tkl1) -- (rfl1);
+  \draw [->] (tkl2) -- (rfl2);
+  \draw [-] (tw2) -- (tkl1) -- (tkldots) -- (tkl2);
+
+
+}
+
+
+\newcommand\generalyoyo[2]{
+  \node at (#1, #2)   (p0) {$p_0, p_1, p_2, p_3$};
+  \node at (#1, #2-1) (p1) {$p_0', p_1', p_2', p_3'$};
+
+  \node at ($(p0) + (4,0)$)   (i0) {$i_0, i_1, i_2, i_3$};
+  \node at ($(p1) + (4,0)$)   (i1) {$i_0, i_1, i_2', i_3$};
+
+  \node at ($(i0) + (4,0)$)   (c0) {$c_0, c_1, c_2, c_3$};
+  \node at ($(i1) + (4,0)$)   (c1) {$c_0', c_1', c_2, c_3'$};
+
+  \node at ($(c0) - (0,3)$)   (c2) {$c_0', c_1, c_2, c_3$};
+  \node at ($(c1) - (0,3)$)   (c3) {$c_0, c_1', c_2, c_3'$};
+
+  \node at ($(c2) - (4,0)$)   (i2) {$i_4, i_5, i_6, i_7$};
+  \node at ($(c3) - (4,0)$)   (i3) {$i_4, i_5, i_6', i_7$};
+
+  \node at (#1, #2-3) (p2) {$p_4, p_5, p_6, p_7$};
+  \node at (#1, #2-4) (p3) {$p_4', p_5', p_6', p_7'$};
+
+  \draw [->] ($(p0.east) - (0,0.5)$) -- ($(i0.west) - (0,0.5)$) node[pos=0.5, label=above:$f$]{};
+  \draw [->] ($(i0.east) - (0,0.5)$) -- ($(c0.west) - (0,0.5)$) node[pos=0.5, label=above:$g$]{};
+
+  \draw [->] (c1) -- (c2) node[pos=0.5, label=left:swap]{};
+
+  \draw [<-] ($(p2.east) - (0,0.5)$) -- ($(i2.west) - (0,0.5)$) node[pos=0.5, label=above:$f^{-1}$]{};
+  \draw [<-] ($(i2.east) - (0,0.5)$) -- ($(c2.west) - (0,0.5)$) node[pos=0.5, label=above:$g^{-1}$]{};
+}
+
+\newcommand\forkaes[2]{
+    \node at (#1,             #2) (P) {$P$} ;
+    \node at (#1+2,           #2+0) (split) {};
+    \node at (#1+2,         #2+1) (u1) {};
+    \node at (#1+2,         #2-1) (l1) {};
+    \node at (#1+5,          #2+1) (C1) {$C_1$} ;
+    \node at (#1+5,        #2-1) (C2) {$C_2$} ;
+    \node [PERM] at ($(P)!0.6!(split)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(u1)!0.55!(C1)$) (p2) {$\pi_2$};
+    \node [PERM] at ($(l1)!0.55!(C2)$) (p3) {$\pi_3$};
+
+    \draw (P) -- (p1) -- (split.center);
+    \draw [->] (split.center) .. controls +(0.85,0) and (u1.center) .. (p2) -- (C1);
+    \draw [->] (split.center) .. controls +(0.85,0) and (l1.center) .. (p3) -- (C2);
+}
+
+\newcommand\forkaesoriginal[2]{
+  \node at (#1,       #2) (M) {$M$};
+  \node at (#1,   #2 + 2) (K) {$K$};
+  \node at (#1,   #2 + 1) (T) {$T||0^{64}$};
+
+  \node [dot] at ($(K) + (1,0)$) (xk) {};
+  \node [XOR] at ($(T) + (1,0)$) (xt) {};
+  \node [XOR] at ($(M) + (1,0)$) (xm) {};
+
+  \draw [-] (K) -- (xk.center) -- (xt) -- (xm);
+  \draw [-] (T) -- (xt);
+  \draw [-] (M) -- (xm);
+
+  \node [square] at ($(K) + (2,0)$) (ks) {KS};
+  \node at ($(T) + (2,0)$) (t) {$T||0^{64}$};
+  \node [square] at ($(M) + (2,0)$) (rf) {RF};
+
+  \node [dot] at ($(K) + (3,0)$) (xk1) {};
+  \node [XOR] at ($(T) + (3,0)$) (xt1) {};
+  \node [XOR] at ($(M) + (3,0)$) (xm1) {};
+
+  \draw [-] (xk.center) -- (ks) -- (xk1.center) -- (xt1) -- (xm1);
+  \draw [-] (t) -- (xt1);
+  \draw [-] (xm) -- (rf) -- (xm1);
+
+  \node at ($(K) + (4,0)$) (dk) {$\dots$};
+  \node at ($(M) + (4,0)$) (dm) {$\dots$};
+
+  \node [square] at ($(K) + (5,0)$) (ks) {KS};
+  \node [square] at ($(M) + (5,0)$) (rf) {RF};
+
+  \node [dot] at ($(K) + (5.75,0)$) (fk) {};
+  \node [dot] at ($(M) + (5.75,0)$) (fm) {};
+
+  %%% FORK %%%
+
+  %%% UPPER %%%
+
+  \node [dot] at ($(K) + (8,2)$) (dk5) {};
+  \node at ($(dk5) + (0,0.5)$) (u) {\color{blue}$U$};
+  \node [XOR] at ($(K) + (8,0)$) (dm5) {};
+  \draw [-] (ks) -- (fk.center) -- ($(dk5) - (1.0,0)$) -- (dk5.center);
+  \draw [-] (rf) -- (fm.center) -- ($(dm5) - (1.0,0)$) -- (dm5);
+  \node at ($(K) + (7,1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt1) {};
+  \draw [-] (dk5.center) -- (xt1) -- (dm5);
+  \draw [-] (t) -- (xt1);
+
+
+  \node [square] at ($(dk5) + (1,0)$) (ks) {KS};
+  \node [square] at ($(dm5) + (1,0)$) (rf) {RF};
+  \draw [-] (dk5.center) -- (ks);
+  \draw [-] (dm5) -- (rf);
+
+  \node at ($(ks) + (1,0)$) (dk) {$\dots$};
+  \node at ($(rf) + (1,0)$) (dm) {$\dots$};
+
+  \node [dot] at ($(dk) + (1,0)$) (dk6) {};
+  \node at ($(dk) - (0,1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt1) {};
+  \node [XOR] at ($(dm) + (1,0)$) (dm6) {};
+
+  \draw [-] (dk6.center) -- (xt1) -- (dm6);
+  \draw [-] (t) -- (xt1);
+
+
+  \node [square] at ($(dk6) + (1,0)$) (ks) {KS};
+  \node [square] at ($(dm6) + (1,0)$) (rf) {RF};
+  \node [dot] at ($(ks) + (1,0)$) (dk7) {};
+  \node at ($(ks) - (0,1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt1) {};
+  \node [XOR] at ($(rf) + (1,0)$) (dm7) {};
+
+  \draw [-] (dk6.center) -- (ks) -- (dk7.center);
+  \draw [-] (dm6) -- (rf) -- (dm7);
+  \draw [-] (dk7.center) -- (xt1) -- (dm7);
+  \draw [-] (t) -- (xt1);
+
+
+  \node [square] at ($(dk7) + (1,0)$) (ks) {KS};
+  \node at ($(dm7) + (1,0)$) (c1) {$C_0$};
+  \node at ($(dk7) + (2,0)$) (w) {\color{blue}$W$};
+
+  \draw [-] (dk7.center) -- (ks) -- (w);
+  \draw [-] (dm7) -- (c1);
+
+  %%% LOWER %%%
+
+  \node [dot] at ($(M) + (8,0)$) (dk10) {};
+  \node  at ($(M) + (7,0)$) (w2) {\color{blue}$W$};
+  \node [XOR] at ($(M) + (8,-2)$) (dm10) {};
+  \node at ($(w2) + (0,-1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt) {};
+  \draw [-] (fm.center) -- ($(dm10) - (1.0,0)$) -- (dm10);
+  \draw [-] (w2) -- (dk10.center);
+  \draw [-] (t) -- (xt);
+  \draw [-] (dk10.center) -- (xt) -- (dm10);
+
+
+  \node [square] at ($(dk10) + (1,0)$) (ks) {KS};
+  \node [square] at ($(dm10) + (1,0)$) (rf) {RF};
+  \draw [-] (dk10.center) -- (ks);
+  \draw [-] (dm10) -- (rf);
+
+  \node at ($(ks) + (1,0)$) (dk) {$\dots$};
+  \node at ($(rf) + (1,0)$) (dm) {$\dots$};
+
+  \node [dot] at ($(dk) + (1,0)$) (dk6) {};
+  \node at ($(dk) - (0,1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt1) {};
+  \node [XOR] at ($(dm) + (1,0)$) (dm6) {};
+
+  \draw [-] (dk6.center) -- (xt1) -- (dm6);
+  \draw [-] (t) -- (xt1);
+
+
+  \node [square] at ($(dk6) + (1,0)$) (ks) {KS};
+  \node [square] at ($(dm6) + (1,0)$) (rf) {RF};
+  \node at ($(ks) + (1,0)$) (dk7) {};
+  \node at ($(ks) - (0,1)$) (t) {$T||0^{64}$};
+  \node [XOR] at ($(t) + (1,0)$) (xt1) {};
+  \node [XOR] at ($(rf) + (1,0)$) (dm7) {};
+
+  \draw [-] (dk6.center) -- (ks) -- (dk7.center);
+  \draw [-] (dm6) -- (rf) -- (dm7);
+  \draw [-] (dk7.center) -- (xt1) -- (dm7);
+  \draw [-] (t) -- (xt1);
+
+
+  \node at ($(dm7) + (1,0)$) (c2) {$C_1$};
+
+  \draw [-] (dm7) -- (c2);
+}
+
+
+\newcommand\reflection[2]{
+  \node at (#1, #2) (f) {$F$};
+
+  \node [square] at ($(f) + (2,0.75)$) (u1) {$\pi$};
+  \node [square] at ($(f) + (2,-0.75)$) (l1) {$\pi^{-1}$};
+  \node at ($(u1) + (1.5,0)$) (c1) {$C_0$};
+  \node at ($(l1) + (1.5,0)$) (c2) {$C_1$};
+  \draw [->] (f) -- ($(u1) -(1,0)$) -- (u1) -- (c1);
+  \draw [<-] (f) -- ($(l1) -(1,0)$) -- (l1) -- (c2);
+
+  \node at ($(f) - (0.5,0)$)  {\color{blue!50}$\Delta_O$};
+  \node at ($(c1) + (0.5,0)$) {\color{blue!50}$\Delta_I$};
+  \node at ($(c2) + (0.5,0)$) {\color{blue!50}$\Delta_I$};
+
+}
+
+\newcommand\impreflection[2]{
+  \node at (#1, #2) (f) {$F$};
+
+  \node [square] at ($(f) + (2,0.75)$) (u1) {$\pi$};
+  \node [square] at ($(f) + (4,0.75)$) (u2) {$\pi$};
+  \node [square] at ($(f) + (2,-0.75)$) (l1) {$\pi^{-1}$};
+  \node [square] at ($(f) + (4,-0.75)$) (l2) {$\pi^{-1}$};
+  \node at ($(u2) + (1.5,0)$) (c1) {$C_0$};
+  \node at ($(l2) + (1.5,0)$) (c2) {$C_1$};
+  \draw [->] (c1) -- (u2) -- (u1);
+  \draw [->] (l1)  -- ($(l1) -(1,0)$) -- ($(f) +(0.3, -0.25)$)-- ($(f) +(0.3, +0.25)$) -- ($(u1) - (1,0)$) -- (u1);
+
+  \node at ($(c1) + (0.5,0)$) {\color{blue!50}$\Delta_0$};
+  \node at ($(l1) + (0.75,0)$) {\color{blue!50}$\Delta_1$};
+  \node at ($(u1) + (0, 0.5)$) {\color{blue}\Lightning};
+  \draw [<->] ($(l2) - (1,0.5)$) -- ($(c2) - (0,0.5)$) node[pos=0.5,label=below:Key Recovery]{};
+
+}
+
+\newcommand\chirpae[2]{
+    \node at (#1,             #2) (P) {$P$} ;
+    \node at (#1+4,           #2+0) (split) {};
+    \node at (#1+5.5,         #2+1) (u1) {};
+    \node at (#1+5.5,         #2-1) (l1) {};
+    \node [dot] at (#1+7.75,  #2-1) (cb) {};
+    \node at (#1+10.25,          #2+1) (u2) {};
+    \node at (#1+10.25,          #2-1) (l2) {};
+    \node [XOR] at (#1+10.5,  #2+0) (join) {};
+    \node at (#1+12,          #2+0) (C1) {$T$} ;
+    \node at (#1+7.75,        #2-2) (tu1) {};
+    \node at (#1+7.75,        #2-2.75) (C2) {$C$} ;
+    \node [PERM] at ($(P)!0.5!(split)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(u1)!0.5!(u2)$) (p2) {$\pi_2$};
+    \node [PERM] at ($(l1)!0.5!(cb)$) (p3) {$\pi_3$};
+    \node [PERM] at ($(cb)!0.5!(l2)$) (p4) {$\pi_4$};
+    \node at ($(p1)!0.5!(split) + (0,0.25)$) {$X$};
+
+    \draw (P) -- (p1) -- (split.center);
+    \draw (split.center) .. controls +(1,0.5) and (u1.center) .. (p2) .. controls (u2.center) .. (join) --(C1);
+    \draw (split.center) .. controls +(1,-0.5) and (l1.center) .. (p3) -- (p4) .. controls (l2.center) .. (join);
+    \draw (cb.center) -- (C2);
+}
+
+\newcommand\rorcpaone[2]{
+    \node at (#1,             #2) (P) {$P$} ;
+    \node at (#1+4,           #2+0) (split) {};
+    \node at (#1+5.5,         #2+1) (u1) {};
+    \node at (#1+5.5,         #2-1) (l1) {};
+    \node [dot] at (#1+7.75,  #2-1) (cb) {};
+    \node at (#1+10.25,          #2+1) (u2) {};
+    \node at (#1+10.25,          #2-1) (l2) {};
+    \node [XOR] at (#1+10.5,  #2+0) (join) {};
+    \node at (#1+12,          #2+0) (C1) {$T$} ;
+    \node at (#1+7.75,        #2-2) (tu1) {};
+    \node at (#1+7.75,        #2-2.75) (C2) {$C$} ;
+    \node [PERM] at ($(P)!0.5!(split)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(u1)!0.5!(u2)$) (p2) {$\pi_2$};
+    \node [PERM] at ($(l1)!0.5!(cb)$) (p3) {$\pi_3$};
+    \node [PERM] at ($(cb)!0.5!(l2)$) (p4) {$\pi_4$};
+    \node at ($(p1)!0.5!(split) + (0,0.25)$) {$X$};
+
+    \draw (split.center) .. controls +(1,0.5) and (u1.center) .. (p2) .. controls (u2.center) .. (join) --(C1);
+    \draw (cb.center) -- (p4) .. controls (l2.center) .. (join);
+    \draw [line width=0.5mm, blue] (P) -- (p1) -- (split.center) .. controls +(1,-0.5) and (l1.center) .. (p3) -- (cb.center) -- (C2);
+}
+
+\newcommand\rorcpatwo[2]{
+    \node at (#1,             #2) (P) {$P$} ;
+    \node at (#1+4,           #2+0) (split) {};
+    \node at (#1+5.5,         #2+1) (u1) {};
+    \node at (#1+5.5,         #2-1) (l1) {};
+    \node [dot] at (#1+7.75,  #2-1) (cb) {};
+    \node at (#1+10.25,          #2+1) (u2) {};
+    \node at (#1+10.25,          #2-1) (l2) {};
+    \node [XOR] at (#1+10.5,  #2+0) (join) {};
+    \node at (#1+12,          #2+0) (C1) {$T$} ;
+    \node at (#1+7.75,        #2-2) (tu1) {};
+    \node at (#1+7.75,        #2-2.75) (C2) {$C$} ;
+    \node [PERM] at ($(P)!0.5!(split)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(u1)!0.5!(u2)$) (p2) {$\pi_2$};
+    \node [PERM] at ($(l1)!0.5!(cb)$) (p3) {$\pi_3$};
+    \node [PERM] at ($(cb)!0.5!(l2)$) (p4) {$\pi_4$};
+    \node at ($(p1)!0.5!(split) + (0,0.25)$) {$X$};
+
+    \draw (cb.center) --  (cb.center) -- (C2);
+    \draw [line width=0.5mm, blue] (split.center) .. controls +(1,0.5) and (u1.center) .. (p2) .. controls (u2.center) .. (join) --(C1);
+    \draw [line width=0.5mm, blue] (P) -- (p1) -- (split.center) .. controls +(1,-0.5) and (l1.center) .. (p3) -- (p4) .. controls (l2.center) .. (join);
+}
+
+\newcommand\rorcpathree[2]{
+    \node at (#1,             #2) (P) {$P$} ;
+    \node at (#1+4,           #2+0) (split) {};
+    \node at (#1+5.5,         #2+1) (u1) {};
+    \node at (#1+5.5,         #2-1) (l1) {};
+    \node [dot] at (#1+7.75,  #2-1) (cb) {};
+    \node at (#1+10.25,          #2+1) (u2) {};
+    \node at (#1+10.25,          #2-1) (l2) {};
+    \node [XOR] at (#1+10.5,  #2+0) (join) {};
+    \node at (#1+12,          #2+0) (C1) {$T$};
+    \node at (#1+7.75,        #2-2) (tu1) {};
+    \node at (#1+7.75,        #2-2.75) (C2) {$C$} ;
+    \node [PERM] at ($(P)!0.5!(split)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(u1)!0.5!(u2)$) (p2) {$\pi_2$};
+    \node [PERM] at ($(l1)!0.5!(cb)$) (p3) {$\pi_3$};
+    \node [PERM] at ($(cb)!0.5!(l2)$) (p4) {$\pi_4$};
+    \node at ($(p1)!0.5!(split) + (0,0.25)$) {$X$};
+
+    \draw (split.center) .. controls +(1,0.5) and (u1.center) .. (p2) .. controls (u2.center) .. (join) --(C1);
+    \draw (cb.center) -- (p4) .. controls (l2.center) .. (join);
+    \draw (P) -- (p1) -- (split.center) .. controls +(1,-0.5) and (l1.center) .. (p3) -- (cb.center) -- (C2);
+    \draw [blue, line width=0.5mm] ($(C2.north) - (0.25,0)$) -- ($(cb) - (0.25,0)$) -- (p3) .. controls (split) and (u1.center) .. (p2) .. controls (u2.center) .. (join) -- (C1);
+    \draw [blue, line width=0.5mm] ($(C2.north) + (0.25,0)$) -- ($(cb) + (0.25,0)$) -- (p4) .. controls (l2.center) .. (join);
+}
+
+\newcommand\chirpy[2]{
+    \node at (#1,             #2) (P) {} ;
+    \node at (#1+4,           #2+0) (split) {};
+    \node at (#1+5.5,         #2+1) (u1) {};
+    \node at (#1+5.5,         #2-1) (l1) {};
+    \node  at (#1+7.75,  #2-1) (cb) {};
+    \node at (#1+10.25,          #2+1) (u2) {};
+    \node at (#1+10.25,          #2-1) (l2) {};
+    \node  at (#1+10.5,  #2+0) (join) {};
+    \node at (#1+12,          #2+0) (C1) {} ;
+    \node at (#1+7.75,        #2-2) (tu1) {};
+    \node at (#1+7.75,        #2-2.75) (C2) {} ;
+    \node  at ($(P)!0.5!(split)$) (p1) {};
+    \node  at ($(u1)!0.5!(u2)$) (p2) {};
+    \node  at ($(l1)!0.5!(cb)$) (p3) {};
+    \node  at ($(cb)!0.5!(l2)$) (p4) {};
+    \node at ($(p1)!0.5!(split) + (0,0.25)$) {};
+
+    \draw (9.8,0.3) circle (0.3cm);
+    \draw [fill=black] (9.8,0.3) circle (0.075cm);
+    \draw (8.5, 0.6) .. controls (8.25, 0.8) and (7.75, 0.8) .. (7.5, 0.6)
+          .. controls (7, 0.1) and (6, 0) .. (5, 0.2)
+          .. controls (6, -0.5) and (7.1, -0.7) .. (7.5, -0.62)
+          .. controls (9.3, -0.25) and (8.7, 0.4) .. (8.5, 0.6);
+
+    \draw (P) -- (split.center);
+    \draw (split.center) .. controls +(1,0.5) and (u1.center) .. (p2.center) .. controls (u2.center) .. (join.center) --(C1);
+    \draw (split.center) .. controls +(1,-0.5) and (l1.center) .. (p3.center) -- (p4.center) .. controls (l2.center) .. (join.center);
+    \draw (cb.center) -- (C2);
+}
+
+\newcommand\doubleAesAE[2]{
+    \node at (#1,      #2) (P) {$P$} ;
+    \node at (#1+5,    #2-1) (C1) {$C_1$} ;
+    \node at (#1+10,   #2-1) (C2) {$C_2$} ;
+    \node [PERM] at (#1+2.5, #2) (p1) {$\pi_1$};
+    \node [PERM] at (#1+7.5, #2) (p2) {$\pi_2$};
+    %\node [label={[rotate=0]center:$\pi_2$}, TRUNC] at (#1+7.5, #2) (p2) {};
+
+    \draw [->] (P) -- (p1) -- (p2) -- (#1+10,#2) -- (C2);
+    \draw [->] (#1+5, #2) -- (C1);
+}
+
+\newcommand\edm[2]{
+    \node at (#1,             #2) (x) {$X$} ;
+    \node [PERM] at (#1+2, #2) (p1) {$\pi_1$};
+    \node [XOR] at (#1+3,  #2) (join) {};
+    \node [PERM] at (#1+4, #2) (p2) {$\pi_2$};
+    \node at (#1+5.5,        #2) (y) {$F(X)$} ;
+
+    \draw [->] (x) -- (p1) -- (join) -- (p2) -- (y);
+    \draw [->] ($(x) + (1, 0)$) -- +(0,0.75) -- (3,0.75)  -- (join);
+}
+
+
+\newcommand\ewcdm[2]{
+    \node at (#1,             #2) (x) {$N$} ;
+    \node [PERM] at (#1+2, #2) (p1) {$\pi_1$};
+    \node [XOR] at (#1+3,  #2) (join) {};
+    \node [PERM] at (#1+4, #2) (p2) {$\pi_2$};
+    \node at (#1+5.5,        #2) (y) {$T$} ;
+    \node at (#1+2, #2-0.75) (h) {$h(m)$};
+
+    \draw [->] (x) -- (p1) -- (join) -- (p2) -- (y);
+    \draw [->] ($(x) + (1, 0)$) -- +(0,0.75) -- (3,0.75)  -- (join);
+    \draw [->] (h) -- +(1,0) -- (join);
+}
+
+
+\newcommand\edmd[2]{
+    \node at (#1,             #2) (x) {$X$} ;
+    \node [PERM] at (#1+1, #2) (p1) {$\pi_1$};
+    \node [PERM] at (#1+3, #2) (p2) {$\pi_2$};
+    \node [XOR] at (#1+4,  #2) (join) {};
+    \node at (#1+5.5,        #2) (y) {$F(X)$} ;
+
+    \draw [->] (x) -- (p1) -- (p2) -- (join) -- (y);
+    \draw [->] ($(p1) + (1, 0)$) -- +(0,0.75) -- +(2,0.75)  -- (join);
+}
+
+\newcommand\xop[2]{
+    \node at (#1,             #2) (x) {$X$} ;
+    \node [XOR] at (#1+6,  #2) (join) {};
+    \node at (#1+7.5,        #2) (y) {$F(X)$} ;
+    \node [PERM] at (#1+4, #2+1) (p1) {$\pi_1$};
+    \node [PERM] at (#1+4, #2-1) (p2) {$\pi_2$};
+
+    \draw [->] (x) -- +(2,0) -- +(2,1) --  (p1) -- +(2,0) -- (join);
+    \draw [->] (x) -- +(2,0) -- +(2,-1) -- (p2) -- +(2,0) -- (join);
+    \draw [->] (join) -- (y);
+}
+
+\newcommand\forkprf[2]{
+    \node at (#1,             #2) (x) {$X$} ;
+    \node [XOR] at (#1+5,  #2) (join) {};
+    \node at (#1+6.5,        #2) (y) {$F(X)$} ;
+    \node [PERM] at (#1+1, #2) (p0) {$\pi_0$};
+    \node [PERM] at (#1+3.5, #2+1) (p1) {$\pi_1$};
+    \node [PERM] at (#1+3.5, #2-1) (p2) {$\pi_2$};
+
+    \draw [->] (x) -- (p0) -- +(1,0) -- +(1,1) --  (p1) -- +(1.5,0) -- (join);
+    \draw [->] (x) -- (p0) -- +(1,0) -- +(1,-1) -- (p2) -- +(1.5,0) -- (join);
+    \draw [->] (join) -- (y);
+}
+
+\newcommand\squeekPRF[2]{
+    \node at (#1,             #2) (x) {$X$} ;
+    \node [XOR] at (#1+7.5,  #2) (join) {};
+    \node at (#1+10,        #2) (y) {$F(X)$} ;
+    \node [PERM] at (#1+2.5, #2) (p1) {$\pi_1$};
+    \node [PERM] at (#1+5, #2+1) (p2) {$\pi_2$};
+
+    \draw [->] (x) -- (p1) -- (p2) -- (join);
+    \draw [->] (p1) -- (join);
+    \draw [->] (join) -- (y);
+}
+
+
+\newcommand\forkTweak[2]{
+    \node at (#1,            #2) (P) {$P$} ;
+    \node at (#1+2,        #2+0) (split) {};
+    \node at (#1+3,          #2+2) (a1) {};
+    \node at (#1+3,          #2+1) (a2) {};
+    \node at (#1+3,          #2) (adots) {};
+    \node at (#1+3,          #2-1) (a3) {};
+    \node at (#1+3,          #2-2) (a4) {};
+    \node at (#1+6,          #2+2) (C1) {$C_1$} ;
+    \node at (#1+6,          #2+1) (C2) {$C_2$} ;
+    \node at (#1+6,          #2) (cdots) {\dots} ;
+    \node at (#1+6,          #2-1) (C3) {$C_{t-1}$} ;
+    \node at (#1+6,          #2-2) (C4) {$C_t$} ;
+    \node [PERM] at ($(P)!0.6!(split)$) (p0) {$\pi_0$};
+    \node [PERM] at ($(a1)!0.4!(C1)$) (p1) {$\pi_1$};
+    \node [PERM] at ($(a2)!0.4!(C2)$) (p2) {$\pi_2$};
+    \node  at ($(adots)!0.4!(cdots)$)  {\dots};
+    \node [PERM] at ($(a3)!0.4!(C3)$) (p3) {$\pi_{t-1}$};
+    \node [PERM] at ($(a4)!0.4!(C4)$) (p4) {$\pi_t$};
+
+    \draw (P) -- (p0) -- (split.center);
+    \draw [->] (split.center) .. controls (#1+2.5,#2) and (#1+2.5, #2+2) .. (a1.center) -- (p1) -- (C1);
+    \draw [->] (split.center) .. controls (#1+2.5,#2) and (#1+2.5, #2+1) .. (a2.center) -- (p2) -- (C2);
+    \draw [->] (split.center) .. controls (#1+2.5,#2) and (#1+2.5, #2-1) .. (a3.center) -- (p3) -- (C3);
+    \draw [->] (split.center) .. controls (#1+2.5,#2) and (#1+2.5, #2-2) .. (a4.center) -- (p4) -- (C4);
+}
+
+\def\bheight{2}
+\def\bwidth{0.5}
+\def\bvdist{6}
+\def\bhdist{\bvdist + 1}
+\def\boff{2}
+
+\newcommand\boom[2]{
+      % LOWER PART
+      \node at (1.25, -0.25) (C1) {$C_1$};
+      \node at (1.25 +\bhdist, -0.25) (C2) {$C_2$};
+
+      \node at (1.25 + \boff, -0.25 + \boff) (D1) {$D_1$};
+      \node at (1.25 + \boff + \bhdist, -0.25 + \boff) (D2) {$D_2$};
+
+      \path [->, dashed] (C1) edge node[anchor=central, above, orange] {$\gamma$} (D1);
+      \path [->, dashed] (C2) edge node[anchor=central, above, orange] {$\gamma$} (D2);
+
+      \draw [fill=white] (1,1) rectangle (1+\bwidth, 1+\bheight) node[pos=0.5] {$E_1$};
+      \draw [fill=white] (1+\bhdist,1) rectangle (1+\bhdist+\bwidth, 1+\bheight) node[pos=0.5] {$E_1$};
+      \draw [fill=white] (1+\boff,1+\boff) rectangle (1+\bwidth+\boff, 1+\bheight+\boff) node[pos=0.5] {$E_1$};
+      \draw [fill=white] (1+\bhdist+\boff,1+\boff) rectangle (1+\bhdist+\bwidth+\boff, 1+\bheight+\boff) node[pos=0.5] {$E_1$};
+
+      \path [<-] (C1) edge (1.25, 1);
+      \path [<-] (C2) edge (1.25 + \bhdist, 1);
+      \path [->] (D1) edge (1.25 + \boff, 1 + \boff);
+      \path [->] (D2) edge (1.25 + \bhdist + \boff, 1 + \boff);
+
+      % CENTRAL PART
+
+
+      \path [->] (1.25, 1 + \bvdist) edge (1.25, 1 + \bheight);
+      \path [->] (1.25 + \bhdist, 1 + \bvdist) edge (1.25 + \bhdist, 1 + \bheight);
+      \path [<-] (1.25 + \boff, 1 + \bvdist + \boff) edge (1.25 + \boff, 1 + \bheight + \boff);
+      \path [<-] (1.25 + \bhdist + \boff, 1 + \bvdist + \boff) edge (1.25 + \bhdist + \boff, 1 + \bheight + \boff);
+
+      \path [->, dashed] (1.25, 0.25 + \bvdist) edge node[anchor=central, above, blue] {$\beta$} (1.25 + \bhdist, 0.25 + \bvdist);
+      \path [->, dashed] (1.25 + \boff, 0.25 + \bvdist + \boff) edge node[anchor=central, above, blue] {$\beta$} (1.25 + \bhdist + \boff, 0.25 + \bvdist + \boff);
+      \path [->, dashed] (1.25, 1.75 + \bheight) edge node[anchor=central, above, orange] {$\delta$} (1.25 + \boff, 1.75 + \bheight + \boff);
+      \path [->, dashed] (1.25 + \bhdist, 1.75 + \bheight) edge node[anchor=central, above, orange] {$\delta$} (1.25 + \bhdist + \boff, 1.75 + \bheight + \boff);
+
+
+      % UPPER PART
+      \node at (1.25, 2.25 + \bheight + \bvdist) (P1) {$P_1$};
+      \node at (1.25 +\bhdist, 2.25 + \bheight + \bvdist) (P2) {$P_2$};
+      \path [->, dashed] (P1) edge node[anchor=central, above, blue] {$\alpha$} (P2);
+
+      \node at (1.25 + \boff, 2.25 + \bheight + \bvdist + \boff) (Q1) {$Q_1$};
+      \node at (1.25 + \boff + \bhdist, 2.25 + \bheight + \bvdist + \boff) (Q2) {$Q_2$};
+      \path [->, dashed] (Q1) edge node[anchor=central, above, blue] {$\alpha$} (Q2);
+
+      \draw [fill=white] (1,1 + \bvdist) rectangle (1+\bwidth, 1+\bheight+\bvdist) node[pos=0.5] {$E_0$};
+      \draw [fill=white] (1+\bhdist,1+\bvdist) rectangle (1+\bhdist+\bwidth, 1+\bheight+\bvdist) node[pos=0.5] {$E_0$};
+      \draw [fill=white] (1+\boff,1+\boff+\bvdist) rectangle (1+\bwidth+\boff, 1+\bheight+\boff+\bvdist) node[pos=0.5] {$E_0$};
+      \draw [fill=white] (1+\bhdist+\boff,1+\boff+\bvdist) rectangle (1+\bhdist+\bwidth+\boff, 1+\bheight+\boff+\bvdist) node[pos=0.5] {$E_0$};
+
+      \path [->] (P1) edge (1.25, 1 + \bvdist + \bheight);
+      \path [->] (P2) edge (1.25 + \bhdist, 1 + \bvdist + \bheight);
+      \path [<-] (Q1) edge (1.25 + \boff, 1 + \bvdist + \bheight + \boff);
+      \path [<-] (Q2) edge (1.25 + \bhdist + \boff, 1 + \bvdist + \bheight + \boff);
+}
+
+\newcommand\osboom[5]{
+  \node at (#1, #2) (C1) {$C_{#3}$};
+  \node at (#1 + 3, #2) (C2) {$C_{#3}'$};
+
+
+  \path [<-] (C1) edge (#1, #2 + 1);
+  \path [<-] (C2) edge (#1 + 3, #2 + 1);
+
+  \draw [fill=white] (#1 - 0.25, #2 + 1) rectangle (#1 + 0.25, #2 + 3) node[pos=0.5] {$E_1$};
+  \draw [fill=white] (#1 + 2.75, #2 + 1) rectangle (#1 + 3.25, #2 + 3) node[pos=0.5] {$E_1$};
+
+  \path [->, dashed] (#1, #2 + 4.5) edge node[anchor=central, above, blue] {#5} (#1 + 3, #2 + 4.5);
+
+  \path [->] (#1, #2 + 5) edge (#1, #2 + 3);
+  \path [->] (#1 + 3, #2 + 5) edge (#1 + 3, #2 + 3);
+
+  \draw [fill=white] (#1 - 0.25, #2 + 5) rectangle (#1 + 0.25, #2 + 7) node[pos=0.5] {$E_0$};
+  \draw [fill=white] (#1 + 2.75, #2 + 5) rectangle (#1 + 3.25, #2 + 7) node[pos=0.5] {$E_0$};
+
+  \node at (#1, #2 + 8) (P1) {$P_{#3}$};
+  \node at (#1 + 3, #2 + 8) (P2) {$P{#3}'$};
+
+  \path [->] (P1) edge (#1, #2 + 7);
+  \path [->] (P2) edge (#1 + 3, #2 + 7);
+
+  \path [->, dashed] (P1) edge node[anchor=central, above, blue] {#4} (P2);
+}
+
+
+\newcommand\bmr[9]{
+  \osboom{#1 + \boff * 0.5}{#2 + \boff * 0.5}{#4}{#6}{#7}
+  \osboom{#1}{#2}{#3}{#6}{#7}
+  \path [->, dashed] (#1, #2 + 3.5) edge node[anchor=central, above, orange] {#8} (#1 + \boff * 0.5, #2 + 3.5 + \boff * 0.5);
+  \path [->, dashed] (#1 + 3, #2 + 3.5) edge node[anchor=central, above, orange] {#8} (#1 + 3 + \boff * 0.5, #2 + 3.5 + \boff * 0.5);
+  \path [->, dashed] (#1, #2 + 0.75) edge node[anchor=central, above, orange] {#9} (#1 + \boff * 0.5, #2 + 0.75 + \boff * 0.5);
+  \path [->, dashed] (#1 + 3, #2 + 0.75) edge node[anchor=central, above, orange] {#9} (#1 + 3 + \boff * 0.5, #2 + 0.75 + \boff * 0.5);
+}
+
+
+\newcommand\onesidedboom[3]{
+  \node at (#1, #2) (C1) {$C_{#3}$};
+  \node at (#1 + 3, #2) (C2) {$C_{#3}'$};
+
+  \path [->, dashed] (C1) edge node[anchor=central, above, orange] {$?$} (C2);
+
+  \path [<-] (C1) edge (#1, #2 + 1);
+  \path [<-] (C2) edge (#1 + 3, #2 + 1);
+
+  \draw [fill=white] (#1 - 0.25, #2 + 1) rectangle (#1 + 0.25, #2 + 3) node[pos=0.5] {$E_1$};
+  \draw [fill=white] (#1 + 2.75, #2 + 1) rectangle (#1 + 3.25, #2 + 3) node[pos=0.5] {$E_1$};
+
+  \path [->] (#1, #2 + 4) edge (#1, #2 + 3);
+  \path [->] (#1 + 3, #2 + 4) edge (#1 + 3, #2 + 3);
+
+  \draw [fill=white] (#1 - 0.25, #2 + 4) rectangle (#1 + 0.25, #2 + 6) node[pos=0.5] {$E_0$};
+  \draw [fill=white] (#1 + 2.75, #2 + 4) rectangle (#1 + 3.25, #2 + 6) node[pos=0.5] {$E_0$};
+
+  \node at (#1, #2 + 7) (P1) {$P_{#3}$};
+  \node at (#1 + 3, #2 + 7) (P2) {$P_{#3}'$};
+
+  \path [->] (P1) edge (#1, #2 + 6);
+  \path [->] (P2) edge (#1 + 3, #2 + 6);
+
+  \path [->, dashed] (P1) edge node[anchor=central, above, blue] {$\alpha$} (P2);
+}
+
+
+\newcommand\rect{
+
+      \onesidedboom{0}{0}{1}
+      \node at (5.25, 3.5) {\Large{\textbf{\dots}}};
+      \onesidedboom{7.5}{0}{i}
+      \node at (12.75, 3.5) {\Large{\textbf{\dots}}};
+      \onesidedboom{15}{0}{j}
+      \node at (20.25, 3.5) {\Large{\textbf{\dots}}};
+      \onesidedboom{22.5}{0}{n}
+
+      \draw [->, dashed, ultra thick, brown!70!black] (8.75, -0.5) to (8.7, -3.5) to (10.3, -3.5);
+      \draw [->, dashed, ultra thick, brown!70!black] (16.5, -0.5) to (16.5, -2.5) to (15.2, -2.5);
+
+      \bmr{12.75 - \boff}{-9.5 - \boff }{i}{j}{a}{$\alpha$}{$?$}{$?$}{$\gamma$}
+}

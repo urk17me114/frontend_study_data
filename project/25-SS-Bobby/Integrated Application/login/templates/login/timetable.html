@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Timetable</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        select {
+            margin: 10px 20px 10px 0;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 30px;
+        }
+
+        .action-links {
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        .action-links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-links a:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>Timetable</h2>
+
+    <form method="get">
+        <label for="class_id">Class:</label>
+        <select name="class_id" id="class_id">
+            <option value="">All</option>
+            {% for c in classes %}
+                <option value="{{ c.id }}" {% if selected_class == c.id %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="subject_id">Subject:</label>
+        <select name="subject_id" id="subject_id">
+            <option value="">All</option>
+            {% for s in subjects %}
+                <option value="{{ s.id }}" {% if selected_subject == s.id %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+        </select>
+
+        {% if request.session.current_role != 'Teacher' %}
+            <label for="teacher_id">Teacher:</label>
+            <select name="teacher_id" id="teacher_id">
+                <option value="">All</option>
+                {% for t in teachers %}
+                    <option value="{{ t.id }}" {% if selected_teacher == t.id %}selected{% endif %}>{{ t.name }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+
+        <label for="day">Day:</label>
+        <select name="day" id="day">
+            <option value="">All</option>
+            {% for d in days %}
+                <option value="{{ d }}" {% if selected_day == d %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    {% if entries %}
+        <table>
+            <tr>
+                <th>Class</th>
+                <th>Day</th>
+                <th>Period</th>
+                <th>Subject</th>
+                <th>Teacher</th>
+                <th>Room</th>
+            </tr>
+            {% for e in entries %}
+            <tr>
+                <td>{{ e.class_section.name }}</td>
+                <td>{{ e.timeslot.day }}</td>
+                <td>{{ e.timeslot.period }}</td>
+                <td>{{ e.subject.name }}</td>
+                <td>{{ e.teacher.name }}</td>
+                <td>{{ e.room.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No timetable entries found.</p>
+    {% endif %}
+
+    <div class="action-links">
+        <a href="{% url 'create_timetable' %}">Back</a>
+    </div>
+</body>
+</html>

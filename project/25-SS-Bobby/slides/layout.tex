@@ -1,0 +1,87 @@
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+
+\definecolor{weedgreen}{HTML}{81C58F}
+\definecolor{lightbrown}{HTML}{c5a681}
+\definecolor{lightmagenta}{HTML}{c581be}
+\definecolor{bauhausorange}{HTML}{F39100}
+\definecolor{bauhauslightblue}{HTML}{009BB4}
+\definecolor{bauhausred}{HTML}{E3000F}
+\definecolor{bauhausdarkblue}{HTML}{006B94}
+\setbeamercolor{structure}{fg=bauhausdarkblue}
+\setbeamercolor{frametitle}{bg=bauhausdarkblue}
+\setbeamercolor{progress bar}{fg=bauhausorange,bg=bauhauslightblue}
+
+\lstset{
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{lightbrown},
+  keywordstyle=\color{weedgreen},
+  stringstyle=\color{lightmagenta},
+  basicstyle=\ttfamily
+}
+
+\newcounter{cont}
+
+\makeatletter
+
+% \setbeamertemplate{frametitle}{%
+%   \nointerlineskip%
+%   \begin{beamercolorbox}[%
+%       wd=\paperwidth,%
+%       sep=0pt,%
+%       leftskip=\metropolis@frametitle@padding,%
+%       rightskip=\metropolis@frametitle@padding,%
+%     ]{frametitle}%
+%     \metropolis@frametitlestrut@start%
+%     \insertframetitle%
+%     \nolinebreak%
+%     \metropolis@frametitlestrut@end%
+%     \hfill
+%     \raisebox{-0.6ex}{\includegraphics[height=3ex,keepaspectratio]{img/buw-logo-lightblue-1line.png}}
+%   \end{beamercolorbox}%
+% }
+
+\setbeamertemplate{frametitle continuation}{%
+  \setcounter{cont}{\beamer@endpageofframe}%
+  \addtocounter{cont}{1}%
+  \addtocounter{cont}{-\beamer@startpageofframe}%
+  (\insertcontinuationcount/\arabic{cont})%
+}% end frame title continuation
+
+\setbeamertemplate{frame footer}{\raisebox{-0.6ex}{\hspace{37em}\includegraphics[width=0.2\textwidth]{img/buw-logo-darkblue-1line.png}}}
+
+\algrenewcommand\ALG@beginalgorithmic{\footnotesize\ttfamily}
+
+\setlength{\metropolis@titleseparator@linewidth}{1pt}
+\setlength{\metropolis@progressonsectionpage@linewidth}{1pt}
+\setlength{\metropolis@progressinheadfoot@linewidth}{1pt}
+
+\defbeamertemplate*{section page}{mytheme}[1][]{
+  \centering
+  \begin{minipage}{22em}
+    % \raggedright
+    \usebeamercolor[fg]{section title}
+    \usebeamerfont{section title}
+    \centering
+    \insertsectionhead\\[-1ex]
+    \usebeamertemplate*{progress bar in section page}
+    \par
+    \ifx\insertsubsectionhead\@empty\else%
+      \usebeamercolor[fg]{subsection title}%
+      \usebeamerfont{subsection title}%
+      \insertsubsectionhead
+    \fi
+    \vskip0.5cm
+    \ifstrempty{#1}{}{%
+      \centering
+      \includegraphics[width=.4\textwidth]{#1}%
+    }
+  \end{minipage}
+  \par
+  \vspace{\baselineskip}
+}
+
+\makeatother

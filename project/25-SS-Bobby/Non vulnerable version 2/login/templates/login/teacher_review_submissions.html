@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Review Submissions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8; margin: 0; padding: 0;
+    }
+    h2 {
+      background-color: #004080; color: #fff; padding: 20px; text-align: center;
+      margin: 0; font-size: 28px;
+    }
+    .messages {
+      max-width: 1100px; margin: 20px auto; padding: 15px; background-color: #fff8c4;
+      border-left: 5px solid #ffc107; border-radius: 6px; color: #333;
+    }
+    form {
+      max-width: 1100px; background-color: #fff; margin: 20px auto; padding: 20px;
+      border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      display: flex; flex-wrap: wrap; gap: 20px;
+    }
+    form div {
+      flex: 1 1 200px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #0073e6; color: #fff; border: none;
+      padding: 10px 20px; font-size: 16px; border-radius: 6px;
+      cursor: pointer; transition: background-color 0.3s ease;
+      margin-top: 22px;
+    }
+    button:hover { background-color: #005bb5; }
+    table {
+      width: 95%; max-width: 1100px; margin: 20px auto; border-collapse: collapse;
+      background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-radius: 8px; overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #004080; color: #fff; font-weight: bold;
+    }
+    tr:hover { background-color: #f1f5ff; }
+    td[colspan] { text-align: center; font-style: italic; color: #555; }
+    .back-links {
+      text-align: center;
+      margin: 30px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .back-links a {
+      display: inline-block;
+      text-decoration: none;
+      background-color: #0073e6;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .back-links a:hover {
+      background-color: #005bb5;
+    }
+    @media screen and (max-width: 800px) {
+      form { flex-direction: column; }
+    }
+    @media screen and (max-width: 600px) {
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { margin-bottom: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+      td {
+        padding: 10px;
+        border: none; border-bottom: 1px solid #eee;
+        position: relative; padding-left: 50%;
+      }
+      td:before {
+        position: absolute; top: 10px; left: 10px; width: 45%;
+        white-space: nowrap; font-weight: bold; color: #333;
+      }
+      td:nth-of-type(1):before { content: "Student"; }
+      td:nth-of-type(2):before { content: "Question"; }
+      td:nth-of-type(3):before { content: "Subject"; }
+      td:nth-of-type(4):before { content: "Class"; }
+      td:nth-of-type(5):before { content: "Submitted At"; }
+      td:nth-of-type(6):before { content: "Status"; }
+      td:nth-of-type(7):before { content: "Marks"; }
+      td:nth-of-type(8):before { content: "File"; }
+      td:nth-of-type(9):before { content: "Actions"; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Review Submissions</h2>
+
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="get">
+    <div>
+      <label>Subject</label>
+      {{ form.subject }}
+    </div>
+    <div>
+      <label>Class Section</label>
+      {{ form.class_section }}
+    </div>
+    <div>
+      <label>Status</label>
+      {{ form.status }}
+    </div>
+    <div>
+      <label>Sort</label>
+      <select name="sort">
+        <option value="">Newest First</option>
+        <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit">Apply</button>
+    </div>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Question</th>
+        <th>Subject</th>
+        <th>Class</th>
+        <th>Submitted At</th>
+        <th>Status</th>
+        <th>Marks</th>
+        <th>File</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in submissions %}
+      <tr>
+        <td>{{ s.student.username }}</td>
+        <td>{{ s.question.title }}</td>
+        <td>{{ s.question.subject }}</td>
+        <td>{{ s.question.class_section }}</td>
+        <td>{{ s.submitted_at }}</td>
+        <td>{{ s.status }}</td>
+        <td>{% if s.marks is not None %}{{ s.marks }}{% else %}-{% endif %}</td>
+        <td>{% if s.file %}<a href="{{ s.file.url }}">Download</a>{% else %}-{% endif %}</td>
+        <td>
+          <a href="{% url 'teacher_mark_seen' s.id %}">Mark Seen</a> |
+          <a href="{% url 'teacher_grade_submission' s.id %}">Grade</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="9">No submissions to review.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="back-links">
+    <a href="{% url 'teacher_questions_list' %}">Back to My Questions</a>
+    <a href="{% url request.session.current_role|lower %}">Back to Dashboard</a>
+  </div>
+
+</body>
+</html>

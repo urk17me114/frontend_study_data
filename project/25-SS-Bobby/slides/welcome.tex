@@ -1,0 +1,179 @@
+\documentclass[aspectratio=169]{beamer}
+
+\input{packages.tex}
+\input{tikzpackages.tex}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\title{Bobby Tables}
+\subtitle{How to Implement an Insecure System}
+\author{Prof. Dr. Stefan Lucks, Jannis Leuther, Nathalie Lang}
+\date{\today}
+
+\input{layout.tex}
+\input{commands.tex}
+\input{tikzcommands.tex}
+
+\begin{document}
+
+\titleframe
+\section{Welcome}
+
+\begin{frame}[plain]
+    \begin{center}
+        \includegraphics[width=.95\textwidth]{img/bobby-tables.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{What will we do?}
+    \begin{center}
+        \includegraphics[width=.6\textwidth]{img/bobby-tables.png}
+    \end{center}
+    \begin{itemize}
+        \item We will recreate the school platform from Bobby's school
+        \item Instead of making a system secure, we will purposely build an insecure system
+        \item The aim of this system should be to teach people and create awareness about security issues
+    \end{itemize}
+\end{frame}
+
+\section{Organisational Matters}
+
+\begin{frame}{Meetings}
+	\begin{itemize}
+		\item Weekly meetings
+		\item Have slides prepared for every meeting. Present either:
+			\begin{itemize}
+				\item Current state of work (What did you do? What is still missing?)
+				\item Presentation of milestone
+			\end{itemize}
+		\item One group member should take notes and upload them directly(!) after
+		the meeting to \texttt{/minutes}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Presentation and Code}
+	\begin{columns}[T]
+		\begin{column}{.4\textwidth}
+			\begin{center}
+        \includegraphics[width=.75\textwidth]{img/iva-working.jpg}
+			\end{center}
+		\end{column}
+		\hfill
+		\begin{column}{.58\textwidth}
+			\begin{itemize}
+				\item Presentations
+				\begin{itemize}
+					\item Slides in \LaTeX
+					\item Titles in Title Case
+					\item No spelling errors
+					\item Consistency
+				\end{itemize}
+				\item Code
+				\begin{itemize}
+					\item Don't write code that just works. Write \textbf{good} code that works as expected.
+					\item Use linters (e.g. cpplint or pylint3)
+          \item Use GIT $\rightarrow$ Your commits will influence your grades. If multiple people work together on the changes made for the same commit, then list all names in the commit message.
+				\end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Problems}
+
+\begin{frame}{Computer Science = Solving Problems On Your Own}
+	\begin{center}
+  	\includegraphics[width=0.3\textwidth]{img/homer-thinking.jpg}
+  	\includegraphics[width=0.3\textwidth]{img/homer-research.jpg}
+  	\includegraphics[width=0.3\textwidth]{img/homer-juhu-png}
+	\end{center}
+	\begin{itemize}
+	    \item Think about the error/problem before contacting us!
+	    \item Try solving the problem in the group first
+	    \item Communicate within the group
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Research Resources}
+		\scalebox{0.6}{
+		\begin{minipage}{\textwidth}
+			\begin{tabular}{l|p{\textwidth}}
+        \toprule
+				Quick research &
+				\begin{itemize}
+					\item Google
+					\item StartPage
+					\item DuckDuckGo
+					\item Wikipedia
+					\item \ldots
+				\end{itemize} \\
+				\midrule
+				Scientific papers &
+				\begin{itemize}
+					\item Google Scholar
+					\item ACM: \url{http://dl.acm.org/}
+					\item DBLP: \url{http://dblp.org/search/index.php}
+					\item \ldots
+				\end{itemize}\\
+				\midrule
+				Technical questions &
+				\begin{itemize}
+					\item Stackoverflow
+					\item Forums
+					\item \ldots
+				\end{itemize}\\
+				\midrule
+				Furthermore & Books in the library, in the lab, on the web, or in stores.\\
+        \bottomrule
+			\end{tabular}
+		\end{minipage}
+		}
+\end{frame}
+
+\section{Project Overview}
+
+\begin{frame}{Milestones}
+	\begin{center}
+		\begin{table}
+	    \begin{tabular}{lll}
+	    09 May 2025 & Initial Work & 15\% \\
+			11 July 2025 & Version I & 40\% \\
+	    15 August 2025 & Version II & 20\% \\
+	    16 September 2025 & Documentation & 15\% \\
+			30 September 2025 & Final Presentation & 10\%
+	    \end{tabular}
+		\end{table}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Initial Research}
+  We will split the team in two groups. Each group will receive the same tasks:
+  \begin{itemize}
+    \item Week 1:
+      \begin{itemize}
+        \item Do a full requirement analysis for the school system of Bobby's school: What do we need? What do we want? How can we realize this?
+      \end{itemize}
+    \item Week 2:
+      \begin{itemize}
+        \item Write a first prototype based on your results from week one.
+      \end{itemize}
+    \item Weeks 3 \& 4:
+      \begin{itemize}
+        \item t.b.a.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+  \begin{minipage}{.48\textwidth}
+    \begin{center}
+      \Large
+      Questions?
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{.48\textwidth}
+    \includegraphics[width=.8\textwidth]{img/bucket.jpg}
+  \end{minipage}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,27 @@
+minutes - 28/05/2025
+
+Last week missed presentation due to absence is done.
+
+Suggestions on Bobby use cases , misuse cases , system architecture  - Add the following functionalities 
+*********************************************************************************************************
+# Register as a student (captcha) - new use case and provide a different ui
+# change password option to be introduced
+# use case 2,4 - check box on the side to notify whether its approved or not
+# use case 4 - two distinct absence - absence with sick note/ reason, regular absence, Percentage of attendance for each student for a month
+
+
+
+# misuse case 2 - download other students assignment or data
+# misuse case 3 - upload another students assignment either by erasing the already submitted ones and replacing it by some other documents
+# misuse case 11 - should add something like password can be hidden in image ,like in ui there will be texts about schools,...., images to make it more interesting.
+
+
+
+
+# ideally make 5 most easy attacks(2 easy and 3 moderate, and the 5 attacks should be unique) that should run on machines 
+# when providing vulnerability, give a hint of the vulnerability
+# July 4 - dry run
+# July 11 - open lab night
+# printing poster - 2 weeks before open lab night
+
+# next meeting - Friday, June 6, 1.30pm

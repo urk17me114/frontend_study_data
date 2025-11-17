@@ -1,0 +1,88 @@
+Bobby's School - Local Setup Guide
+==========================================
+
+This guide helps you set up and run a Django web application locally. 
+The application is built using Django, MySQL, HTML, and CSS.
+
+------------------------------------------------------------
+REQUIREMENTS
+------------------------------------------------------------
+Before starting, ensure you have the following installed:
+
+- Python 3.x
+- pip (Python package manager)
+- MySQL Server
+- MySQL client
+
+Install MySQL and add it to your system PATH.
+
+
+------------------------------------------------------------
+STEP 1: Install Required Python Packages
+------------------------------------------------------------
+Install all dependencies using pip:
+
+    pip install Django
+    pip install mysqlclient
+
+------------------------------------------------------------
+STEP 2: Configure MySQL Database
+------------------------------------------------------------
+1. Ensure MySQL Server is running.
+2. Create a database in MySQL:
+
+    CREATE DATABASE BOBBY;
+
+3. Edit 'bobby/settings.py' and update the DATABASES section:
+
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'BOBBY',
+        'USER': 'your_mysql_user',
+        'PASSWORD': 'your_mysql_password',
+        'HOST':'localhost',
+        'PORT':'3306',
+    }
+}
+
+------------------------------------------------------------
+STEP 3: Apply Migrations
+------------------------------------------------------------
+Run the following commands to set up your database schema:
+
+    python manage.py makemigrations
+    python manage.py migrate
+
+------------------------------------------------------------
+STEP 4: Insert Admin details
+------------------------------------------------------------
+Execute the following sql queries
+    USE BOBBY;
+
+    INSERT INTO Login (username, password, role)
+    VALUES ('ADM001', 'admin123', 'Admin');
+
+    INSERT INTO Student (username, firstname, lastname, email)
+    VALUES ('ADM001', 'Admin', 'User', 'admin@example.com');
+
+
+------------------------------------------------------------
+STEP 5: Run the Development Server
+------------------------------------------------------------
+Start the Django server with:
+
+    python manage.py runserver
+
+Visit the application in your browser at:
+    http://127.0.0.1:8000/login/
+    USERNAME: ADM001
+    PASSWORD: admin123
+
+
+------------------------------------------------------------
+NOTES
+------------------------------------------------------------
+- Make sure the MySQL server is running before launching Django.
+
+

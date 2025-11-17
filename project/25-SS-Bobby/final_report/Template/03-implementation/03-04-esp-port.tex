@@ -1,0 +1,49 @@
+%-----------------------------------------------------------------------
+\section{Dancing Bear ESP32-Port}
+\label{sec:impl:esp-port}
+%-----------------------------------------------------------------------
+One of the initial ideas of the project was running the Dancing Bear signature scheme on multiple ESP32 microcontrollers and if possible on smart-cards.
+However, the latter has not been progressed as the focus was shifted towards a functioning PC implementation and the ESP32-port.
+
+The port is contained in the \textit{esp\_dancing\_bear} folder and has to be set up as an ESP-IDF project.
+Setup and building instructions are described in \textit{README.md} of the previously mentioned folder.
+Therefore, those instructions will not be part of this documentation.
+Nevertheless, it is important to mention that the IDF version v4.4.2 is mandatory.
+Version v5.x of the \texttt{ESPRESSIF-IDF} changed the inclusion of different libraries, which leads to compile errors of the \texttt{Asio} library.
+Not including ``asio.hpp`` as the first library may also lead to compile errors, thus including it as the first is recommended.
+
+Variations from the PC-version of Dancing Bear described in section~\ref{sec:impl:dancing-bear} can be found in the usage of \texttt{Asio} or more specifically \texttt{Boost.Asio} plus ESP-specific code for the internet connection of the ESPs.
+The slightly more sophisticated library \texttt{Boost.Asio} does not run on the ESP32, only the simplistic version \texttt{Asio} is supported.
+Hence, \texttt{Boost} calls had to be replaced with mostly \texttt{Asio} and sometimes different standard library calls.
+A notable change had to be done in the function \texttt{async\_accept()} because the ESP version of \texttt{Asio} does not support the \texttt{emplace} function of a socket.
+
+Furthermore, the compiler only supports C++14 and thus the C++17 standard library ``optional`` had to be removed completely.
+The ESP-port implements solely the trustee side of the protocol.
+Neither dealer, helper nor verifier are intended to be run on an ESP and therefore not supported by this port.
+
+\subsection*{Running the Scheme and Known Problems}\label{subsec:running-the-scheme-and-known-problems}
+The code can be built and flashed to a single ESP32 after setting up the required data as described in the instructions of the \textit{README.md}.
+Before building and flashing to another device, the device IP should be replaced.
+The protocol can be executed by a normal computer when all needed ESP32-devices are prepared.
+Firstly, a helper should be started and kept running.
+Secondly, the Dealer has to arrange the needed data and send them to the corresponding participants.
+Lastly, when all data has been distributed a signing request can be proposed.
+See~\ref{sec:impl:dancing-bear} for an in-depth description since all the steps are the same except for the replacement of the trustees on multiple computers or terminals with EPS32-devices.
+A combination of computers and EPS32-devices is also possible and may be required.
+
+Currently, when running the scheme on ESP32-devices it will fail after successfully signing a single signature.
+During the implementation of the ESP32-port, multiple problems concerning the storage of the devices have been encountered.
+Firstly, the flash-size is too large for the default partition table.
+Hence, a modified partition table has to be used to successfully flash the code to the devices.
+The \textit{README.md} explains how to use the correct partition table.
+Secondly, flashing has also been prevented by not having enough allocated space overall.
+Thus, a flash size of at least 4MB must be enforced.
+
+After solving those problems, the code runs fine until a signing request is made.
+When a signature is being requested the EPS32 accepts the request, calculates its share and answers.
+Instead of behaving normally, and therefore going back to its idle state, the device will encounter a non-specified critical error and reboots resulting in a loss of all data sent by the dealer.
+Following extensive research, it is presumed to be also an issue related to missing memory, but in connection with the used \texttt{JSON} library.
+Furthermore, the ESP32 will also crash and reboot when receiving the request to initiate a signature.
+Therefore, running an ESP32 as the initiating trustee is currently not possible at all and a proper computer has to be used to get a single valid signature.
+It has not been possible to resolve those difficulties during this project, but they have to be tackled in future work.
+

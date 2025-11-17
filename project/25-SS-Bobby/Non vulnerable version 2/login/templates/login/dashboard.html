@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ role }} Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 40px auto;
+            max-width: 400px;
+        }
+
+        li {
+            margin: 15px 0;
+        }
+
+        a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            background-color: #0073e6;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #005bb5;
+        }
+
+        .search-container {
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        .search-box {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .search-button {
+            padding: 10px 16px;
+            font-size: 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .search-button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>{{ role }} Dashboard</h2>
+
+ 
+
+    <ul>
+        {% for item in functionalities %}
+            <li><a href="{% url item.url_name %}">{{ item.label }}</a></li>
+        {% endfor %}
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</body>
+</html>

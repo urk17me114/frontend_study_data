@@ -1,0 +1,27 @@
+%-----------------------------------------------------------------------
+\section{Third-Party Libraries}
+\label{sec:impl:libs}
+%-----------------------------------------------------------------------
+
+Third-party libraries were used to implementation the Dancing Bear signature scheme.
+In the following section all of them are discussed.
+
+For the generation of \ac{JSON} strings and their parsing, the \texttt{nlohmann-json}~\cite{nlohmannjson} library was used.
+It was chosen because it is well documented, compatible with all \texttt{C++} \ac{STL} containers, and offers a simple yet feature-rich interface.
+
+The \texttt{Asio}~\cite{asio} network communication library was used due to its compatibility with the ESP32 system and its asynchronous working principle.
+This splits the network communication and the handling of the messages to different threads, enabling efficient parallelization.
+
+Additionally, the \texttt{Boost.program\_options}~\cite{boostpo} library was used to parse command line arguments for simplicity.
+
+Moreover, \texttt{merklecpp}~\cite{merklecpp} is used for Merkle trees.
+Its functionality to serialize and deserialize single nodes, verification paths, and even whole trees were proven to be extremely useful for the present implementation.
+However, it was later discovered to be unsuitable in specific instances and was therefore modified.
+The modifications included adding support for more hash functions and changing the verification process of a Merkle path object.
+In the original version, a path for a specified leaf is obtained by calling the \texttt{path} method with a given leaf number on a tree.
+The resulting path includes no method for setting the leaf element, which was necessary to directly use the included verify method.
+A method for setting the leaf of a Merkle path was added for this reason.
+
+Lastly, we took the implementation of the \texttt{SHAKE} hash functions from the \ac{XMSS} reference code~\cite{fips}.
+
+

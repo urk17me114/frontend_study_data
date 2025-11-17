@@ -1,0 +1,330 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\title{Teacher Profile and Pinboard Security Vulnerabilities}
+\author{Thoomu Sai Bhargav}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+%=============================
+\section{Cross-Site Scripting (XSS)}
+%=============================
+
+\begin{frame}[fragile]{Cross-Site Scripting (XSS) in Pinboard Comments}
+Stored Cross-Site Scripting (XSS) occurs when user-submitted comments are rendered without proper sanitization, allowing attackers to inject malicious scripts.
+\begin{itemize}
+    \item Only admins can post announcements; students and teachers can comment.
+    \item If HTML input does not escape, attackers can embed JavaScript in comments.
+    \item The script executes in any viewer’s browser, compromising their session.
+    \item Since the payload is stored in the database, it affects all viewers persistently.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Comment Functionality}
+\begin{itemize}
+    \item Students and teachers can post comments on admin announcements.
+    \item Only authenticated users are allowed to comment (enforced via session decorators).
+    \item Comments are submitted via POST requests:
+    \begin{itemize}
+        \item Includes announcement ID and comment text.
+    \end{itemize}
+    \item Backend stores the comment and renders it with the announcement.
+    \item No HTML filtering or escaping is applied.
+    \item Any embedded \texttt{<script>} tags or malicious HTML will execute in the browser.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Vulnerability Walkthrough}
+\textbf{Step 1: Test Payload Injection}
+\begin{itemize}
+    \item Log in as a student.
+    \item Submit a comment with:
+\begin{lstlisting}
+<script>alert('XSS Test')</script>
+\end{lstlisting}
+    \item View the announcement.
+    \item If an alert box pops up, XSS is confirmed.
+\end{itemize}
+\textbf{Step 2: Escalate the Attack}
+\begin{itemize}
+    \item Inject a fake login form using HTML and JavaScript.
+    \item When other users view the infected comment:
+    \begin{itemize}
+        \item The form appears.
+        \item Credentials entered are captured by the attacker.
+    \end{itemize}
+    \item Browsers trust and execute the content in the logged-in user’s context.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Exploit Setup – Attacker Server}
+\begin{itemize}
+    \item Attacker sets up a local server to capture credentials:
+    \begin{itemize}
+        \item Listens on port 8080
+        \item Logs POST data to \texttt{fake\_login.log}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Exploit Payload – Fake Login Form}
+\begin{itemize}
+    \item When users view the comment:
+    \begin{itemize}
+        \item The fake form appears.
+        \item Submitted credentials are silently logged to \texttt{fake\_login.log}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{XSS – Consequences}
+\begin{itemize}
+    \item Credential theft: users unknowingly submit sensitive data.
+    \item Session hijacking: attacker gains access to user accounts.
+    \item UI manipulation: attacker defaces interface or misleads users.
+    \item Persistent threat: stored XSS affects all future viewers.
+    \item Reputation damage: users lose trust in the platform.
+    \item Legal risk: violates data protection laws.
+    \item Social engineering: attacker impersonates staff or redirects users.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Possible Mitigations}
+\begin{itemize}
+    \item Escape HTML using Django’s autoescape to prevent script injection.
+    \item Sanitize input with libraries like Bleach or html-sanitizer before saving.
+    \item Apply a Content Security Policy (CSP) to restrict script execution and external resources.
+    \item Treat all comment input as plain text to avoid rendering raw HTML.
+    \item Whitelist safe characters and markup only.
+    \item Log and monitor comment activity for suspicious patterns.
+    \item Educate developers on secure coding practices.
+    \item Regularly audit user-generated content for vulnerabilities.
+\end{itemize}
+\end{frame}
+
+%=============================
+\section{IDOR – Teacher Profile}
+%=============================
+
+\begin{frame}[fragile]{Insecure Direct Object Reference (IDOR) in Teacher Profile}
+\begin{itemize}
+    \item IDOR occurs when the app exposes internal objects without verifying authorization.
+    \item The Teacher Profile module accepts a username query parameter and returns the profile page without checking if the requested username matches the logged-in user.
+    \item Allows authenticated teachers to access or modify other teacher’s private data.
+    \item Leads to data exposure, impersonation, and unauthorized changes.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{View and Manage Teacher Profile Functionality}
+\begin{itemize}
+    \item Teachers can view and update their own profile information.
+    \item Only authenticated teachers can access the profile page.
+    \item Editable fields: address, certification, profile photo, documents.
+    \item Email and birth date are read-only.
+    \item Uploaded files must be under 1 MB.
+    \item Changes are saved to the database and reflected on the platform.
+    \item No server-side validation is enforced on the username parameter.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{IDOR Vulnerability Walkthrough}
+\textbf{Step 1: Access Own Profile}
+\begin{itemize}
+    \item Log in as a teacher.
+    \item Visit: \texttt{http://127.0.0.1:8000/login/teacher/profile/?username=TPX627}
+\end{itemize}
+\textbf{Step 2: Modify the Query Parameter}
+\begin{itemize}
+    \item Change the username parameter to another teacher ID, e.g., TPX999.
+    \item Reload the page.
+    \item If another teacher’s profile is visible, the endpoint is vulnerable.
+\end{itemize}
+\textbf{Step 3: Modify Another Teacher’s Data}
+\begin{itemize}
+    \item Edit fields such as address, certification, and upload new documents.
+    \item Changes overwrite legitimate teacher’s data.
+    \item Attacker has full control over another user’s profile without authorization.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{IDOR Exploit Setup – Attacker Behavior}
+\begin{itemize}
+    \item Attacker is a logged-in teacher.
+    \item Modifies the username parameter in the URL.
+    \item Server does not validate ownership of the profile.
+    \item Gains access to another teacher’s personal info and can modify it.
+    \item Used for impersonation, phishing, or data tampering.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{IDOR – Consequences}
+\begin{itemize}
+    \item Unauthorized access to private teacher data.
+    \item Exposure of personal documents and profile photos.
+    \item Unauthorized modification of another teacher’s profile.
+    \item Potential for impersonation or social engineering.
+    \item Breach of confidentiality and trust.
+    \item Violation of data protection regulations.
+    \item Risk of further exploitation if sensitive files are altered or replaced.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{IDOR – Possible Mitigations}
+\begin{itemize}
+    \item Enforce server-side ownership: derive target user from session, not client input.
+    \item Apply access-control checks before showing or modifying other users’ data.
+    \item Use indirect identifiers like UUIDs or signed tokens instead of usernames.
+    \item Remove sensitive data from URLs; use session-based routes like /profile/me.
+    \item Harden sessions with secure cookies, short lifetimes, and rotation.
+    \item Validate file uploads with strict server-side checks.
+    \item Log and monitor access patterns to detect cross-user activity.
+\end{itemize}
+\end{frame}
+
+%=============================
+\section{CSRF – Teacher Profile}
+%=============================
+
+\begin{frame}[fragile]{Cross-Site Request Forgery (CSRF) in Teacher Profile}
+\begin{itemize}
+    \item CSRF tricks logged-in users into performing actions without consent.
+    \item Browsers automatically send session cookies; forged requests appear legitimate.
+    \item Teacher profile endpoint disables CSRF using \texttt{@csrf\_exempt}.
+    \item POST requests update profile fields silently.
+    \item Enables unauthorized profile manipulation and sensitive actions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CSRF Walkthrough}
+\textbf{Step 1: Prepare the Attack}
+\begin{itemize}
+    \item Save a malicious HTML file (attacker.html) that auto-submits a form to teacher profile endpoint.
+    \item Form includes hidden fields to change profile data (firstname, lastname).
+\end{itemize}
+\textbf{Step 2: Host the Attack Page}
+\begin{itemize}
+    \item Run local server: \texttt{python -m http.server 8001}.
+    \item Serve \texttt{attacker.html} from the server.
+\end{itemize}
+\textbf{Step 3: Trigger the Attack}
+\begin{itemize}
+    \item Visit \texttt{http://127.0.0.1:8001/attacker.html} while logged in.
+    \item Page auto-submits POST request.
+    \item If CSRF disabled, profile silently updated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CSRF Exploit Setup – Attacker Behavior}
+\begin{itemize}
+    \item Craft malicious HTML page with hidden form targeting teacher profile update endpoint.
+    \item Victim visits the page; browser auto-submits form.
+    \item Server accepts request without verifying origin or CSRF token.
+    \item Victim’s profile modified without knowledge.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CSRF – Consequences}
+\begin{itemize}
+    \item Unauthorized modification of teacher profile data.
+    \item Loss of control over personal information.
+    \item Potential for impersonation or misinformation.
+    \item Breach of trust and platform integrity.
+    \item Violation of data protection regulations.
+    \item Risk of further exploitation if extended to other endpoints.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CSRF – Possible Mitigations}
+\begin{itemize}
+    \item Restore CSRF protection: remove \texttt{@csrf\_exempt}, enable CsrfViewMiddleware.
+    \item Include \texttt{\{\% csrf\_token \%\}} in all HTML forms.
+    \item Support AJAX by sending CSRF tokens via X-CSRFToken header.
+    \item Configure cookies with SameSite=Lax/Strict and Secure flag.
+    \item Validate request origin using Origin or Referer headers.
+    \item Accept only POST for state-changing actions.
+    \item Require re-authentication for sensitive updates.
+\end{itemize}
+\end{frame}
+
+%=============================
+\section{Unrestricted File Upload – Teacher Profile}
+%=============================
+
+\begin{frame}[fragile]{Unrestricted File Upload in Teacher Profile}
+\begin{itemize}
+    \item Occurs when uploads are not validated (type, size, content).
+    \item Allows oversized files, unexpected types, or executable files (.php).
+    \item Consequences: DoS (disk exhaustion), data corruption, info disclosure, remote code execution.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{File Upload Functionality}
+\begin{itemize}
+    \item Teachers can view and update profile information.
+    \item Only authenticated teachers can access the profile page.
+    \item Editable: address, certification, profile photo, documents.
+    \item Email and birth date are read-only.
+    \item Uploaded files intended <1 MB, but no server-side validation.
+    \item Files stored on server, may be accessible via predictable URLs.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{File Upload Vulnerability Walkthrough}
+\textbf{Step 1: Upload Oversized File}
+\begin{itemize}
+    \item Log in, select PDF >1 MB, intercept via Burp Suite, forward request.
+\end{itemize}
+\textbf{Step 2: Upload Unauthorized File Type}
+\begin{itemize}
+    \item Select PNG or other type, modify filename/Content-Type, forward request.
+\end{itemize}
+\textbf{Step 3: Upload Executable File}
+\begin{itemize}
+    \item Prepare PHP file (test.php), intercept, replace filename/content, forward request.
+    \item If executed, remote code execution possible.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{File Upload Exploit Setup – Attacker Behavior}
+\begin{itemize}
+    \item Logged-in teacher intercepts and modifies upload requests via Burp Suite.
+    \item Bypass frontend restrictions by changing headers/filenames.
+    \item Upload oversized or unauthorized files.
+    \item If server stores/serves files without validation, attacker can access/execute them remotely.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{File Upload – Consequences}
+\begin{itemize}
+    \item Disk exhaustion due to large/repeated uploads.
+    \item Exposure of unauthorized/sensitive content.
+    \item Remote code execution.
+    \item Data corruption or overwrite.
+    \item Breach of confidentiality and system integrity.
+    \item Violation of data protection/security policies.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{File Upload – Possible Mitigations}
+\begin{itemize}
+    \item Enforce server-side size limits (e.g., 1 MB).
+    \item Accept only whitelisted MIME types, verify file signatures.
+    \item Sanitize filenames, use randomized names (UUIDs).
+    \item Store uploads outside web root, disable script execution.
+    \item Scan files before permanent storage.
+    \item Apply least-privilege access, restrict filesystem permissions.
+    \item Serve files via signed URLs or authenticated endpoints.
+    \item Log upload metadata and trigger alerts on suspicious activity.
+\end{itemize}
+\end{frame}
+
+\end{document}

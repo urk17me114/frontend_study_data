@@ -1,0 +1,311 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+
+\title{Bobby's Application - Vulnerable App}
+\date{May 26, 2025}
+\author{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Slide 1
+\begin{frame}{Use Cases (Normal Functionality)}
+\begin{itemize}
+  \item Role-Based Login
+  \item Edit and View Marks
+  \item Edit or View Timetable
+  \item Edit and View Attendance
+  \item Edit or View Assignments
+  \item File Repository Access
+\end{itemize}
+\end{frame}
+
+% Slide 2
+\begin{frame}{Use Case 1 - Role-Based Login}
+\begin{itemize}
+  \item Users can register and log in as: Student, Faculty, Admin
+  \item Students: View profile, marks, attendance and timetable
+  \item Faculty: Edit and view marks, attendance, profile, timetable
+  \item Admin: Manage users, logs, repository (full access)
+\end{itemize}
+\end{frame}
+
+% Slide 3
+\begin{frame}{Login Page Features}
+\begin{itemize}
+  \begin{figure}
+      \begin{figure}
+          \centering
+          \includegraphics[width=1\linewidth]{image.png}
+          \caption{Enter Caption}
+          \label{fig:enter-label}
+      \end{figure}
+  \end{figure}
+  
+\end{itemize}
+\end{frame}
+
+% Slide 4
+\begin{frame}{Student Registration Features}
+\begin{itemize}
+  \item Input fields: First name, Last name, DOB, Gender, Email, Address, Class applying for
+  \item Link to detailed application form
+  \item Submit button
+\end{itemize}
+\end{frame}
+
+% Slide 5
+\begin{frame}{Teacher Registration Features}
+\begin{itemize}
+  \item Input fields: First name, Last name, DOB, Gender, Email, Address
+  \item Upload CV (PDF)
+  \item Submit button
+\end{itemize}
+\end{frame}
+
+% Slide 6
+\begin{frame}{Forgot Password Features}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image2.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+% Slide 7
+\begin{frame}{Dashboard Features}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image3.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+
+% Slide 8
+\begin{frame}{Use Case 2 – Edit and View Marks}
+\begin{itemize}
+  \item Faculty: Add or update student marks
+  \item Students: View marks via dashboard
+\end{itemize}
+\textbf{Fields:} Class, Subject, Marks, Submit, Approve
+\end{frame}
+
+
+% slide 8.1
+\begin{frame}{Use Case 2 – Edit and View Marks}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image4.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+
+\end{frame}
+
+% slide 8.2
+\begin{frame}{Use Case 2 – Edit and View Marks}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image5.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+
+\end{frame}
+
+% Slide 9
+\begin{frame}{Use Case 3 – Edit and View Timetable}
+\begin{itemize}
+  \item Admin: Edit/update Student and Teacher timetable
+  \item Students: View class timetable
+  \item Teachers: View their own timetable
+\end{itemize}
+\end{frame}
+
+
+% Slide 9.1
+\begin{frame}{Use Case 3 – Edit and View Timetable}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image6.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+% Slide 9.2
+\begin{frame}{Use Case 3 – Edit and View Timetable}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image7.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+% Slide 10
+\begin{frame}{Use Case 4 – Edit and View Attendance}
+\textbf{Faculty:} Update attendance\\
+\textbf{Students:} View their attendance
+
+\textbf{Fields:} Month, Subject, Class, Submit, Approve
+\end{frame}
+
+
+% Slide 10.1
+\begin{frame}{Use Case 4 – Edit and View Attendance}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image8.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+% Slide 10.2
+\begin{frame}{Use Case 4 – Edit and View Attendance}
+\begin{itemize}
+  \begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{image9.png}
+      \caption{Enter Caption}
+      \label{fig:enter-label}
+  \end{figure}
+\end{itemize}
+\end{frame}
+
+
+% Slide 11
+\begin{frame}{Use Case 5 – Edit and View Assignments}
+\begin{itemize}
+  \item Students: Upload assignment file
+  \item Faculty: View, grade, and provide feedback
+  \item Admin: View, edit and approve grades
+\end{itemize}
+\end{frame}
+
+% Slide 12
+\begin{frame}{Use Case 6 – File Repository Access}
+\begin{itemize}
+  \item Faculty/Students: Upload project reports, assignments
+  \item Admin: View, download, delete any file
+\end{itemize}
+\end{frame}
+
+% Slide 13
+\begin{frame}{Misuse Cases (Vulnerabilities)}
+\begin{itemize}
+  \item SQL Injection
+  \item Unauthorized File Downloads
+  \item Unrestricted File Upload
+  \item Password Reset Exploits
+  \item Brute-Force Attacks
+  \item Typosquatting Libraries
+  \item API DoS Attacks
+  \item Exposed Config Files
+  \item URL Access Control Bypass
+  \item CAPTCHA Bypass
+  \item Exposed Password Files
+\end{itemize}
+\end{frame}
+
+% Slide 14
+\begin{frame}{Misuse Case 1 - SQL Injection}
+\textbf{Vulnerability:} Raw SQL used in login\\
+\textbf{Exploit:} View DB schema, Retrieve credentials, Edit data without auth
+\end{frame}
+
+% Slide 15
+\begin{frame}{Misuse Case 2 - Unauthorized File Downloads}
+\textbf{Vulnerability:} No auth checks on downloads\\
+\textbf{Exploit:} Brute-force filenames to access sensitive files
+\end{frame}
+
+% Slide 16
+\begin{frame}{Misuse Case 3 - Unrestricted File Upload}
+\textbf{Vulnerability:} Weak file upload permissions\\
+\textbf{Exploit:} Upload script files without admin credentials
+\end{frame}
+
+% Slide 17
+\begin{frame}{Misuse Case 4 - Password Reset Exploit}
+\textbf{Vulnerability:} Weak, guessable security questions\\
+\textbf{Exploit:} Reset passwords using public profile data
+\end{frame}
+
+% Slide 18
+\begin{frame}{Misuse Case 5 - Brute-Force via Public Profile}
+\textbf{Vulnerability:} No CAPTCHA/rate limits\\
+\textbf{Exploit:} Use public data for brute-force login attempts
+\end{frame}
+
+% Slide 19
+\begin{frame}{Misuse Case 6 - Typosquatting Libraries}
+\textbf{Vulnerability:} Use of typo’d or outdated libraries\\
+\textbf{Exploit:} Insecure dependencies in requirements.txt or backups
+\end{frame}
+
+% Slide 20
+\begin{frame}{Misuse Case 7 - API Misuse for DoS}
+\textbf{Vulnerability:} No API throttling\\
+\textbf{Exploit:} Overload server with repeated API calls
+\end{frame}
+
+% Slide 21
+\begin{frame}{Misuse Case 8 - Exposed Config Files}
+\textbf{Vulnerability:} Public config file access\\
+\textbf{Exploit:} Download .env, .git files for credentials
+\end{frame}
+
+% Slide 22
+\begin{frame}{Misuse Case 9 - Unauthorized URL Access}
+\textbf{Vulnerability:} Missing backend role checks\\
+\textbf{Exploit:} Access admin URLs like /admin/logs as a student
+\end{frame}
+
+% Slide 23
+\begin{frame}{Misuse Case 10 - CAPTCHA Bypass}
+\textbf{Vulnerability:} Simple/bypassable CAPTCHA\\
+\textbf{Exploit:} Disable JavaScript or use script bypass
+\end{frame}
+
+% Slide 24
+\begin{frame}{Misuse Case 11 - Exposed Password Files}
+\textbf{Vulnerability:} Poorly secured password files\\
+\textbf{Exploit:} Extract admin credentials from file
+\end{frame}
+
+% Slide 25
+\begin{frame}{Roadmap}
+\begin{itemize}
+  \item Role-Based Login \& Dashboard – June 13, 2025
+  \item Edit/View Timetable – June 20, 2025
+  \item Edit/View Marks – July 4, 2025
+  \item Edit/View Attendance – July 4, 2025
+  \item Edit/View Assignments – July 11, 2025
+  \item File Repository Access – July 18, 2025
+\end{itemize}
+\end{frame}
+\end{document}

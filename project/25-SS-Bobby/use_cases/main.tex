@@ -1,0 +1,240 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Bobby's School System}
+\lhead{Requirement Analysis}
+\rfoot{\thepage}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+\title{\textbf{Requirement Analysis: Bobby's School System}}
+\author{Glen Paul Chirayath Shaju \\ Sai Bharghav Thoomu}
+\date{}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\section{Introduction}
+This document presents a full requirement analysis for the proposed school management system for Bobby's School. It outlines what the system needs, what stakeholders want, and how these requirements can be realized.
+
+\section{Functional Requirements}
+\begin{itemize}
+    \item \textbf{Student Management:} Registration, attendance tracking, performance records, promotion history.
+    \item \textbf{Teacher Management:} Profiles, schedules, subjects, attendance, performance reviews.
+    \item \textbf{Class Management:} Timetabling, subject allocation, classroom allocation.
+    \item \textbf{Examination System:} Exam schedules, grading, report cards.
+    \item \textbf{User Management:} Role-based access for Admin, Teachers, Students, and Parents.
+\end{itemize}
+
+\section{Use Cases}
+\subsection*{UC1: Student Registration}
+\textbf{Actors:} Student / Admin / Parent \\
+\textbf{Goal:} Register a new student \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Login and access Registration
+    \item Fill in personal and academic details
+    \item Submit the form
+    \item System stores data and notifies Admin
+\end{enumerate}
+
+\subsection*{UC2: Attendance Tracking}
+\textbf{Actors:} Teacher / Student / Parent \\
+\textbf{Goal:} Mark or view attendance \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Teacher selects class/date, marks attendance
+    \item System updates records
+    \item Students/Parents view attendance
+\end{enumerate}
+
+\subsection*{UC3: Performance Records}
+\textbf{Actors:} Teacher / Student / Parent \\
+\textbf{Goal:} Enter/view academic performance \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Teacher enters grades
+    \item System stores and validates
+    \item Data visible to stakeholders
+\end{enumerate}
+
+\subsection*{UC4: Promotion History}
+\textbf{Actors:} Teacher / Admin \\
+\textbf{Goal:} Update/view promotion status \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Admin updates status
+    \item System saves and notifies stakeholders
+\end{enumerate}
+
+\subsection*{UC5: Teacher Profile Management}
+\textbf{Actors:} Teacher / Admin \\
+\textbf{Goal:} Update/view teacher profile \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Edit and save profile details
+    \item System validates and stores
+\end{enumerate}
+
+\subsection*{UC6: Schedule Management}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Assign teacher schedules \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Input teacher timetable
+    \item System saves and shares
+\end{enumerate}
+
+\subsection*{UC7: Subject Assignment}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Assign subjects to teachers \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Admin selects teacher/subjects
+    \item System confirms assignment
+\end{enumerate}
+
+\subsection*{UC8: Teacher Attendance}
+\textbf{Actors:} Admin / Teacher \\
+\textbf{Goal:} Monitor/record attendance \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Admin or teacher records attendance
+    \item Data is stored for HR
+\end{enumerate}
+
+\subsection*{UC9: Performance Reviews}
+\textbf{Actors:} Admin / Academic Department \\
+\textbf{Goal:} Evaluate teacher performance \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Fill in review metrics
+    \item System stores evaluations
+\end{enumerate}
+
+\subsection*{UC10: Timetable Generation}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Create class timetables \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Define structure and assign slots
+    \item Publish for stakeholders
+\end{enumerate}
+
+\subsection*{UC11: Subject Allocation}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Link subjects to classes/teachers \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Admin allocates and confirms
+\end{enumerate}
+
+\subsection*{UC12: Classroom Allocation}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Assign rooms for classes \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Assign room, check for conflicts
+    \item Save allocation
+\end{enumerate}
+
+\subsection*{UC13: Exam Schedule}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Set exam timetable \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Enter exam dates
+    \item Publish schedule
+\end{enumerate}
+
+\subsection*{UC14: Grading}
+\textbf{Actors:} Teacher \\
+\textbf{Goal:} Enter grades \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Submit marks per subject
+    \item System validates and stores
+\end{enumerate}
+
+\subsection*{UC15: Report Cards}
+\textbf{Actors:} Admin / Teacher \\
+\textbf{Goal:} Generate report cards \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Compile grades/attendance
+    \item Export and notify stakeholders
+\end{enumerate}
+
+\subsection*{UC16: Role-Based Access}
+\textbf{Actors:} Admin \\
+\textbf{Goal:} Manage system roles \\
+\textbf{Flow:}
+\begin{enumerate}
+    \item Assign/update user roles
+    \item Permissions updated in system
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+\begin{itemize}
+    \item Usability: Intuitive for all users.
+    \item Scalability: Supports growth.
+    \item Performance: Responsive under load.
+    \item Security: Encrypted, role-based access.
+    \item Availability: High uptime.
+\end{itemize}
+
+\section{Stakeholder Expectations}
+\begin{itemize}
+    \item \textbf{Students:} Easy access to info.
+    \item \textbf{Teachers:} Streamlined class tools.
+    \item \textbf{Parents:} Timely updates.
+    \item \textbf{Admins:} Full system control.
+\end{itemize}
+
+\section{System Goals}
+\begin{itemize}
+    \item Reduce paperwork.
+    \item Increase transparency.
+    \item Improve operations.
+\end{itemize}
+
+\section{System Architecture}
+\begin{itemize}
+    \item Web-based interface
+    \item Cloud-hosted backend
+    \item Modular components
+\end{itemize}
+
+\section{Technologies to Use}
+\begin{itemize}
+    \item Frontend: HTML5, CSS3, React/Angular
+    \item Backend: Node.js / Django / Laravel
+    \item Database: PostgreSQL / MongoDB
+    \item Authentication: OAuth 2.0 / JWT
+    \item Hosting: AWS / Azure / GCP
+\end{itemize}
+
+\section{Implementation Plan}
+\begin{itemize}
+    \item Phase 1: Requirement Gathering
+    \item Phase 2: UI/UX Design
+    \item Phase 3: Core Development
+    \item Phase 4: Integration \& Testing
+    \item Phase 5: Deployment \& Training
+    \item Phase 6: Feedback Loop
+\end{itemize}
+
+\section{Conclusion}
+This document outlines the functional and non-functional aspects of Bobby’s School System. With stakeholder-focused design and robust architecture, it aims to modernize school management effectively.
+
+\end{document}

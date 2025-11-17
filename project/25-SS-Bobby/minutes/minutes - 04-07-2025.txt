@@ -1,0 +1,19 @@
+                          Minutes -  04/07/2025
+                         -----------------------
+# We have 2  screens , One screen the system and the other screen just hints or browser
+# prefer running on firefox in summary
+# for summary, some way to regenerate the database
+# documentation for vulnerabilities showing in summary - complete it before Wednesday
+
+# poster modifications
+- stick onto the template provided, 
+- examples of vulnerabilities , 
+- add screenshots of browser on how its going to look like after the vulnerability is executed, 
+- no full sentences, 
+- describe vulnerability and describe in one sentence like what is an sql injection? Examples - Can sql injections can be used to change the data in school database? 
+- be less specific on the attacks in poster. 
+- include goal, what are you learning throughout the project? , bullet points, consistent style
+
+
+# open lab night starts at 17.00 on Friday , setup the systems before Friday , arrive by 16.30
+# next meeting on Wednesday 13.30

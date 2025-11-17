@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bad Request</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding-top: 10%;
+        }
+        h1 { font-size: 4rem; color: #f0ad4e; }
+        p { font-size: 1.2rem; }
+        a { color: #0275d8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>400</h1>
+    <p>{{ message|default:"Your request could not be processed." }}</p>
+    <p><a href="{% url 'index' %}">Go back to Home</a></p>
+</body>
+</html>

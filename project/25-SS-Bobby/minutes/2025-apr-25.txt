@@ -1,0 +1,22 @@
+Minutes - 25/04/2025
+
+group a - Glen, Sai bhargav  prototype live demonstration
+suggestions
+- teacher should view the grades later after assigning and update the grade
+
+group b - Arun, Ganga , prototype demonstration
+suggestions
+- 
+
+Common suggestions
+- repository commit message is important
+- in repository, write a readme on how to run code including what needs to be downloaded
+
+tasks for next week
+- continue working on the same prototype as 2 groups
+- how to misuse the system and usecases - what could an attacker do at that point
+- for every use case, create multiple misuses. 
+Eg- misuse of students giving their own grades, viewing grading of other students
+
+- next meeting Wednesday 10.30
+

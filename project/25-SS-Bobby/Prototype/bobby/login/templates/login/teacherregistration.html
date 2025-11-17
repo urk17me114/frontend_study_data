@@ -1,0 +1,33 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Teacher Registration</title>
+    </head>
+    <body>
+        <h2>Teacher Registration Form</h2>
+
+        <!-- Display success messages -->
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Registration Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <!-- File upload note -->
+            <label for="document">Upload Document (Max 7 MB):</label><br>
+            <small style="color: gray;">
+                Allowed formats: .jpg, .png, .pdf, .doc, .docx, .jpeg | Max size: 7 MB
+            </small><br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+    </html>

@@ -1,0 +1,11 @@
+The next meeting will be on September 9 th 2025 online at 11:00 am (cest) in which the following update needs to be given
+
+Documentation to be done in latex
+
+Template for the same will be pushed to git by Jannis
+
+The documentation should contain necessary screenshots, texts, examples, solutions etc that supports to explain the working of vulnerabilities and features of bobby application
+
+Add in the report what didn't go right
+
+Docker implementation to be done

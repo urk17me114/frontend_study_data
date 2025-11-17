@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Questions For Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8; margin: 0; padding: 0;
+    }
+    h2 {
+      background-color: #004080; color: #fff; padding: 20px; text-align: center;
+      margin: 0; font-size: 28px;
+    }
+    .messages {
+      max-width: 1100px; margin: 20px auto; padding: 15px; background-color: #fff8c4;
+      border-left: 5px solid #ffc107; border-radius: 6px; color: #333;
+    }
+    /* Filter form */
+    form {
+      max-width: 1100px; background-color: #fff; margin: 20px auto; padding: 20px;
+      border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;
+    }
+    label { font-weight: bold; display: block; margin-bottom: 6px; }
+    select, input {
+      width: 240px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+    }
+    button {
+      background-color: #0073e6; color: #fff; border: none;
+      padding: 10px 20px; font-size: 16px; border-radius: 6px;
+      cursor: pointer; transition: background-color 0.3s ease;
+    }
+    button:hover { background-color: #005bb5; }
+
+    /* Table */
+    table {
+      width: 95%; max-width: 1100px; margin: 20px auto; border-collapse: collapse;
+      background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-radius: 8px; overflow: hidden;
+    }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #004080; color: #fff; font-weight: bold; }
+    tr:hover { background-color: #f1f5ff; }
+    td[colspan] { text-align: center; font-style: italic; color: #555; }
+
+    /* Action links under table */
+    .action-links {
+      max-width: 1100px; margin: 30px auto; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+    }
+    .action-links a {
+      display: inline-block; text-decoration: none; background-color: #0073e6;
+      color: #fff; padding: 10px 20px; border-radius: 8px; transition: background-color 0.3s ease;
+    }
+    .action-links a:hover { background-color: #005bb5; }
+
+    @media screen and (max-width: 600px) {
+      form { flex-direction: column; align-items: stretch; }
+      select { width: 100%; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { margin-bottom: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+      td {
+        padding: 10px; border: none; border-bottom: 1px solid #eee;
+        position: relative; padding-left: 50%;
+      }
+      td:before {
+        position: absolute; top: 10px; left: 10px; width: 45%;
+        white-space: nowrap; font-weight: bold; color: #333;
+      }
+      td:nth-of-type(1):before { content: "Title"; }
+      td:nth-of-type(2):before { content: "Subject"; }
+      td:nth-of-type(3):before { content: "Class"; }
+      td:nth-of-type(4):before { content: "Due"; }
+      td:nth-of-type(5):before { content: "Action"; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Questions For Your Class</h2>
+
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="get">
+    <div>
+      <label for="subject-select">Filter by Subject:</label>
+      <select id="subject-select" name="subject">
+        <option value="">All</option>
+        {% for s in subjects %}
+          <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:'s' %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <button type="submit">Apply</button>
+    </div>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Subject</th>
+        <th>Class</th>
+        <th>Due</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in questions %}
+      <tr>
+        <td>{{ q.title }}</td>
+        <td>{{ q.subject }}</td>
+        <td>{{ q.class_section }}</td>
+        <td>{% if q.due_date %}{{ q.due_date }}{% else %}-{% endif %}</td>
+        <td><a href="{% url 'student_submit_for_question' q.id %}">Submit / Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No questions available.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="action-links">
+    <a href="{% url 'student_my_submissions' %}">My Submissions</a>
+    <a href="{% url request.session.current_role|lower %}">Back to Dashboard</a>
+  </div>
+
+</body>
+</html>

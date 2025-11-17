@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ announcement.title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        .content-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .announcement-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comment-card {
+            background-color: #f0f4f8;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .comment-card b {
+            color: #0073e6;
+        }
+
+        .comment-form {
+            margin-top: 30px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .comment-form button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #005bb5;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 30px 0;
+            text-decoration: none;
+            color: #0073e6;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>{{ announcement.title }}</h2>
+
+    <div class="content-container">
+        <div class="announcement-content">
+            {{ announcement.content|safe }}
+        </div>
+
+        <div class="comments-section">
+            <h3>Comments</h3>
+            {% for comment in comments %}
+                <div class="comment-card">
+                    <b>{{ comment.display_name }}:</b> {{ comment.comment|safe }}
+                </div>
+            {% empty %}
+                <div class="comment-card">No comments yet.</div>
+            {% endfor %}
+        </div>
+
+        <div class="comment-form">
+            <h3>Add a Comment</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Comment</button>
+            </form>
+        </div>
+
+        <a class="back-link" href="{% url dashboard_url %}">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+\begin{tikzpicture}
+  \node (challenger) at (-4,5) {\underline{\textbf{Challenger}}};
+  \node (attacker) at (4,5) {\underline{\textbf{Attacker}}};
+  \node (phase1) at (-4.25,4.5) {\textbf{Phase 1: Initial Message}};
+  \node (left1-helper) at (-3,3.5) {};
+  \node (right1-helper) at (3,3.5) {};
+  \node (center1-helper) at (0,3.5) {};
+  \node[inner sep=0px, above=1px of center1-helper] (first-message) {\PK, $n-1$ trustees' shares, helper's shares};
+
+  \draw[->] (left1-helper) -- (right1-helper);
+
+  \node (phase2) at (-4,2.5) {\textbf{Phase 2: Signature Queries}};
+
+  \node (right2-helper) at (3,1) {};
+  \node (left2-helper) at (-3,1) {};
+  \node (center2-helper) at (0,1) {};
+  \node[inner sep=0px, above=1px of center2-helper] (second-message) {(A-Query,$\pi,M_{\pi}$)};
+
+  \draw[->] (right2-helper) -- (left2-helper);
+
+  \node (right3-helper) at (3,0) {};
+  \node (left3-helper) at (-3,0) {};
+  \node (center3-helper) at (0,0) {};
+  \node[inner sep=0px, above=1px of center3-helper] (third-message) {$\rho_{\pi}^t,\phi_{\pi}^t$};
+
+  \draw[->] (left3-helper) -- (right3-helper);
+
+  \node (right4-helper) at (3,-1) {};
+  \node (left4-helper) at (-3,-1) {};
+  \node (center4-helper) at (0,-1) {};
+  \node[inner sep=0px, above=1px of center4-helper] (fourth-message) {$\hat{\rho_{\pi}},\hat{\phi_{\pi}}$};
+
+  \draw[->] (right4-helper) -- (left4-helper);
+
+  \node (right5-helper) at (3,-2) {};
+  \node (left5-helper) at (-3,-2) {};
+  \node (center5-helper) at (0,-2) {};
+  \node[inner sep=0px, above=1px of center5-helper] (fifth-message) {$\PATH^{t}_{\pi},\sigma_{\pi}^t(\rho_{\pi},M_{\pi})\text{ or }\bot$};
+
+  \draw[->] (left5-helper) -- (right5-helper);
+
+  \node[below=5px of center5-helper] (or) {--\textbf{OR}--};
+
+  \node (right6-helper) at (3,-3.5) {};
+  \node (left6-helper) at (-3,-3.5) {};
+  \node (center6-helper) at (0,-3.5) {};
+  \node[inner sep=0px, above=1px of center6-helper] (sixth-message) {(C-Query,$\pi,M_{\pi},\rho_{\pi}^{\ne t}, \phi_{\pi}^{\ne t}$)};
+
+  \draw[->] (right6-helper) -- (left6-helper);
+
+  \node (right7-helper) at (3,-4.5) {};
+  \node (left7-helper) at (-3,-4.5) {};
+  \node (center7-helper) at (0,-4.5) {};
+  \node[inner sep=0px, above=1px of center7-helper] (seventh-message) {$\rho_{\pi}, \phi_{\pi} \text{ or }\bot$};
+
+  \draw[->] (left7-helper) -- (right7-helper);
+
+  \node (right8-helper) at (3,-5.5) {};
+  \node (left8-helper) at (-3,-5.5) {};
+  \node (center8-helper) at (0,-5.5) {};
+  \node[inner sep=0px, above=1px of center8-helper] (eigth-message) {$\PATH^{\text{$\ne t$}}_{\pi},\sigma_{\pi}^{\text{$\ne t$}}(\rho_{\pi},M_{\pi})$};
+
+  \draw[->] (right8-helper) -- (left8-helper);
+
+  \node (right9-helper) at (3,-6.5) {};
+  \node (left9-helper) at (-3,-6.5) {};
+  \node (center9-helper) at (0,-6.5) {};
+  \node[inner sep=0px, above=1px of center9-helper] (ninth-message) {$\PATH_{\pi},\sigma_{\pi}(\rho_{\pi},M_{\pi})\text{ or }\bot$};
+
+  \draw[->] (left9-helper) -- (right9-helper);
+
+  \node (background-helper) at (-3,1.4){};
+  \node[inner sep=0px, above=5px of second-message] (box-description) {(For $\pi \gets 1\ldots q$)};
+
+  \begin{scope}[on background layer]
+    \node[fill=lightgray!40,fit=(background-helper)(right9-helper)] {};
+  \end{scope}
+
+  \node (phase3) at (-4,-7.5) {\textbf{Phase 3: Forgery Message}};
+
+  \node (right10-helper) at (3,-8.5) {};
+  \node (left10-helper) at (-3,-8.5) {};
+  \node (center10-helper) at (0,-8.5) {};
+  \node[inner sep=0px, above=1px of center10-helper] (tenth-message) {$M_*,\rho_*,\PATH_*,\sigma_{*}(\rho_*,M_{*})$};
+
+  \draw[->] (right10-helper) -- (left10-helper);
+
+  \node[align=left] (win) at (-3.4,-9.2) {If \verify($M_*,(\rho_*,\PATH_*,\sigma_*(\rho_*,M_*)))$\\
+    AND $M_* \notin \{M_1,\ldots,M_q\}$\\
+    THEN attacker wins};
+
+\end{tikzpicture}

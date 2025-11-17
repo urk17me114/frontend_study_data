@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+  \node[draw,rectangle] (it) at (-4,5) {Initiating Trustee};
+  \node[draw,rectangle] (rt) at (4,5) {Responding Trustee};
+  \node (left1-helper) at (-3,4) {};
+  \node (right1-helper) at (3,4) {};
+  \node[align=left] (right1) at (4.5,3.6) {$h \gets \hash(M)$ \\ Each $t$ computes: \\ $\sigma_{\pi}^t \gets $\sharesign($X_{\pi}^t,h)$};
+  \node (center1-helper) at (0,4) {};
+  \node[inner sep=0px, above=1px of center1-helper] (first-message) {$\pi,M$};
+  \node[inner sep=0px, below=1px of center1-helper] (first-comment) {\tiny to responding trustees};
+
+  \node (right2-helper) at (3,2.5) {};
+  \node (left2-helper) at (-3,2.5) {};
+  \node[align=left] (left2) at (-4.5,1.6) {	$h \gets \hash(M)$\\
+  	$\sigma_{\pi}^1 \gets \sharesign(X_{\pi}^1,h)$\\
+  	$\sigma_{\pi} \gets \bigoplus_{\text{all t}} \sigma_{\pi}^t$\\
+  	$\PATH_{\pi} \gets \bigoplus_{\text{all }t} \PATH_{\pi}^t$\\
+  	Verify signature};
+  \node (center2-helper) at (0,2.5) {};
+
+  \node[inner sep=0px, above=1px of center2-helper] (first-message) {$\PATH^t_{\pi}, \sigma^t_{\pi}$ or $\bot$};
+  \node[inner sep=0px, below=1px of center2-helper] (first-comment) {\tiny from each responding trustee $t$};
+
+  \draw[->] (left1-helper) -- (right1-helper);
+  \draw[->] (right2-helper) -- (left2-helper);
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+latex.out/*
+*.aux 
+*.log 
+*.out 
+*.bbl 
+*.blg 
+*.toc 
+*.lol 
+*.lof 
+*.lot 
+*.xml 
+*.bcf
+main.pdf

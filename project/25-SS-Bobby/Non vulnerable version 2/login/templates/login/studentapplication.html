@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        fieldset {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+        }
+        legend {
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 0 10px;
+        }
+        .form-row {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 7px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #2b7cff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1a5dcc;
+        }
+    </style>
+</head>
+<body>
+    <h2>Student Application Form</h2>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <legend>Student Details</legend>
+            <div class="form-row">{{ form.student_first_name.label_tag|safe }} {{ form.student_first_name }}</div>
+            <div class="form-row">{{ form.student_last_name.label_tag|safe }} {{ form.student_last_name }}</div>
+            <div class="form-row">{{ form.dob.label_tag|safe }} {{ form.dob }}</div>
+            <div class="form-row">{{ form.gender.label_tag|safe }} {{ form.gender }}</div>
+            <div class="form-row">{{ form.student_email.label_tag|safe }} {{ form.student_email }}</div>
+            <div class="form-row">{{ form.classlevel.label_tag|safe }} {{ form.classlevel }}</div>
+            <div class="form-row">{{ form.student_mobile.label_tag|safe }} {{ form.student_mobile }}</div>
+            <div class="form-row">{{ form.nationality.label_tag|safe }} {{ form.nationality }}</div>
+            <div class="form-row">{{ form.blood_group.label_tag|safe }} {{ form.blood_group }}</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Student Address</legend>
+            <div class="form-row">{{ form.student_street.label_tag|safe }} {{ form.student_street }}</div>
+            <div class="form-row">{{ form.student_house.label_tag|safe }} {{ form.student_house }}</div>
+            <div class="form-row">{{ form.student_city.label_tag|safe }} {{ form.student_city }}</div>
+            <div class="form-row">{{ form.student_state.label_tag|safe }} {{ form.student_state }}</div>
+            <div class="form-row">{{ form.student_postal.label_tag|safe }} {{ form.student_postal }}</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Parent/Guardian Details</legend>
+            <div class="form-row">{{ form.parent_first_name.label_tag|safe }} {{ form.parent_first_name }}</div>
+            <div class="form-row">{{ form.parent_last_name.label_tag|safe }} {{ form.parent_last_name }}</div>
+            <div class="form-row">{{ form.parent_email.label_tag|safe }} {{ form.parent_email }}</div>
+            <div class="form-row">{{ form.parent_mobile.label_tag|safe }} {{ form.parent_mobile }}</div>
+            <div class="form-row">{{ form.emergency_contact.label_tag|safe }} {{ form.emergency_contact }}</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Parent/Guardian Address</legend>
+            <div class="form-row">{{ form.parent_street.label_tag|safe }} {{ form.parent_street }}</div>
+            <div class="form-row">{{ form.parent_house.label_tag|safe }} {{ form.parent_house }}</div>
+            <div class="form-row">{{ form.parent_city.label_tag|safe }} {{ form.parent_city }}</div>
+            <div class="form-row">{{ form.parent_state.label_tag|safe }} {{ form.parent_state }}</div>
+            <div class="form-row">{{ form.parent_postal.label_tag|safe }} {{ form.parent_postal }}</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Previous School Details</legend>
+            <div class="form-row">{{ form.prev_school_name.label_tag|safe }} {{ form.prev_school_name }}</div>
+            <div class="form-row">{{ form.prev_class_grade.label_tag|safe }} {{ form.prev_class_grade }}</div>
+            <div class="form-row">{{ form.tc_number.label_tag|safe }} {{ form.tc_number }}</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Previous School Address</legend>
+            <div class="form-row">{{ form.prev_school_street.label_tag|safe }} {{ form.prev_school_street }}</div>
+            <div class="form-row">{{ form.prev_school_house.label_tag|safe }} {{ form.prev_school_house }}</div>
+            <div class="form-row">{{ form.prev_school_city.label_tag|safe }} {{ form.prev_school_city }}</div>
+            <div class="form-row">{{ form.prev_school_state.label_tag|safe }} {{ form.prev_school_state }}</div>
+            <div class="form-row">{{ form.prev_school_postal.label_tag|safe }} {{ form.prev_school_postal }}</div>
+        </fieldset>
+
+        <button type="submit">Submit Application</button>
+    </form>
+</body>
+</html>

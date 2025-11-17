@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Marks Portal</title>
+</head>
+<body>
+  <div>
+    <h2>Add Marks</h2>
+    <div style="text-align: right; margin: 10px;">
+      <a href="{% url 'logout' %}">
+        <button>Logout</button>
+      </a>
+    </div>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div>{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Add Marks Form -->
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" name="add_mark">Add Marks</button>
+    </form>
+
+    <hr>
+
+    <!-- Edit Existing Marks -->
+    <h3>Previously Added Marks</h3>
+    {% if added_marks %}
+      <table border="1" cellpadding="8">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Subject</th>
+            <th>Marks</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mark in added_marks %}
+            <tr>
+              <td>{{ mark.username }}</td>
+              <td>{{ mark.subject }}</td>
+              <td>
+                <form method="post" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="mark_id" value="{{ mark.id }}">
+                  <input type="number" name="new_marks" value="{{ mark.marks }}" min="0" max="100" required>
+                  <button type="submit" name="edit_mark">Update</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No marks added yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

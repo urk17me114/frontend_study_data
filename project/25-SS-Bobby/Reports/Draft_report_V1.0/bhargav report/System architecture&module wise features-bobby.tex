@@ -1,0 +1,2271 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Bobby - System architecture}
+\author{Arun, Ganga, Sai Bhargav }
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+%-----------------------------------------------------------------------
+\section{School Management System Architecture}
+\label{sec:impl:system-architecture}
+%-----------------------------------------------------------------------
+
+The School Management System is a Django-based web application designed to manage students, teachers, classes, timetables, announcements, and academic records. 
+The system implements role-based access control, where each participant (Admin, Teacher, Student) interacts with the system through a web interface. 
+All communication occurs over standard HTTP/HTTPS, with JSON used for asynchronous operations such as voting on announcements. 
+The system leverages Django sessions to maintain authentication and authorization state.
+
+The architecture is modular, separating concerns into dedicated Django apps and views. 
+Each module handles specific functionality, such as student registration, timetable management, announcements, and marks management. 
+Data is stored in a relational database (e.g., SQLite, PostgreSQL) using Django's ORM. 
+Security-critical modules, such as CAPTCHA validation and file upload handling, incorporate measures to prevent automated attacks, although some vulnerabilities are intentionally included for learning purposes.
+
+%-----------------------------------------------------------------------
+\subsection{Roles and Participants}
+\label{subsec:roles-participants}
+%-----------------------------------------------------------------------
+
+\subsubsection{Administrator (Admin)}
+The Admin is responsible for managing the overall school system. 
+Admins have the highest level of access and can perform the following actions:
+
+\begin{itemize}
+    \item Add, edit, or delete subjects, teachers, classrooms, and timeslots.
+    \item Approve or reject students and teachers based on their respective teacher registration and student application data.
+    \item Generate the class timetable based on teacher availability, subjects, and class requirements.
+    \item View all timetable entries with filters for class, subject, teacher, and day.
+    \item Manage student academic records, including marks and grades.
+    \item Monitor announcements, registration data, and system configurations.
+    \item Create pin-board announcements, Monitor announcements and answers the comments 
+    \item Review system logs and handle error reports.
+\end{itemize}
+
+The Admin interacts with the system via the web interface and is authenticated using the \texttt{Admin\_login} session decorator. 
+All requests are verified against the session to ensure authorized access.
+
+\subsubsection{Teacher}
+Teachers are responsible for delivering lessons, managing marks, interacting with student-related data and reviewing announcements. 
+Their interactions include:
+
+\begin{itemize}
+    \item Viewing their assigned timetable entries for specific days.
+    \item Accessing subjects and class information relevant to their teaching assignments.
+    \item Reviewing their own profile, uploading profile photo, document and modification of their own profile.
+    \item Posting announcements that students can view and vote on.
+    \item Uploading documents or resources, with file type and size validations.
+    \item Recording student marks, assessments, and exam scores in the system.
+    \item Reviewing pin board announcements and adding their valuable inputs or questions through comments.
+    \item Handling errors in form submissions and logging any critical events.
+\end{itemize}
+
+Teachers are authenticated using the \texttt{Teacher\_login} session decorator. 
+They only see data related to their assignments, ensuring separation of concerns and data privacy.
+
+\subsubsection{Student}
+Students are the end users who consume educational content, track academic performance, and interact with the system. 
+Student actions include:
+
+\begin{itemize}
+    \item Registering via a web form with CAPTCHA validation to prevent automated submissions.
+    \item Viewing their class timetable and filtering entries by day.
+     \item Reviewing their own profile, uploading profile photo and modification of their own profile.
+    \item Viewing teacher announcements and voting via upvote/downvote mechanisms.
+    \item Tracking personal information, class level, timetable assignments, and academic records.
+    \item Accessing marks and grades assigned by teachers.
+    \item Reviewing pin board announcements and adding their questions through comments
+    \item Receiving notifications on errors or invalid submissions.
+\end{itemize}
+
+Students are authenticated using the \texttt{Student\_login} session decorator. 
+Access is restricted to data relevant to their class and assignments.
+
+%-----------------------------------------------------------------------
+\subsection{Workflow and Data Flow}
+\label{subsec:workflow-dataflow}
+%-----------------------------------------------------------------------
+
+The system operates in the following structured workflows:
+
+\begin{itemize}
+    \item \textbf{Registration:} Students and Teachers submit registration forms, validated with CAPTCHA and optional file uploads. Errors during registration are logged and reported. Validated data is stored in the corresponding \texttt{StudentReg} or \texttt{TeacherReg} tables.
+    \item \textbf{Student Application:} Students submit an application form prefilled with registration data (class, name, DOB, email) from the lastest entry of \texttt{StudentReg} table. They add required details such as nationality, blood type, address, parent info, previous school, and grades. The validated data are stored in the \texttt{StudentApplication} table. Errors during application are logged and reported.
+    \item \textbf{Authentication:} Upon login, the system sets session variables to identify the user role (Admin, Teacher, Student) and restrict access to views accordingly. Failed login attempts are logged.
+    \item \textbf{Approval Management:} Admin reviews student applications and teacher registrations to verify personal data, addresses, and documents. Valid requests are approved, creating user credentials and sending login details by email. Invalid requests are rejected and removed from the database. All actions are secured with session checks and recorded to ensure that only verified users gain access.
+    \item \textbf{Timetable Generation:} Admin adds subjects, teachers, rooms, and timeslots, then generates the timetable using an algorithm that assigns teachers and rooms to periods. Conflicts are detected, reported, and logged.
+    \item \textbf{Timetable Viewing:} Students and Teachers fetch timetable entries filtered by their class or assigned schedule. ORM errors or invalid queries are logged.
+    \item \textbf{Profile Management:} Students can view and update their personal details, including address and profile photo, while key fields such as name, email, and date of birth remain read-only. Teachers can edit most profile details, upload documents, and photos, but cannot change email or date of birth. Admins can view their own profile, but cannot edit any fields. All changes are securely saved in the database, with session checks enforcing role-based access.
+    \item \textbf{Marks Management:} Teachers enter marks for students for assignments, exams, or assessments. Admins can review or update marks as needed. Students can view their marks and calculate performance summaries. Errors in marks entry are validated and logged.
+    \item \textbf{Pin board Management:}Admin posts official announcements, which students and teachers can view. Teachers and students can comment on notices, while all entries are shown newest first with pagination. Admin can respond to comments. Display names are resolved from session-linked accounts. All actions are session-controlled and logged.
+    \item \textbf{Announcements:} Teachers post announcements. Students view announcements and cast votes, which are tracked in the \texttt{AnnouncementVote} table. JSON is used for asynchronous vote updates. Invalid vote submissions are logged.
+    \item \textbf{Data Integrity and Security:} The system enforces session-based access control. Modules implement additional validation (CAPTCHA, file type checks). Certain vulnerabilities are intentionally included for educational purposes (CAPTCHA replay, duplicate voting). All exceptions and critical operations are logged for auditing.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{System Communication and Integration}
+\label{subsec:system-communication}
+%-----------------------------------------------------------------------
+
+All modules communicate internally through Django's ORM and request-response cycle. 
+Asynchronous operations, such as voting on announcements, use AJAX with JSON payloads. 
+Session management ensures role-specific access control.
+
+\begin{itemize}
+    \item Admin, Teacher, and Student communicate via HTTP requests to Django views.
+    \item JSON is used for client-server interactions in interactive features (e.g., voting, timetable updates, marks submission).
+    \item ORM queries ensure referential integrity across models like \texttt{Student}, \texttt{Teacher}, \texttt{TimetableEntry}, \texttt{AnnouncementVote}, and \texttt{Marks}.
+    \item Security-sensitive operations, including registration, voting, and marks updates, are logged and validated against session credentials.
+    \item Exception handling is implemented across modules to ensure errors are captured, reported, and logged for auditing purposes.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}
+\label{subsec:system-security}
+%-----------------------------------------------------------------------
+
+The system-level security considerations include:
+
+\begin{itemize}
+    \item Role-based access control using session decorators (\texttt{Admin\_login}, \texttt{Teacher\_login}, \texttt{Student\_login}).
+    \item Input validation for forms, file uploads, and academic records.
+    \item CAPTCHA validation for automated bot prevention (with intentional replay vulnerability for study purposes).
+    \item Vote integrity concerns, as duplicate votes are currently possible (educational vulnerability).
+    \item Data privacy, ensuring students only access their own marks and timetables.
+    \item Optimized ORM queries to prevent unintentional data leaks.
+    \item Logging of critical operations, errors, and exceptions for auditing and accountability.
+    \item Error handling mechanisms across workflows to provide clear feedback and maintain system stability.
+\end{itemize}
+
+
+%---------------------------------------------------
+%---------------------------------------------------
+%----------------------------------------------------
+\section{Assignment Management Module}
+\label{sec:impl:assignment}
+%-----------------------------------------------------------------------
+
+The \texttt{assignment.py} module implements the core functionality for handling assignments within the school application.
+It supports both teacher and student workflows:
+teachers can create questions, review submissions, and grade them,
+while students can view available questions, submit assignments, and track their submission history.
+The main code module is located at \textit{/login/assignment.py}.
+
+In order to deliberately demonstrate insecure software practices,
+this module introduces an exploitable XML parsing routine.
+The function \texttt{parse\_xml()} employs the \texttt{lxml} parser with \texttt{load\_dtd} and \texttt{resolve\_entities} enabled,
+which makes the system vulnerable to XML External Entity (XXE) attacks such as the ``Billion Laughs'' denial-of-service vector.
+This vulnerability highlights how insecure handling of user-uploaded files can compromise system integrity.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:assignment-dependencies}
+%-----------------------------------------------------------------------
+The module depends on multiple Django components and third-party libraries:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.contrib.messages} for user-facing notifications.
+    \item \texttt{django.db.models.Q} for complex query filtering.
+    \item \texttt{django.utils.timezone} for timestamp management.
+    \item \texttt{lxml.etree} for XML parsing (insecurely configured).
+    \item Custom models from \textit{login.models}: \texttt{Student}, \texttt{TeacherAvailability}, \texttt{ClassSection}, \texttt{Subject}, \texttt{AssignmentQuestion}, \texttt{AssignmentSubmission}.
+    \item Custom forms from \textit{login.forms}: \texttt{AssignmentQuestionForm}, \texttt{AssignmentSubmissionForm}, \texttt{GradeSubmissionForm}, \texttt{SubmissionFilterForm}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:assignment-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} enforces role-based access control by checking session keys.
+It ensures that only authenticated users with the correct role (teacher or student) can access assignment functionality.
+Invalid sessions are flushed, and the user is redirected to the application index.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:assignment-main}
+%-----------------------------------------------------------------------
+The module contains several core functions, which can be grouped by teacher and student responsibilities:
+
+\subsubsection*{Teacher Workflows}
+\begin{itemize}
+    \item \textbf{Create Question} (\texttt{teacher\_create\_question}): Allows teachers to post questions restricted to their assigned subjects and class sections.
+    \item \textbf{List Questions} (\texttt{teacher\_questions\_list}): Displays all questions authored by the teacher.
+    \item \textbf{Review Submissions} (\texttt{teacher\_review\_submissions}): Provides filtering by subject, class section, and status. Implements ordering by submission time.
+    \item \textbf{Mark Seen} (\texttt{teacher\_mark\_seen}): Updates submission status to \texttt{seen}.
+    \item \textbf{Grade Submission} (\texttt{teacher\_grade\_submission}): Assigns marks to a student submission and updates its status to \texttt{graded}.
+\end{itemize}
+
+\subsubsection*{Student Workflows}
+\begin{itemize}
+    \item \textbf{List Questions} (\texttt{student\_questions\_list}): Shows available questions for a student's class and subjects.
+    \item \textbf{Submit Assignment} (\texttt{student\_submit\_for\_question}): Enables students to upload XML files or typed content as assignment answers. Contains the XXE vulnerability in the XML parsing routine.
+    \item \textbf{Track Submissions} (\texttt{student\_my\_submissions}): Lists a student's past submissions with their current status and marks.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:assignment-vulnerability}
+%-----------------------------------------------------------------------
+This module intentionally demonstrates insecure coding practices.
+The XML parsing routine is configured with both \texttt{load\_dtd} and \texttt{resolve\_entities} enabled, making the application susceptible to XML External Entity (XXE) attacks.
+An attacker could upload a malicious XML file to perform denial-of-service or exfiltrate server-side files.
+This highlights the importance of secure file-handling practices in web applications.
+
+%---------------------------------------------------
+%---------------------------------------------------
+%----------------------------------------------------
+\section{Student Application Module}
+\label{sec:impl:Studentapplication}
+%-----------------------------------------------------------------------
+
+The \texttt{student\_application.py} module implements the core functionality for submitting a student application. It integrates with existing student registration records to prefill form data where available and stores validated applications in the StudentApplication model. This feature provides the entry point for new students to apply to the school system.The main code module is located at \texttt{/login/view/student\_application.py}. Although no deliberate vulnerability is introduced here, insecure coding practices may lead to issues such as unvalidated input, stored XSS, or weak data handling. The feature therefore requires careful form validation and safe template rendering.
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:-Studentapplication-dependencies}
+%-----------------------------------------------------------------------
+The module depends on multiple Django components and third-party libraries:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.contrib.messages} for user-facing notifications.
+    \item Custom models from \textit{login.models}:\texttt{	StudentApplication} for storing final application data and  \texttt{StudentReg} for storing student registration data; the latest record is used for pre-filling.
+    \item Custom forms from \textit{login.forms}: \texttt{StudentApplicationForm} for validating and cleaning submitted application data.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Prefill Logic}\label{subsec:Studentapplication-Prefill Logic}
+%-----------------------------------------------------------------------
+The view fetches the most recent \texttt{StudentReg} record using:
+\begin{verbatim}
+latest_reg = StudentReg.objects.last()
+\end{verbatim}
+
+If present, relevant fields (name, Date of birth, gender, email, class level) are pre-populated into the form. Gender codes (M, F, O) are mapped into human-readable strings. This feature improves user experience by reducing redundant typing.
+
+
+%-----------------------------------------------------------------------
+\subsection{Main Function: \texttt{student\_application\_view}}\label{subsec:Studentapplication-main}
+%-----------------------------------------------------------------------
+The function provides two request flows:
+
+\begin{itemize}
+    \item \textbf{GET request}
+    \begin{itemize}
+        \item Initializes a blank \texttt{StudentApplicationForm}.
+        \item If a \texttt{StudentReg} record exists, fields are prefilled with existing values.
+        \item Renders the \texttt{studentapplication.html} template with the form.
+    \end{itemize}
+
+    \item \textbf{POST request}
+    \begin{itemize}
+        \item Processes form submission via \texttt{StudentApplicationForm}.
+        \item On successful validation:
+        \begin{itemize}
+            \item Extracts cleaned data.
+            \item Creates a new \texttt{StudentApplication} record with the supplied details (student information, parent info, previous school information).
+            \item Adds a success message and redirects to the index page.
+        \end{itemize}
+        \item On invalid submission, the form is redisplayed with error messages.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{POST Request}
+
+\begin{itemize}
+    \item Processes submitted form data using \texttt{StudentApplicationForm(request.POST)}.
+    \item If the form is valid:
+    \begin{itemize}
+        \item Extracts \texttt{form.cleaned\_data}.
+        \item Creates a \texttt{StudentApplication} record with explicit field mapping:
+        \begin{itemize}
+            \item \textbf{Student information:} first name, last name, Date of birth, gender, email, class level, mobile, nationality, blood group.
+            \item \textbf{Student address:} street, house, city, state (optional), postal.
+            \item \textbf{Parent information:} first name, last name, email, mobile, emergency contact.
+            \item \textbf{Parent address:} street, house, city, state (optional), postal.
+            \item \textbf{Previous school info:} school name, class/grade, TC number, street, house, city, state, postal.
+        \end{itemize}
+        \item Adds a success message and redirects to the index page.
+    \end{itemize}
+    \item If the form is invalid, the form with errors is re-rendered for user correction.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Studentapplication-vulnerability}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item Only saves \texttt{form.cleaned\_data}, ensuring that only validated input is persisted.
+    \item Assumes templates correctly escape user-provided content to prevent XSS.
+    \item Prefill uses the latest \texttt{StudentReg} record; ensure this behavior is acceptable and does not expose unintended data.
+    \item No deliberate vulnerabilities are present in this module.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Studentapplication-vulnerability}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item Only saves \texttt{form.cleaned\_data}, ensuring that only validated input is persisted.
+    \item Assumes templates correctly escape user-provided content to prevent XSS.
+    \item Prefill uses the latest \texttt{StudentReg} record; ensure this behavior is acceptable and does not expose unintended data.
+    \item No deliberate vulnerabilities are present in this module.
+\end{itemize}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Student Approval Module}
+\label{sec:impl:Studentapproval}
+%-----------------------------------------------------------------------
+The \texttt{student\_approval.py} module enables administrators to manage pending student applications. Admins can review submitted applications, approve them (creating both a student record and a corresponding Login account), or reject them (deleting the application record).The main code module is located at:\texttt{/login/view/student\_approval.py}
+
+
+This module demonstrates secure session handling via a decorator and enforces role-based access control. While the code itself is functional and secure, passwords are generated as plain tokens and must be hashed before production deployment.
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Studentapproval-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Python standard libraries}
+    \begin{itemize}
+        \item \texttt{secrets}, \texttt{string}, \texttt{random}, \texttt{hashlib} — for generating usernames, passwords, and hashing (simple MD5 in current implementation).
+    \end{itemize}
+
+    \item \textbf{Django libraries}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect}, \texttt{get\_object\_or\_404} — template rendering, redirection, and object fetching.
+        \item \texttt{django.contrib.messages} — for displaying flash messages to the admin.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{StudentApplication} model for pending student applications.
+        \item \texttt{Student} model for approved student records.
+        \item \texttt{Login} model for  user authentication table, storing username, password, role, and email.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required} (from \texttt{login.views}) which enforces that only authenticated admins can access these views.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Studentapproval-session}
+%-----------------------------------------------------------------------
+All views in this module are decorated with: \verb|@session_required('Admin_login')|.  
+This ensures that only authenticated administrators can access student approval or rejection functionalities.  
+If a session is invalid or missing, the user is redirected to the application index.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:Studentapproval-main}
+%-----------------------------------------------------------------------
+
+\textbf{Admin Workflows}
+
+\subsubsection*{List Pending Students (\texttt{student\_approval})}
+\begin{itemize}
+    \item Retrieves all \texttt{StudentApplication} records.
+    \item Filters out applications already approved (by checking existing emails in \texttt{Login} with role \texttt{'Student'}).
+    \item Renders \texttt{login/student\_approval.html} template with the list of pending students.
+\end{itemize}
+
+\subsubsection*{Approve Student (\texttt{approve\_student})}
+\begin{itemize}
+    \item Accepts a \texttt{student\_id}.
+    \item Fetches the corresponding \texttt{StudentApplication} record.
+    \item Checks whether the student email is already approved; if so, issues a warning message.
+    \item Generates a random username (3 letters + 3 digits) and a random password token (8-character URL-safe string).
+    \item Creates a new \texttt{Student} record using all application details (personal, address, parent info).
+    \item Creates a new \texttt{Login} record for authentication purposes, with plain token as password (note: should be hashed in production).
+    \item Displays a success message and redirects back to pending applications.
+\end{itemize}
+
+\subsubsection*{Reject Student (\texttt{reject\_student})}
+\begin{itemize}
+    \item Accepts a \texttt{student\_id}.
+    \item Fetches the corresponding \texttt{StudentApplication} record.
+    \item Deletes the record.
+    \item Shows an informational message and redirects to the pending applications page.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Studentapproval-vulnerability}
+%-----------------------------------------------------------------------
+No intentional vulnerabilities exist in this module, though production deployments must ensure proper password hashing and possibly audit logs for administrative actions.
+\begin{itemize}
+    \item \textbf{Session enforcement:} All views require \texttt{Admin\_login} session, preventing unauthorized access.
+    \item \textbf{Data integrity:} Explicit field mapping ensures all relevant student and parent information is transferred correctly from \texttt{StudentApplication} to \texttt{Student}.
+    \item \textbf{Duplicate check:} Approval function ensures the same email cannot be approved multiple times.
+    \item \textbf{Deletion safety:} Rejection permanently deletes the student application record.
+\end{itemize}
+
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Teacher Approval Module }
+\label{sec:impl:Teacherapproval}
+%-----------------------------------------------------------------------
+The \texttt{teacher\_approval.py} module enables administrators to manage pending teacher registrations. Admins can review submitted registrations (\texttt{TeacherReg}), approve them (creating both a \texttt{Teacher} record and a corresponding \texttt{Login} account), or reject them (deleting the registration record). The main code module is located at:
+\texttt{/login/view/teacher\_approval.py}
+
+This module uses secure session enforcement and explicit approval logic. While it is secure in its basic operation, care must be taken to handle file uploads (teacher documents) safely.
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Teacherapproval-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Python standard libraries}
+    \begin{itemize}
+        \item \texttt{secrets}, \texttt{string}, \texttt{random}, \texttt{hashlib} for generating usernames, passwords, and hashing (simple MD5 in current implementation).
+    \end{itemize}
+
+    \item \textbf{Django libraries}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect}, \texttt{get\_object\_or\_404} template for rendering, redirection, and object fetching.
+        \item \texttt{django.contrib.messages} for displaying flash messages to the admin.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{TeacherReg} model for pending teacher registrations.
+        \item \texttt{Teacher} model for approved teacher records.
+        \item \texttt{Login} model for  user authentication table, storing username, password, role, and email.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required} (from \texttt{login.views}) which enforces that only authenticated admins can access these views.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Teacherapproval-session}
+%-----------------------------------------------------------------------
+All views in this module are decorated with: \verb|@session_required('Admin_login')|.  
+This enforces that only authenticated administrators can access teacher approval or rejection views. Invalid sessions are redirected to the application index. 
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:Teacherapproval-main}
+%-----------------------------------------------------------------------
+
+\textbf{Admin Workflows}
+
+\subsubsection*{List Pending Teachers (\texttt{teacher\_approval})}
+\begin{itemize}
+    \item Retrieves all \texttt{TeacherReg} records.
+    \item Filters out registrations already approved (by checking existing emails in \texttt{Login} with role \texttt{'Teacher'}).
+    \item Renders \texttt{login/teacher\_approval.html} template with the list of pending teachers.
+\end{itemize}
+
+\subsubsection*{Approve Teacher (\texttt{approve\_teacher})}
+\begin{itemize}
+    \item Accepts a \texttt{teacher\_id}.
+    \item Fetches the corresponding \texttt{TeacherReg} record.
+    \item Checks whether the teacher email is already approved; if so, issues a warning message.
+    \item Generates a random username (3 letters + 3 digits) and a random password token (8-character URL-safe string).
+    \item Creates a new \texttt{Teacher} record using registration details: first name, last name, DOB, gender, email, and uploaded document.
+    \item Creates a new \texttt{Login} record for authentication purposes, with the generated plain password (\textbf{should be hashed in production}).
+    \item Displays a success message and redirects back to the pending registrations page.
+\end{itemize}
+
+\subsubsection*{Reject Teacher (\texttt{reject\_teacher})}
+\begin{itemize}
+    \item Accepts a \texttt{teacher\_id}.
+    \item Fetches the corresponding \texttt{TeacherReg} record.
+    \item Deletes the record.
+    \item Shows an informational message and redirects to the pending registrations page.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Teacherapproval-vulnerability}
+%-----------------------------------------------------------------------
+No intentional vulnerabilities exist in this module, though production deployments must ensure proper password hashing and possibly audit logs for administrative actions.
+\begin{itemize}
+    \item \textbf{Session enforcement:} All views require an admin session, preventing unauthorized access.
+    \item \textbf{File safety:} Teacher documents (\texttt{document} field) must be handled carefully when serving to prevent unauthorized access.
+    \item \textbf{Duplicate check:} Approval function ensures the same email cannot be approved multiple times.
+    \item \textbf{Deletion safety:} Rejection permanently deletes the teacher registration record.
+\end{itemize}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Student Profile Module }
+\label{sec:impl:Studentprofile}
+%-----------------------------------------------------------------------
+The \texttt{student\_profile.py} module enables students to view and update their personal profile. It integrates data from both the \texttt{Student} model and \texttt{StudentApplication} model, allowing students to update fields selectively. Profile photo upload is supported, with changes applied only to modified fields. The main code module is located at: \texttt{/login/view/student\_profile.py}
+
+This module demonstrates secure session handling, selective field updates, and file upload support. No deliberate vulnerabilities are present, assuming proper template escaping and safe file handling.
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Studentprofile-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django libraries}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect}, \texttt{get\_object\_or\_404} are used for template rendering, redirection, and safe object fetching.
+        \item \texttt{django.contrib.messages} is  used for displaying flash messages to the user.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Login} is a authentication table to retrieve the current user session.
+        \item \texttt{Student} is a main student profile model.
+        \item \texttt{StudentApplication} is a source for prefilled student application data.
+    \end{itemize}
+
+    \item \textbf{Project forms}
+    \begin{itemize}
+        \item \texttt{StudentProfileForm} is responsible for validating user-submitted profile updates.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required} ensures only authenticated students can access the profile.
+    \end{itemize}
+\end{itemize}
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Studentprofile-session}
+%-----------------------------------------------------------------------
+The view is decorated with: \verb|@session_required('Student_login')|.  
+This ensures that only logged-in students can access the profile page. Invalid or missing sessions result in a redirect to the student index page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Function: \texttt{student\_profile}}\label{subsec:Studentprofile-main}
+%-----------------------------------------------------------------------
+
+\subsection*{GET Request}
+\begin{itemize}
+    \item Retrieves the logged-in student’s \texttt{Login} object via username stored in session.
+    \item Fetches corresponding \texttt{Student} and \texttt{StudentApplication} objects.
+    \item Prepares initial form data using \texttt{StudentApplication} fields.
+    \item Renders \texttt{login/student\_profile.html} with:
+    \begin{itemize}
+        \item \texttt{form} — prefilled \texttt{StudentProfileForm}.
+        \item \texttt{profile\_photo} — current profile photo from \texttt{Student}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{POST Request}
+\begin{itemize}
+    \item Instantiates \texttt{StudentProfileForm(request.POST, request.FILES)}.
+    \item On valid form submission:
+    \begin{itemize}
+        \item Extracts \texttt{cleaned\_data}.
+        \item Compares each field against \texttt{Student} and \texttt{StudentApplication} objects to track changes.
+        \item Updates only fields that have changed:
+        \begin{itemize}
+            \item \textbf{Student fields} (including profile photo if uploaded).
+            \item \textbf{StudentApplication fields} (if applicable).
+        \end{itemize}
+        \item Saves changes selectively using \texttt{update\_fields} for efficiency.
+        \item Displays success message and redirects to the profile page.
+    \end{itemize}
+    \item On invalid submission:
+    \begin{itemize}
+        \item Form is redisplayed with errors for correction.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Data Mapping}\label{subsec:Studentprofile-Data Mapping}
+%-----------------------------------------------------------------------
+
+\begin{itemize}
+    \item \textbf{Student model updates}
+    \begin{itemize}
+        \item Any field present in \texttt{StudentProfileForm} that exists in \texttt{Student} and differs from the current value.
+        \item \texttt{profile\_photo} handled separately; saved if a new file is uploaded.
+    \end{itemize}
+
+    \item \textbf{StudentApplication updates}
+    \begin{itemize}
+        \item The fields that exist in \texttt{StudentApplication} and differ from the values submitted are updated via \texttt{.update()}.
+    \end{itemize}
+
+    \item \textbf{Read-only fields}
+    \begin{itemize}
+        \item Fields marked as read-only in the form are never modified.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Studentprofile-vulnerability}
+%-----------------------------------------------------------------------
+Intentional vulnerabilities are not present in this module.
+\begin{itemize}
+    \item \textbf{Session enforcement:} Only authenticated students can access this view.
+    \item \textbf{File uploads:} Profile photo files must be stored securely, and the files that are served should prevent unauthorized access.
+    \item \textbf{Template safety:} Text fields rendered in templates must be escaped to prevent XSS.
+    \item \textbf{Selective updates:} Only modified fields are saved, preventing unintended overwrites.
+    \item \textbf{Data consistency:} Synchronizes changes across both \texttt{Student} and \texttt{StudentApplication} tables.
+\end{itemize}
+
+
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Teacher Profile Module }
+\label{sec:impl:Teacherprofile}
+%-----------------------------------------------------------------------
+The \texttt{teacher\_profile.py} module allows teachers to view and update their profile information, including uploading profile photos and documents. It also provides a document download endpoint.
+
+This module is intentionally designed with insecure coding practices for lab/demo purposes. Vulnerabilities such as CSRF bypass and Insecure Direct Object Reference (IDOR) are introduced to demonstrate real-world attack scenarios.The main code is located at: \texttt{/login/view/teacher\_profile.py}
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Teacherprofile-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django libraries}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect} for  template rendering and redirection.
+        \item \texttt{django.contrib.messages} for flash messages for user feedback.
+        \item \texttt{django.http.FileResponse}, \texttt{Http404} for serving file downloads and handling errors.
+        \item \texttt{django.views.decorators.csrf.csrf\_exempt} for disables CSRF protection.
+    \end{itemize}
+
+    \item \textbf{Python standard libraries}
+    \begin{itemize}
+        \item \texttt{os} for file handling (checking existence, deleting old files).
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Login} table for teacher authentication and linking accounts.
+        \item \texttt{TeacherReg} table for original teacher registration data (with uploaded documents).
+        \item \texttt{Teacher} table for permanent teacher profile data.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required('Teacher\_login')} is  ensures only authenticated teachers access these views.
+    \end{itemize}
+
+    \item \textbf{Project forms}
+    \begin{itemize}
+        \item \texttt{TeacherProfileForm} for updating teacher profile fields.
+    \end{itemize}
+\end{itemize}
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Teacherprofile-session}
+%-----------------------------------------------------------------------
+The view is decorated with: \verb|@session_required('Teacher_login')|.  
+This ensures that only logged-in teachers can access the profile page. Invalid or missing sessions result in a redirect to the teacher index page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Function: \texttt{teacher\_profile}}\label{subsec:Teacherprofile-main}
+%-----------------------------------------------------------------------
+
+\subsection*{\texttt{teacher\_profile(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} View and update teacher profile data.
+    \item \textbf{Features:}
+    \begin{itemize}
+        \item Loads teacher information from both \texttt{TeacherReg} and \texttt{Teacher}.
+        \item Allows updating first name, last name, document, and profile photo.
+        \item Deletes old files (document/photo) when replaced with new ones.
+        \item Displays feedback messages on successful or failed updates.
+    \end{itemize}
+    \item \textbf{Vulnerability:}
+    \begin{itemize}
+        \item IDOR — accepts \texttt{?username=KP0001} to target another teacher’s data instead of using the session user.
+        \item CSRF disabled with \texttt{@csrf\_exempt}, allowing forged requests.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{download\_teacher\_document(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Allows teachers to download their uploaded documents.
+    \item \textbf{Features:}
+    \begin{itemize}
+        \item Retrieves the document from either \texttt{TeacherReg} or \texttt{Teacher}.
+        \item Returns the file as an attachment (\texttt{FileResponse}).
+        \item Handles missing files gracefully with error messages.
+    \end{itemize}
+    \item \textbf{Vulnerability:}
+    \begin{itemize}
+        \item IDOR — accepts \texttt{?username=KP0001} to download another teacher’s document.
+        \item CSRF disabled, allowing attackers to trick teachers into unintended downloads.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:Teacherprofile-vulnerability}
+%-----------------------------------------------------------------------
+This module deliberately demonstrates insecure practices:
+
+\begin{enumerate}
+    \item \textbf{CSRF bypass:} Both profile update and document download are exempt from CSRF checks.
+    \item \textbf{IDOR:} Query parameter \texttt{?username=} allows attackers to read or modify other teachers’ data.
+    \item \textbf{File upload restrictions bypass:}
+    \begin{itemize}
+        \item No server-side validation exists for file type or size.
+        \item Users can upload files larger than intended or with different types (e.g., PHP, JS), even if the frontend restricts input to PDFs under 1MB.
+        \item This could lead to malicious uploads, file execution, or server compromise.
+    \end{itemize}
+    \item \textbf{File handling risks:} Uploaded files are deleted/replaced directly on the filesystem, which may lead to race conditions or unintended deletions.
+    \item \textbf{Authorization gap:} Authorization is not strictly tied to the session user.
+\end{enumerate}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Admin Profile Module }
+\label{sec:impl:Adminprofile}
+%-----------------------------------------------------------------------
+The \texttt{admin\_profile.py} module allows administrators to view their profile information. Access is controlled via session-based authentication. The main code is located at: \texttt{/login/view/admin\_profile.py}
+
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Adminprofile-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django components}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect} for  template rendering and redirection.
+        \item \texttt{django.contrib.messages} for feedback messages for errors or notifications.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Login} table stores authentication credentials and role information.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required('Admin\_login')}  ensures only authenticated admins can access the profile page.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Adminprofile-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Admin\_login')} decorator enforces role-based access control. Only users with an active admin session can view the profile. Invalid sessions are flushed, and the user is redirected to the admin login page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Function}\label{subsec:Adminprofile-main}
+%-----------------------------------------------------------------------
+\textbf{admin\_profile(request)}
+\begin{itemize}
+    \item \textbf{Purpose:} Display the admin’s profile information.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Retrieves the current admin username from the session (\texttt{login\_username}).
+        \item Queries the \texttt{Login} table for a user with role 'Admin'.
+        \item Renders \texttt{admin\_profile.html} with the retrieved data.
+        \item If no record is found, displays an error message and redirects to the admin login page.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Adminprofile-vulnerability}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item \textbf{Session enforcement:} Only authenticated admins can access this page.
+    \item \textbf{Data exposure:} Only minimal profile information is shown.
+    \item \textbf{No deliberate vulnerabilities:} This module is considered secure; improper session handling could expose admin data.
+\end{itemize}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Announcement Management Module}
+\label{sec:impl:announcement}
+%-----------------------------------------------------------------------
+
+The \texttt{announcement.py} module manages announcements in the school application.
+It enables teachers to post announcements for their assigned subjects and class sections,
+while students can view announcements relevant to their enrolled classes.
+The main code module is located at \textit{/login/announcement.py}.
+
+This module also demonstrates insecure coding practices by introducing a Cross-Site Scripting (XSS) vulnerability.
+User-submitted announcement content is not properly sanitized, allowing malicious users to inject scripts into announcements,
+which can then be executed in the browser of other users.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:announcement-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.contrib.messages} for user-facing notifications.
+    \item \texttt{django.utils.timezone} for handling announcement timestamps.
+    \item Custom models from \textit{login.models}: \texttt{Announcement}, \texttt{TeacherAvailability}, \texttt{Student}, \texttt{ClassSection}, \texttt{Subject}.
+    \item Custom forms from \textit{login.forms}: \texttt{AnnouncementForm}, \texttt{AnnouncementFilterForm}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:announcement-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} enforces role-based access control.
+It ensures that only authenticated teachers can create announcements and only authenticated students can view them.
+If the session is invalid, it is flushed, and the user is redirected to the index page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:announcement-main}
+%-----------------------------------------------------------------------
+
+\subsubsection*{Teacher Workflows}
+\begin{itemize}
+    \item \textbf{Create Announcement} (\texttt{teacher\_create\_announcement}): Allows teachers to post announcements for their assigned subjects and class sections. 
+          The function validates that teachers cannot post outside of their scope.
+    \item \textbf{List Announcements} (\texttt{teacher\_announcements\_list}): Displays announcements created by the currently logged-in teacher, ordered by creation time.
+\end{itemize}
+
+\subsubsection*{Student Workflows}
+\begin{itemize}
+    \item \textbf{View Announcements} (\texttt{student\_announcements\_list}): Shows announcements relevant to a student's enrolled class section and subjects. 
+          Announcements are retrieved from the database, optionally filtered by subject, and displayed in reverse chronological order.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:announcement-vulnerability}
+%-----------------------------------------------------------------------
+This module introduces an intentional security weakness: improper input sanitization leading to Cross-Site Scripting (XSS).
+Malicious users could craft announcements containing embedded JavaScript code, which would then execute in the browsers of other users viewing the announcement.
+This highlights the risks of failing to escape or sanitize user-generated content in web applications.
+
+
+
+
+%-----------------------------------------------------------------------
+\section{Dashboard Management Module}
+\label{sec:impl:dashboard}
+%-----------------------------------------------------------------------
+
+The \texttt{dashboard.py} module implements the role-based dashboards of the school application.
+It defines separate dashboards for administrators, teachers, and students,
+with each view presenting functionalities specific to the logged-in role.
+The main code module is located at \textit{/login/dashboard.py}.
+
+This module demonstrates secure session validation practices by ensuring that each dashboard can only be accessed by an authenticated user of the correct role.
+Although no deliberate vulnerabilities are embedded in this file,
+misconfiguration of role checks or session handling could potentially expose sensitive functionalities.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:dashboard-dependencies}
+%-----------------------------------------------------------------------
+The module depends on the following Django components:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and handling redirects.
+    \item \texttt{django.views.decorators.cache.never\_cache} to prevent cached dashboard responses.
+    \item \texttt{functools.wraps} to preserve metadata when applying decorators.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:dashboard-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} validates that the user session contains the correct role key
+(\texttt{Admin\_login}, \texttt{Teacher\_login}, or \texttt{Student\_login}).
+If the session is invalid, it is flushed and the user is redirected to the application index.
+This enforces strict role-based access control to dashboards.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:dashboard-main}
+%-----------------------------------------------------------------------
+
+\subsubsection*{Administrator Dashboard}
+\begin{itemize}
+    \item \textbf{Admin Dashboard} (\texttt{admin\_dashboard}): Provides access to administrative features such as managing timetables, approving users, viewing logs, managing pinboards, and profile management.
+\end{itemize}
+
+\subsubsection*{Teacher Dashboard}
+\begin{itemize}
+    \item \textbf{Teacher Dashboard} (\texttt{teacher\_dashboard}): Offers functionality for teachers including posting questions, reviewing submissions, managing marks, viewing timetables, posting announcements, managing pinboards, and accessing their profile.
+\end{itemize}
+
+\subsubsection*{Student Dashboard}
+\begin{itemize}
+    \item \textbf{Student Dashboard} (\texttt{student\_dashboard}): Allows students to view marks, access questions and submissions, manage profiles, interact in Q\&A forums, view announcements and timetables, and use pinboards.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:dashboard-security}
+%-----------------------------------------------------------------------
+The module itself does not introduce explicit vulnerabilities.
+However, because dashboards aggregate access to critical features,
+any weakness in the session validation mechanism could expose privileged functionality to unauthorized users.
+Ensuring secure role checks and proper session handling is essential.
+
+
+
+%-----------------------------------------------------------------------
+\section{Error Management Module}
+\label{sec:impl:error-management}
+%-----------------------------------------------------------------------
+
+The \texttt{errormanagement.py} module centralizes error handling and session validation across the school application.
+It provides utilities for rendering templates safely and enforcing robust role-based session management.
+The main code module is located at \textit{/login/errormanagement.py}.
+
+By introducing structured error handling,
+this module reduces the likelihood of uncaught exceptions propagating to end users,
+and improves resilience against faulty templates, database errors, or session misuse.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:error-dependencies}
+%-----------------------------------------------------------------------
+The module depends on both Django core components and Python’s standard logging framework:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.http.HttpResponseServerError} for returning server error responses.
+    \item \texttt{django.core.exceptions.SuspiciousOperation} for handling invalid requests.
+    \item \texttt{django.db.DatabaseError} for handling database-related failures.
+    \item \texttt{django.contrib.messages} for user-facing notifications during session failures.
+    \item \texttt{django.views.decorators.cache.never\_cache} to prevent caching of session-sensitive views.
+    \item \texttt{django.template.TemplateDoesNotExist} for catching template resolution errors.
+    \item Python’s \texttt{logging} module for structured error logging.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Safe Rendering}\label{subsec:error-safe-render}
+%-----------------------------------------------------------------------
+The function \texttt{safe\_render()} wraps Django’s \texttt{render()} to provide fault-tolerant template rendering.
+It catches specific exceptions:
+\begin{itemize}
+    \item \textbf{TemplateDoesNotExist}: Logs the error and returns a generic server error response.
+    \item \textbf{Unhandled Exceptions}: Attempts to render a fallback \texttt{errors\_500.html} template with a user-friendly message.
+\end{itemize}
+If rendering the fallback template also fails, a plain \texttt{HttpResponseServerError} is returned.
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:error-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} extends the role-based access control mechanism by including error handling for:
+\begin{itemize}
+    \item \textbf{Expired or Invalid Sessions}: Flushes the session, notifies the user, and redirects to the index page.
+    \item \textbf{SuspiciousOperation}: Logs the incident as a warning, resets the session, and forces re-authentication.
+    \item \textbf{DatabaseError}: Logs the exception and renders an error page indicating a database failure.
+    \item \textbf{Other Exceptions}: Logs the error and displays a generic fallback message.
+\end{itemize}
+This approach ensures that critical issues are caught gracefully while preserving security and user awareness.
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:error-security}
+%-----------------------------------------------------------------------
+This module strengthens the overall security posture of the system by:
+\begin{itemize}
+    \item Preventing sensitive exception traces from being exposed to end users.
+    \item Handling suspicious sessions proactively to reduce session fixation and tampering risks.
+    \item Logging all unexpected errors for post-incident investigation.
+\end{itemize}
+Although no deliberate vulnerability is introduced here,
+improper configuration of error messages or logging could still leak sensitive information if not handled correctly.
+
+
+
+%-----------------------------------------------------------------------
+\section{Error Handler Module}
+\label{sec:impl:error-view}
+%-----------------------------------------------------------------------
+
+The \texttt{error\_view.py} module defines custom error handlers that provide user-friendly responses for common HTTP error conditions.
+It replaces default Django error pages with tailored templates that display meaningful messages to end users.
+The main code module is located at \textit{/login/error\_view.py}.
+
+This improves the user experience by avoiding exposure of raw error traces and ensures that system errors are logged for developers.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:error-view-dependencies}
+%-----------------------------------------------------------------------
+The module relies on:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts.render} for rendering error templates.
+    \item \texttt{django.http.HttpResponseServerError} for returning server error responses when rendering fails.
+    \item \texttt{django.conf.settings} for toggling debug-mode messages.
+    \item Python’s \texttt{logging} module for capturing error details during rendering failures.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Safe Error Rendering}\label{subsec:error-view-safe-render}
+%-----------------------------------------------------------------------
+The helper function \texttt{\_safe\_error\_render()} ensures resilience during error page rendering:
+\begin{itemize}
+    \item Attempts to render the requested error template with a user-friendly message.
+    \item Falls back to the \texttt{login/errors\_500.html} template if rendering fails.
+    \item As a last resort, returns a minimal \texttt{HttpResponseServerError}.
+\end{itemize}
+This layered approach guarantees that a response is always provided, even if templates are missing or misconfigured.
+
+%-----------------------------------------------------------------------
+\subsection{Custom Error Views}\label{subsec:error-view-main}
+%-----------------------------------------------------------------------
+The module defines four handlers for common HTTP error codes:
+
+\begin{itemize}
+    \item \textbf{400 Bad Request} (\texttt{custom\_bad\_request\_view}): Displays a message when the client request is malformed.
+    \item \textbf{403 Forbidden} (\texttt{custom\_permission\_denied\_view}): Alerts the user that they lack permission to access the requested resource.
+    \item \textbf{404 Not Found} (\texttt{custom\_page\_not\_found\_view}): Returns a user-friendly page when the requested resource does not exist.
+    \item \textbf{500 Internal Server Error} (\texttt{custom\_server\_error\_view}): Provides a fallback error page for unhandled server-side exceptions.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:error-view-security}
+%-----------------------------------------------------------------------
+This module enhances security by:
+\begin{itemize}
+    \item Preventing internal server details and stack traces from being exposed to end users.
+    \item Ensuring all errors are logged for developers without leaking sensitive system data.
+    \item Providing consistent and user-friendly error messages that minimize confusion for non-technical users.
+\end{itemize}
+Improper configuration of templates could still degrade user experience, but the layered fallback approach minimizes risk of blank or insecure error responses.
+
+
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Password Reset Module}
+\label{sec:impl:password-reset}
+%-----------------------------------------------------------------------
+
+The \texttt{password\_reset.py} module implements the multi-step password recovery process for users of the school application.
+It validates usernames, enforces security question checks, and allows verified users to securely reset their password.
+The main code module is located at \textit{/login/password\_reset.py}.
+
+This module demonstrates how user identity verification is enforced before allowing a password change, but also contains an intentional workflow weakness to illustrate poor security practices.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:password-reset-dependencies}
+%-----------------------------------------------------------------------
+The module depends on:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and redirects.
+    \item \texttt{django.contrib.messages} for providing user feedback.
+    \item \texttt{django.views.decorators.cache.never\_cache} to prevent caching of sensitive pages.
+    \item Models \texttt{Login} and \texttt{Login2} from \textit{login.models}.
+    \item Forms \texttt{ForgotPasswordForm}, \texttt{SecurityAnswerForm}, and \texttt{ResetPasswordForm} from \textit{login.forms}.
+    \item Utility function \texttt{simple\_hash} from \textit{login.views} for password hashing.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:password-reset-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required} decorator is reused in this module to enforce that intermediate steps (username verification and security question validation) are completed before accessing subsequent steps in the password reset flow.
+If the required session key is missing, the user is redirected back to the application index.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:password-reset-main}
+%-----------------------------------------------------------------------
+
+\subsubsection*{Step 1: Enter Username}
+\begin{itemize}
+    \item Function: \texttt{forgot\_password\_step1}
+    \item Clears any previous session state, accepts a username, and checks if it exists.
+    \item If valid, stores the username in the session and redirects to the security question step.
+\end{itemize}
+
+\subsubsection*{Step 2: Verify Security Question}
+\begin{itemize}
+    \item Function: \texttt{forgot\_password\_step2}
+    \item Fetches the stored username and prompts the user for the correct security question answer.
+    \item On successful validation, sets a session flag (\texttt{forgot\_verified}) and allows access to the reset page.
+    \item If no security question is configured, the user is redirected to the index with a warning.
+\end{itemize}
+
+\subsubsection*{Step 3: Reset Password}
+\begin{itemize}
+    \item Function: \texttt{forgot\_password\_step3}
+    \item Ensures that the username is valid and security verification is complete.
+    \item Accepts new password and confirmation, validates them, and applies a hash before saving.
+    \item Updates both \texttt{Login} and \texttt{Login2} model records for consistency.
+    \item On success, clears the session flags and redirects the user to the index page.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:password-reset-vulnerability}
+%-----------------------------------------------------------------------
+This module intentionally demonstrates a flawed password reset workflow:
+\begin{itemize}
+    \item The system may allow users without configured security questions to bypass the verification step, reducing overall account protection.
+    \item Passwords are saved both hashed (in \texttt{Login}) and in plaintext (in \texttt{Login2}), which is highly insecure and could lead to data exposure.
+    \item Custom hashing via \texttt{simple\_hash} is weaker than Django’s built-in password hashing framework, making it easier for attackers to crack stolen credentials.
+\end{itemize}
+
+This highlights the importance of enforcing consistent verification, securely storing passwords, and using proven hashing algorithms.
+
+
+%-----------------------------------------------------------------------
+\section{Login Module}
+\label{sec:impl:login}
+%-----------------------------------------------------------------------
+
+The \texttt{login.py} module implements the authentication system for the application. 
+It provides user login, logout, and activity logging functionality with role-based redirection. 
+The main code module is located at \textit{/login/login.py}.
+
+This module ensures that only authenticated users gain access to the system and that their activities are logged for accountability. 
+It also integrates error handling when access is denied or when log files are unavailable.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:login-dependencies}
+%-----------------------------------------------------------------------
+The module depends on:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.http.HttpResponse} for returning responses such as log file contents.
+    \item \texttt{login.models.Login} for accessing user credentials and roles.
+    \item \texttt{login.forms.NewLoginForm} for validating login inputs.
+    \item Utility function \texttt{simple\_hash} from \textit{login.views} for password hashing.
+    \item Error handlers from \textit{error\_views.py} for permission denial and missing resources.
+    \item Python’s \texttt{logging} module for recording login attempts.
+    \item Python’s \texttt{os} module for log file management.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:login-main}
+%-----------------------------------------------------------------------
+
+\subsubsection*{View Logs}
+\begin{itemize}
+    \item Function: \texttt{view\_logs}
+    \item Allows administrators to access login activity logs. 
+    \item Validates that the requesting user has admin privileges before serving the log file.
+    \item Unauthorized access attempts are blocked with a permission error.
+\end{itemize}
+
+\subsubsection*{Serve Log File}
+\begin{itemize}
+    \item Function: \texttt{serve\_log\_file}
+    \item Reads and displays the contents of the \texttt{login\_activity.log} file.
+    \item If the log file is missing, raises a custom ``Page Not Found'' error.
+\end{itemize}
+
+\subsubsection*{Index (Login Page)}
+\begin{itemize}
+    \item Function: \texttt{index}
+    \item Validates submitted credentials using \texttt{NewLoginForm}.
+    \item Compares entered passwords with stored hashes to authenticate users.
+    \item On success, assigns role-specific session variables and redirects to the appropriate dashboard (Admin, Teacher, or Student).
+    \item Logs both successful and failed login attempts for accountability.
+\end{itemize}
+
+\subsubsection*{Logout}
+\begin{itemize}
+    \item Function: \texttt{logout\_view}
+    \item Clears the user session completely and redirects to the index page.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:login-security}
+%-----------------------------------------------------------------------
+This module strengthens authentication by logging all login attempts and enforcing role-based access. 
+However, intentional weaknesses are present for demonstration purposes:
+\begin{itemize}
+    \item Passwords are hashed with a custom \texttt{simple\_hash} function, which is weaker than Django’s built-in password hasher and could be vulnerable to cracking.
+    \item Log files are stored on disk and displayed directly via HTTP without sanitization, which may expose sensitive information to unauthorized viewers if misconfigured.
+    \item Role-based session flags are used instead of Django’s more secure built-in authentication system, reducing overall robustness.
+\end{itemize}
+
+These weaknesses highlight the importance of using secure frameworks for password storage, log handling, and session management.
+
+
+
+
+
+
+%-------------------------------------------------------------------
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Marks Management Module}
+\label{sec:impl:marks}
+%-----------------------------------------------------------------------
+
+The \texttt{marks.py} module provides functionality for teachers to add marks for students and for students to view their marks.
+It supports role-based workflows: teachers can enter marks for a class and subject, while students can view their own marks with optional filtering and sorting.
+The main code module is located at \textit{/login/marks.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:marks-dependencies}
+%-----------------------------------------------------------------------
+The module relies on several Django components and Python standard libraries:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.contrib.messages} for user-facing notifications.
+    \item \texttt{django.views.decorators.cache.never\_cache} to prevent caching of sensitive pages.
+    \item \texttt{django.http.JsonResponse} for AJAX responses.
+    \item \texttt{django.shortcuts.get\_object\_or\_404} for safe object retrieval.
+    \item \texttt{datetime} and \texttt{json} from Python standard library.
+    \item Custom models from \textit{login.models}: \texttt{Student}, \texttt{Marks}, \texttt{ClassSection}, \texttt{Subject}, \texttt{TeacherAvailability}.
+    \item Custom forms from \textit{login.forms}: \texttt{EnterStudentMarksForm}, \texttt{SelectClassSubjectForm}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:marks-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} enforces role-based access control by checking session keys.
+It ensures that only authenticated users with the correct role (teacher or student) can access marks functionality.
+Invalid sessions are flushed, and the user is redirected to the application index.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:marks-main}
+%-----------------------------------------------------------------------
+The module contains several core functions, which can be grouped by teacher and student responsibilities:
+
+\subsubsection*{Teacher Workflows}
+\begin{itemize}
+    \item \textbf{Add Marks Step 1} (\texttt{add\_marks\_step1}): Allows teachers to select class, subject, exam type, exam date, and total marks for entering student results.
+    \item \textbf{Add Marks Step 2} (\texttt{add\_marks\_step2}): Enables teachers to input marks for all students in the selected class and subject. Prevents duplicate entries and validates input.
+\end{itemize}
+
+\subsubsection*{Student Workflows}
+\begin{itemize}
+    \item \textbf{View Marks} (\texttt{view\_marks}): Displays marks for the logged-in student. Provides filtering by subject and class section, and allows sorting by marks.
+    \item \textbf{Set Student Session from Storage} (\texttt{set\_sid\_from\_storage}): Updates the \texttt{student\_username} session variable via AJAX to synchronize frontend local storage with server session.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:marks-security}
+%-----------------------------------------------------------------------
+The module has potential security risks:
+
+\begin{itemize}
+    \item Students could manipulate session data to view other students’ marks.
+    \item Teachers might accidentally or maliciously enter marks for unauthorized classes or subjects.
+    \item Input validation prevents duplicate entries but does not fully prevent session tampering.
+\end{itemize}
+
+
+
+%-------------------------------------------------------------------
+
+%-------------------------------------------------------------------
+\section{Password Management Module}
+\label{sec:impl:password}
+%-----------------------------------------------------------------------
+
+The \texttt{password.py} module provides functionality for users to change their password and set or update a security question.
+It supports role-based workflows: all users (Admin, Teacher, Student) can update their password after entering the current password correctly, and optionally configure their security question.
+The main code module is located at \textit{IntegratedApplication/bobby/login/views/password.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:password-dependencies}
+%-----------------------------------------------------------------------
+The module relies on several Django components and custom forms:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and managing redirects.
+    \item \texttt{django.contrib.messages} for user-facing notifications.
+    \item Custom models from \textit{login.models}: \texttt{Login}, \texttt{Login2}.
+    \item Custom forms from \textit{login.forms}: \texttt{ChangePasswordForm}, \texttt{SecurityQuestionForm}.
+    \item Custom views/utilities from \textit{login.views}: \texttt{simple\_hash} for password hashing.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:password-session}
+%-----------------------------------------------------------------------
+Session management is handled implicitly by checking the \texttt{login\_username} and \texttt{current\_role} session variables.
+If a session is invalid or missing, the user is redirected to the login index page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:password-main}
+%-----------------------------------------------------------------------
+The module contains two core functions, which apply to all roles (Admin, Teacher, Student):
+
+\begin{itemize}
+    \item \textbf{Change Password} (\texttt{change\_password}): Allows a logged-in user to update their password. Validates the current password, ensures the new passwords match, updates the hashed password in both \texttt{Login} and \texttt{Login2} models, and provides success/error messages. All users follow the same workflow.
+    \item \textbf{Set/Update Security Question} (\texttt{security\_question}): Enables a user to configure or update their security question and answer. Validates input and stores the data in the \texttt{Login} model.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:password-security}
+%-----------------------------------------------------------------------
+Potential security risks include:
+
+\begin{itemize}
+    \item If session variables are manipulated, a user could potentially attempt unauthorized password changes.
+    \item No rate-limiting is implemented; repeated attempts could facilitate brute-force attacks.
+    \item Security question functionality is optional, and skipping it could leave accounts with weaker recovery options.
+\end{itemize}
+
+
+
+\section{Student Question Posting Module}
+\label{sec:impl:post-questions}
+%-----------------------------------------------------------------------
+
+The \texttt{post\_questions.py} module enables students to post questions to the learning platform.
+It ensures that only authenticated students can submit questions, and stores submissions in the database.
+The main code module is located at \textit{integratedApplication\bobby\login\views\post\_questions.py}.
+
+This functionality lays the foundation for an interactive environment, allowing students to engage actively and fostering communication and collaboration.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:post-questions-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components and custom forms/models:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts.render} for template rendering.
+    \item \texttt{django.shortcuts.redirect} for page redirection.
+    \item \texttt{django.shortcuts.get\_object\_or\_404} for safe object retrieval.
+    \item Custom models from \textit{login.models}: \texttt{Student}, \texttt{Question}.
+    \item Custom forms from \textit{login.forms}: \texttt{QuestionForm}.
+    \item Custom session management from \textit{login.views}: \texttt{session\_required} decorator.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:post-questions-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required} enforces that only authenticated students can access this functionality.
+Invalid or missing sessions result in redirection to the student login page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:post-questions-main}
+%-----------------------------------------------------------------------
+The module contains a single core function for student workflow:
+
+\begin{itemize}
+    \item \textbf{Post Question} (\texttt{post\_questions}): 
+    Validates the student's session, retrieves the logged-in student object, and handles form submission. 
+    On POST request, the question text is validated and saved to the \texttt{Question} model.
+    On GET request, an empty form is rendered for the student. Successful submissions redirect back to the student dashboard.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:post-questions-security}
+%-----------------------------------------------------------------------
+Potential security concerns include:
+
+\begin{itemize}
+    \item Malicious input in question text could lead to stored XSS attacks if not properly sanitized.
+    \item Session tampering could allow unauthorized users to attempt posting, though the decorator mitigates this risk.
+    \item No rate-limiting or spam prevention, allowing repeated submissions.
+\end{itemize}
+
+
+
+
+
+
+\section{Search Module}
+\label{sec:impl:search}
+%-----------------------------------------------------------------------
+
+The \texttt{search.py} module provides search functionality for students and teachers. 
+It allows users to search for other students or teachers based on name queries.
+The main code module is located at \textit{integratedApplication/ bobby/ login/views/ search.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:search-dependencies}
+%-----------------------------------------------------------------------
+The module relies on several Django components and custom forms/models:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts.render} for rendering templates.
+    \item \texttt{django.db.connection} for executing raw SQL queries.
+    \item Custom models from \textit{login.models}: \texttt{Student}, \texttt{Teacher}.
+    \item Custom forms from \textit{login.forms}: \texttt{SearchFormStudent}, \texttt{SearchFormTeacher}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:search-session}
+%-----------------------------------------------------------------------
+No session decorator is applied in this module; it is assumed that access is controlled via higher-level authentication checks.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:search-main}
+%-----------------------------------------------------------------------
+The module contains two primary functions, one for searching student and one for searching teacher. These functions handle the search workflow, form validation, query execution, and result rendering.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:search-main}
+%-----------------------------------------------------------------------
+The module contains two primary functions, one for student searches and one for teacher searches. These functions handle the search workflow, form validation, query execution, and result rendering.
+
+\subsubsection*{Student Search Workflow (\texttt{search\_student})}
+\begin{itemize}
+    \item Displays a search form to the user.
+    \item Accepts a name query submitted via POST request.
+    \item Constructs and executes a raw SQL query on the \texttt{login\_student} table to find matches by \texttt{student\_first\_name}.
+    \item Retrieves query results and formats them as dictionaries.
+    \item Renders the \texttt{login/search.html} template with the form, search results, and query.
+\end{itemize}
+
+\subsubsection*{Teacher Search Workflow (\texttt{search\_teacher})}
+\begin{itemize}
+    \item Displays a search form to the user.
+    \item Accepts a name query submitted via POST request.
+    \item Constructs and executes a raw SQL query on the \texttt{login\_teacher} table to find matches by \texttt{firstname}.
+    \item Retrieves query results and formats them as dictionaries.
+    \item Renders the \texttt{login/search\_teacher.html} template with the form, search results, and query.
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:search-security}
+%-----------------------------------------------------------------------
+The module contains a significant security vulnerability:
+
+\begin{itemize}
+    \item The use of raw SQL queries with direct string interpolation exposes the application to SQL Injection attacks.
+    \item User input is not sanitized or parameterized, allowing malicious users to manipulate queries and potentially access unauthorized data.
+\end{itemize}
+
+
+
+\section{Student Registration Module}
+\label{sec:impl:student-registration}
+%-----------------------------------------------------------------------
+
+The \texttt{student\_registration.py} module provides functionality for new students to register via an online form. 
+The registration workflow includes form submission, CAPTCHA validation, and database entry of student details. 
+The CAPTCHA is intended to prevent automated submissions, but its implementation contains a deliberate vulnerability. 
+The main code module is located at \textit{integratedApplication\textbackslash bobby\textbackslash login\textbackslash views\textbackslash student\_registration.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:student-registration-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components, libraries, and custom models/forms:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and handling redirects.
+    \item \texttt{django.contrib.messages} for user notifications.
+    \item \texttt{django.core.cache} for storing and retrieving CAPTCHA reuse attempts.
+    \item \texttt{django.http.JsonResponse} for returning JSON responses in replay attack scenarios.
+    \item \texttt{time} from Python standard library for timestamp tracking.
+    \item \texttt{captcha.models.CaptchaStore} and \texttt{captcha.helpers.captcha\_image\_url} for CAPTCHA generation and validation.
+    \item Custom model from \texttt{login.models}: \texttt{StudentReg}.
+    \item Custom form from \texttt{login.forms}: \texttt{StudentRegistration}.
+    \item Custom helper: \texttt{validate\_captcha\_manual} for manual CAPTCHA verification.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:student-registration-session}
+%-----------------------------------------------------------------------
+No session decorator is applied in this module, as registration is intended for new, unauthenticated users.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:student-registration-main}
+%-----------------------------------------------------------------------
+The module contains a single core function:
+
+\subsubsection*{Student Workflow (\texttt{student\_registration})}
+\begin{itemize}
+    \item Displays the student registration form along with a CAPTCHA challenge.
+    \item Accepts POST submissions and performs manual CAPTCHA validation.
+    \item Tracks CAPTCHA reuse attempts within a defined time window (20 seconds).
+    \item If CAPTCHA is reused more than the limit, responds with a JSON message confirming replay attack success.
+    \item If the form is valid, stores student information (\texttt{firstname}, \texttt{lastname}, \texttt{dob}, \texttt{gender}, \texttt{email}, \texttt{classlevel}) in the \texttt{StudentReg} table.
+    \item Returns success notifications and redirects the student upon successful registration.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:student-registration-security}
+%-----------------------------------------------------------------------
+This module intentionally implements CAPTCHA in a vulnerable way:
+
+\begin{itemize}
+    \item The same CAPTCHA response can be reused multiple times within a 20-second window.
+    \item This design enables replay attacks, allowing attackers to bypass CAPTCHA protection.
+    \item Exploiting this vulnerability, attackers can flood the system with fake registrations, leading to spam data, resource exhaustion, and database integrity issues.
+\end{itemize}
+
+
+\section{Student Timetable Module}
+\label{sec:impl:student-timetable}
+%-----------------------------------------------------------------------
+
+The \texttt{student\_timetable.py} module provides functionality for students to view their academic timetable. 
+It ensures that only authenticated students can access timetable data by validating sessions before fetching records. 
+The function retrieves the logged-in student’s class level and matches it with timetable entries, optionally filtering by day. 
+The main code module is located at \textit{integratedApplication\textbackslash bobby\textbackslash login\textbackslash views\textbackslash student\_timetable.py}.
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:student-timetable-dependencies}
+%-----------------------------------------------------------------------
+The module depends on the following Django components and models:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts.render} for rendering templates.
+    \item Custom models from \texttt{login.models}: \texttt{Student}, \texttt{TimetableEntry}.
+    \item Custom decorator from \texttt{login.views}: \texttt{session\_required}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:student-timetable-session}
+%-----------------------------------------------------------------------
+The decorator \texttt{session\_required('Student\_login')} enforces that only authenticated students with valid sessions can access the timetable view. 
+If the session is invalid or expired, the function returns an error message to the frontend.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:student-timetable-main}
+%-----------------------------------------------------------------------
+The module contains a single core function responsible for rendering student timetables:
+
+\subsubsection*{Student Workflow (\texttt{student\_timetable\_view})}
+\begin{itemize}
+    \item Retrieves the logged-in student’s username from the session.
+    \item Validates that the username exists in the \texttt{Student} table; otherwise, returns an error message.
+    \item Extracts the student’s \texttt{classlevel} and queries the \texttt{TimetableEntry} model for matching timetable records.
+    \item Optionally filters timetable entries by day if a day parameter is provided in the request.
+    \item Optimizes query performance by using \texttt{select\_related} to fetch related objects such as subject, teacher, room, timeslot, and class section in a single query.
+    \item Renders the \texttt{login/student\_timetable.html} template with timetable entries, available days, the selected day, and the student’s class information.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:student-timetable-security}
+%-----------------------------------------------------------------------
+The module does not explicitly introduce intentional vulnerabilities. 
+However, possible concerns include:
+
+\begin{itemize}
+    \item Insufficient input validation on the optional \texttt{day} parameter could lead to unexpected behavior if improperly handled.
+    \item Debugging statements (e.g., \texttt{print}) expose internal information, which should be removed in production environments to prevent information leakage.
+\end{itemize}
+
+
+
+
+
+\section{Teacher Registration Module}
+\label{sec:impl:teacher-registration}
+%-----------------------------------------------------------------------
+
+The \texttt{teacher\_registration.py} module provides functionality for registering new teachers via an online form. 
+The workflow includes form submission, CAPTCHA validation, and file upload handling. 
+The module demonstrates both CAPTCHA replay vulnerabilities and weak file validation practices, highlighting security pitfalls in registration systems. 
+The main code module is located at \textit{integratedApplication\textbackslash bobby\textbackslash login\views\textbackslash teacher\_registration.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:teacher-registration-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components, libraries, and custom models/forms:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and handling redirects.
+    \item \texttt{django.contrib.messages} for user notifications.
+    \item \texttt{django.core.cache} for tracking CAPTCHA reuse attempts.
+    \item \texttt{django.http.JsonResponse} for returning JSON responses during replay attack confirmation.
+    \item \texttt{time} from Python standard library for timestamp tracking.
+    \item \texttt{captcha.models.CaptchaStore} and \texttt{captcha.helpers.captcha\_image\_url} for CAPTCHA generation and validation.
+    \item Custom model from \texttt{login.models}: \texttt{TeacherReg}.
+    \item Custom form from \texttt{login.forms}: \texttt{TeacherRegistration}.
+    \item Custom helper: \texttt{validate\_captcha\_manual} for manual CAPTCHA verification.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:teacher-registration-session}
+%-----------------------------------------------------------------------
+No session decorator is applied in this module, as teacher registration is intended for new, unauthenticated users.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:teacher-registration-main}
+%-----------------------------------------------------------------------
+The module contains a single core function:
+
+\subsubsection*{Teacher Workflow (\texttt{teacher\_registration})}
+\begin{itemize}
+    \item Displays the teacher registration form along with a CAPTCHA challenge.
+    \item Accepts POST submissions and performs manual CAPTCHA validation.
+    \item Tracks CAPTCHA reuse attempts within a defined time window (20 seconds).
+    \item If CAPTCHA is reused more than the limit, responds with a JSON message confirming replay attack success.
+    \item Validates submitted teacher details and saves them to the \texttt{TeacherReg} table.
+    \item Handles optional file uploads:
+    \begin{itemize}
+        \item Checks if the uploaded file extension matches allowed formats (\texttt{.jpg}, \texttt{.png}, \texttt{.pdf}, \texttt{.doc}, \texttt{.docx}, \texttt{.jpeg}).
+        \item Ensures that file size does not exceed 7 MB.
+        \item Associates the valid uploaded document with the teacher’s record.
+    \end{itemize}
+    \item Returns success notifications and redirects to the homepage upon successful registration.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:teacher-registration-security}
+%-----------------------------------------------------------------------
+This module contains two intentional vulnerabilities:
+
+\begin{itemize}
+    \item \textbf{CAPTCHA Replay Attack:} The CAPTCHA validation allows the same token to be reused multiple times within a short time window, enabling attackers to bypass CAPTCHA protection and flood the system with fake registrations.
+    \item \textbf{Weak File Validation:} The file upload validation only checks extensions and size. This approach can be easily bypassed (e.g., by renaming a malicious executable to a valid extension), leading to potential remote code execution or malware storage.
+\end{itemize}
+
+
+
+
+\section{Timetable Management Module}
+\label{sec:impl:timetable-management}
+%-----------------------------------------------------------------------
+
+The \texttt{timetable\_management.py} module provides functionality for administrators and teachers to manage and view timetables. 
+Administrators can add requirements (subjects, teachers, class sections, rooms, and timeslots), generate timetables based on these inputs, and view class schedules. 
+Teachers can log in to view their assigned timetables. 
+The main code module is located at \textit{integratedApplication\textbackslash bobby\textbackslash login\views\textbackslash timetable\_management.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:timetable-management-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components, models, and forms:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and handling redirects.
+    \item \texttt{django.db.models} for ORM-based queries and filtering.
+    \item \texttt{random} from Python standard library for randomized timetable slot assignments.
+    \item Custom models from \texttt{login.models}: 
+    \texttt{TimetableEntry}, \texttt{ClassSection}, \texttt{Subject}, \texttt{TeacherAvailability}, \texttt{Room}, \texttt{TimeSlot}.
+    \item Custom forms from \texttt{login.forms}: 
+    \texttt{SubjectForm}, \texttt{TeacherForm}, \texttt{ClassSectionForm}, \texttt{RoomForm}, \texttt{TimeSlotForm}.
+    \item Custom session management decorator from \texttt{login.views}: \texttt{session\_required}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:timetable-management-session}
+%-----------------------------------------------------------------------
+All views in this module are protected by the \texttt{session\_required} decorator:
+\begin{itemize}
+    \item Administrator views require the session type \texttt{'Admin\_login'}.
+    \item Teacher views require the session type \texttt{'Teacher\_login'}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:timetable-management-main}
+%-----------------------------------------------------------------------
+
+\subsubsection*{Administrator Workflows}
+\begin{itemize}
+    \item \textbf{Create Timetable} (\texttt{create\_timetable}): Displays the timetable creation homepage.
+    \item \textbf{Add Subject} (\texttt{add\_subject}): Provides a form to add new subjects to the system.
+    \item \textbf{Add Teacher} (\texttt{add\_teacher}): Allows adding teacher details.
+    \item \textbf{Add Class Section} (\texttt{add\_classsection}): Facilitates creation of new class sections.
+    \item \textbf{Add Room} (\texttt{add\_room}): Allows the administrator to add rooms with specified types.
+    \item \textbf{Add Time Slot} (\texttt{add\_timeslot}): Adds available time slots to the schedule pool.
+    \item \textbf{Generate Timetable View} (\texttt{generate\_timetable\_view}): Invokes the timetable generation process and displays any unmet requirements (failures).
+    \item \textbf{Admin Timetable View} (\texttt{admin\_timetable\_view}): Displays timetables with filtering options by class, subject, teacher, and day.
+\end{itemize}
+
+\subsubsection*{Teacher Workflows}
+\begin{itemize}
+    \item \textbf{Teacher Timetable View} (\texttt{teacher\_timetable\_view}): Retrieves the logged-in teacher’s assigned timetable, with an option to filter by day.
+\end{itemize}
+
+\subsubsection*{Timetable Generation Logic}
+\begin{itemize}
+    \item \textbf{Generate Timetable} (\texttt{generate\_timetable}):
+    \begin{itemize}
+        \item Clears existing timetable entries.
+        \item Randomly assigns subjects, teachers, rooms, and timeslots to meet weekly requirements.
+        \item Enforces teacher constraints such as maximum daily and weekly load.
+        \item Ensures no conflicts in room, teacher, or class section assignments.
+        \item Returns a list of failures for unassigned periods (if requirements cannot be fully met).
+    \end{itemize}
+\end{itemize}
+
+%-------------------------------------------------------------------%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:timetable-management-security}
+%-----------------------------------------------------------------------
+This module does not contain any deliberate or intentional vulnerabilities. 
+However, certain operational limitations may pose risks if not managed carefully:
+
+\begin{itemize}
+    \item The random assignment of teachers, rooms, and timeslots may lead to inefficiencies or unfair workloads without additional scheduling constraints.
+    \item The module relies on session-based access control; secure session management at the framework level is essential to prevent unauthorized access.
+\end{itemize}
+
+
+
+
+
+
+\section{Manual CAPTCHA Validation Module}
+\label{sec:impl:captcha-validation}
+%-----------------------------------------------------------------------
+
+The \texttt{validate\_captcha\_manual.py} module provides a helper function for validating 
+CAPTCHA responses submitted by users. It checks the provided CAPTCHA response against 
+entries stored in Django's \texttt{CaptchaStore}. This function is used by other modules 
+such as student and teacher registration to verify CAPTCHA inputs. 
+The main code module is located at \texttt{\detokenize{view/validate_captcha_manual.py}}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:captcha-validation-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following components:
+
+\begin{itemize}
+    \item \texttt{captcha.models.CaptchaStore} for retrieving stored CAPTCHA entries.
+    \item \texttt{captcha.helpers.captcha\_image\_url} for generating the image URL (though not directly used in validation).
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:captcha-validation-session}
+%-----------------------------------------------------------------------
+No session decorator is applied in this module, as it serves purely as a helper function 
+for CAPTCHA validation and is not directly exposed as a user-facing view.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:captcha-validation-main}
+%-----------------------------------------------------------------------
+The module contains a single core function:
+
+\subsubsection*{Function Workflow (\texttt{validate\_captcha\_manual})}
+\begin{itemize}
+    \item Accepts a CAPTCHA ID (\texttt{captcha\_id}) and user-provided response (\texttt{captcha\_response}).
+    \item Retrieves the corresponding CAPTCHA entry from the \texttt{CaptchaStore}.
+    \item Validates the response against the stored CAPTCHA value.
+    \item Returns \texttt{True} if the response matches, otherwise returns \texttt{False}.
+    \item Handles cases where the CAPTCHA entry does not exist by returning \texttt{False}.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:captcha-validation-security}
+%-----------------------------------------------------------------------
+This helper module does not introduce any direct security vulnerabilities on its own. 
+It is a utility function designed for input validation and relies on Django's 
+\texttt{CaptchaStore} for secure storage and retrieval of CAPTCHA entries.
+
+%-----------------------------------------------------------------------
+\section{Announcements Module}
+\label{sec:impl:announcements}
+%-----------------------------------------------------------------------
+
+The \texttt{view\_announcement.py} module provides functionality for students to view 
+teacher announcements and interact with them through an upvote/downvote feature. 
+It serves as the foundation of an interactive student announcement system, 
+enabling transparent communication and feedback between teachers and students. 
+The main code module is located at \texttt{\detokenize{views/view_announcement.py}}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:announcements-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components and models:
+
+\begin{itemize}
+    \item \texttt{django.shortcuts} for rendering templates and handling redirects.
+    \item \texttt{django.db.models.Count, Q} for database aggregation and filtering.
+    \item \texttt{login.models.TeacherAnnouncement} for storing announcements.
+    \item \texttt{login.models.AnnouncementVote} for tracking student votes on announcements.
+    \item \texttt{login.models.Student} for identifying the logged-in student.
+    \item Custom decorator: \texttt{session\_required} for enforcing session-based access control.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:announcements-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Student\_login')} decorator ensures that only authenticated 
+students can access the announcement view. If the session is invalid or missing, 
+the user is redirected to the login page.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:announcements-main}
+%-----------------------------------------------------------------------
+The module contains one primary view function:
+
+\subsubsection*{Student Workflow (\texttt{view\_announcement})}
+\begin{itemize}
+    \item Retrieves the current student's username from the session.
+    \item Ensures that the username exists, otherwise redirects the student to the login page.
+    \item Fetches the \texttt{Student} object corresponding to the username.
+    \item Queries all \texttt{TeacherAnnouncement} objects, annotating each with 
+    the total number of upvotes and downvotes.
+    \item Retrieves the student's existing votes (\texttt{AnnouncementVote}) to indicate 
+    their voting status.
+    \item Organizes the student's votes into a dictionary for efficient template rendering.
+    \item Prepares a dictionary mapping announcement IDs to vote counts.
+    \item Renders the \texttt{view\_announcement.html} template with announcements, 
+    vote counts, and student vote information.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:announcements-security}
+%-----------------------------------------------------------------------
+This module does not introduce direct security vulnerabilities. 
+The use of session-based access control ensures that only logged-in students 
+can view and vote on announcements. However, input validation and vote 
+submission logic must be carefully handled in complementary modules to 
+prevent issues such as vote tampering or duplicate voting.
+
+
+
+
+\section{Vote Announcement Module}
+\label{sec:impl:vote-announcement}
+%-----------------------------------------------------------------------
+
+The \texttt{vote\_announcement.py} module provides functionality for students to submit votes 
+(upvote or downvote) on teacher announcements. The module processes POST requests containing 
+JSON data, validates the vote, records it in the database, and returns updated vote counts as a 
+JSON response. This function is part of the interactive student announcement and voting system. 
+The main code module is located at \url{integratedApplication/bobby/login/views/vote_announcement.py}.
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:vote-announcement-dependencies}
+%-----------------------------------------------------------------------
+The module relies on the following Django components and models:
+
+\begin{itemize}
+    \item \texttt{django.http.JsonResponse} for returning JSON responses.
+    \item \texttt{json} from Python standard library for parsing request payloads.
+    \item \texttt{login.models.AnnouncementVote} for storing votes.
+    \item \texttt{login.models.TeacherAnnouncement} for identifying announcements.
+    \item \texttt{login.models.Student} for identifying the logged-in student.
+    \item Custom decorator: \texttt{session\_required} for enforcing session-based access control.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:vote-announcement-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Student\_login')} decorator ensures that only authenticated 
+students can submit votes. If the session is invalid or missing, the user cannot perform voting actions.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:vote-announcement-main}
+%-----------------------------------------------------------------------
+The module contains a single primary view function:
+
+\subsubsection*{Student Workflow (\texttt{vote\_announcement})}
+\begin{itemize}
+    \item Accepts a POST request with JSON data specifying the \texttt{announcement\_id} and \texttt{vote\_type} ('upvote' or 'downvote').
+    \item Validates the vote type to ensure it is either 'upvote' or 'downvote'.
+    \item Retrieves the currently logged-in student from the session.
+    \item Fetches the corresponding \texttt{Student} and \texttt{TeacherAnnouncement} objects.
+    \item Records the vote in the \texttt{AnnouncementVote} table.
+    \item Computes the updated counts of upvotes and downvotes for the announcement.
+    \item Returns a JSON response containing the status, message, and updated vote counts.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Weakness}\label{subsec:vote-announcement-security}
+%-----------------------------------------------------------------------
+This module contains a notable security vulnerability:
+
+\begin{itemize}
+    \item It does not prevent a student from submitting multiple votes on the same announcement.
+    \item As a result, a user can cast repeated votes, potentially skewing the vote counts.
+    \item Exploiting this vulnerability can manipulate perceived popularity or importance of announcements.
+    \item Proper mitigation would include checking for an existing vote by the student before creating a new entry or allowing vote updates instead of duplicates.
+\end{itemize}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Admin Pinboard  Module }
+\label{sec:impl:Admin Pinboard}
+%-----------------------------------------------------------------------
+The \texttt{admin\_pinboard.py} module allows administrators to create and view pinboard announcements. 
+The main code is located at: \texttt{/login/view/admin\_pinboard.py} functions: \texttt{create\_pinboard}, \texttt{pinboard\_list\_admin}.
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Admin Pinboard -dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django components}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render}, \texttt{redirect} for template rendering and redirection.
+        \item \texttt{django.contrib.messages} for user notifications for successful or failed actions.
+        \item \texttt{django.core.paginator.Paginator} for handling paginated display of announcements.
+        \item \texttt{django.views.decorators.cache.never\_cache} to prevent caching of pinboard pages.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Pinboard} tablestores announcements and metadata.
+        \item \texttt{Teacher} and \texttt{Student} tables are used to display creator names.
+    \end{itemize}
+
+    \item \textbf{Project forms}
+    \begin{itemize}
+        \item \texttt{PinboardForm}  validates admin input for announcements.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required('Admin\_login')} — ensures only admins can create/view announcements.
+    \end{itemize}
+\end{itemize}
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Admin Pinboard -session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Admin\_login')} decorator enforces role-based access control. Only authenticated admins can create or view pinboard announcements. Invalid sessions are flushed, and the user is redirected to the admin login page.
+
+The \texttt{@never\_cache} decorator ensures that paginated announcements are always fetched fresh, preventing sensitive data from being stored in the cache.
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:Admin Pinboard -main}
+%-----------------------------------------------------------------------
+
+\subsection*{\texttt{create\_pinboard(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Allow admins to post new announcements to the pinboard.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Handles POST requests containing \texttt{PinboardForm} data.
+        \item Valid form data is saved, with the \texttt{created\_by} field set from the current session username.
+        \item Provides success feedback and redirects to the pinboard list.
+        \item For GET requests, renders an empty form for input.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{pinboard\_list\_admin(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Display a paginated list of pinboard announcements for the admin.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Calls the common renderer \texttt{pinboard\_list\_common} with role 'Admin'.
+        \item Announcements are sorted in reverse chronological order.
+        \item Display names are resolved using \texttt{get\_display\_name}, combining first/last names of students or teachers, or a default name for admins.
+        \item Pagination is set to 10 announcements per page.
+        \item The back link is dynamically set to the admin dashboard URL.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{pinboard\_list\_common(request, role)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Shared renderer for pinboard listings (Admin, Teacher, Student).
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Annotates announcements with \texttt{display\_name} based on creator.
+        \item Handles pagination.
+        \item Determines dashboard URL for navigation based on role.
+        \item Renders the common template \texttt{pinboard\_list.html}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{get\_display\_name(username)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Helper function to display a readable name for the announcement creator.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Checks if username is an admin (\texttt{ADM*}).
+        \item Queries the \texttt{Student} or \texttt{Teacher} model for matching names.
+        \item Defaults to the raw username if no match found.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Admin Pinboard -vulnerability}
+%-----------------------------------------------------------------------
+Intentional vulnerabilities are not present in this module.
+\begin{itemize}
+    \item \textbf{Template escaping:} Ensure announcement text is escaped to prevent stored Cross-Site Scripting (XSS).
+    \item \textbf{Session enforcement:} Only authenticated admins can access creation and listing views.
+    \item \textbf{Pagination:} Prevents overloading the interface with large datasets.
+    \item \textbf{No explicit file uploads:} Not applicable here, so no file validation needed.
+\end{itemize}
+
+
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Student Pinboard Module }
+\label{sec:impl:Student Pinboard rofile}
+%-----------------------------------------------------------------------
+The \texttt{student\_pinboard.py} module allows students to view the pinboard announcements posted by admins or other authorized users. The main code is located at: \texttt{/login/view/student\_pinboard.py} — function: \texttt{pinboard\_list\_student}.
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Student Pinboard -dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django components}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render} for template rendering.
+        \item \texttt{django.core.paginator.Paginator} for handling paginated display of announcements.
+        \item \texttt{django.views.decorators.cache.never\_cache} to ensure fresh data for each page load.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Pinboard} table which stores announcements.
+        \item \texttt{Teacher} and \texttt{Student} tables are used to display creator names.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required('Student\_login')}  ensures only logged-in students can view announcements.
+    \end{itemize}
+\end{itemize}
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Student Pinboard-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Student\_login')} decorator enforces role-based access control. Only authenticated students can view the pinboard list. Invalid sessions are flushed, and the user is redirected to the student login page.
+
+The \texttt{@never\_cache} decorator ensures that paginated announcements are always fetched fresh, preventing caching of old announcements.
+
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:Studen Pinboard-main}
+%-----------------------------------------------------------------------
+
+\subsection*{\texttt{pinboard\_list\_student(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Display a paginated list of pinboard announcements for students.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Calls the common renderer \texttt{pinboard\_list\_common} with role 'Student'.
+        \item Announcements are sorted in reverse chronological order.
+        \item Display names are resolved using \texttt{get\_display\_name}, combining first/last names of students or teachers, or a default name for admins.
+        \item Pagination is set to 10 announcements per page.
+        \item The back link is dynamically set to the student dashboard URL.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{pinboard\_list\_common(request, role)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Shared renderer for pinboard listings (Admin, Teacher, Student).
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Annotates announcements with \texttt{display\_name} based on the creator.
+        \item Handles pagination.
+        \item Determines dashboard URL for navigation based on role.
+        \item Renders the common template \texttt{pinboard\_list.html}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{get\_display\_name(username)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Helper function to display a readable name for the announcement creator.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Checks if username is an admin (\texttt{ADM*}).
+        \item Queries the \texttt{Student} or \texttt{Teacher} model for matching names.
+        \item Defaults to the raw username if no match found.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Student Pinboard-vulnerability}
+%-----------------------------------------------------------------------
+Intentional vulnerabilities are not present in this module.
+\begin{itemize}
+    \item \textbf{Read-only access:} Students cannot create, edit, or delete announcements.
+    \item \textbf{Template escaping:} Ensure announcement text is escaped to prevent stored XSS.
+    \item \textbf{Session enforcement:} Only authenticated students can access this view.
+    \item \textbf{Pagination:} Prevents overloading the interface with large datasets.
+\end{itemize}
+
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Teacher Pinboard Module }
+\label{sec:impl teacher profile}
+%-----------------------------------------------------------------------
+The \texttt{teacher\_pinboard.py} module allows teachers to view the pinboard announcements posted by admins or other authorized users. The main code is located at: \texttt{/login/view/teacher\_pinboard.py} — function: \texttt{pinboard\_list\_teacher}.
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:teacher Pinboard-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django components}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render} — template rendering.
+        \item \texttt{django.core.paginator.Paginator} — handles paginated display of announcements.
+        \item \texttt{django.views.decorators.cache.never\_cache} — ensures fresh data for each page load.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Pinboard} — stores announcements.
+        \item \texttt{Teacher} and \texttt{Student} — used to display creator names.
+    \end{itemize}
+
+    \item \textbf{Project decorators}
+    \begin{itemize}
+        \item \texttt{session\_required('Teacher\_login')} — ensures only logged-in teachers can view announcements.
+    \end{itemize}
+\end{itemize}
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:teacher Pinboard-session}
+%-----------------------------------------------------------------------
+The \texttt{session\_required('Teacher\_login')} decorator enforces role-based access control. Only authenticated teachers can view the pinboard list. Invalid sessions are flushed, and the user is redirected to the teacher login page.
+
+The \texttt{@never\_cache} decorator ensures that paginated announcements are always fetched fresh, preventing caching of old announcements.
+
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:teacher Pinboard-main}
+%-----------------------------------------------------------------------
+
+\subsection*{\texttt{pinboard\_list\_teacher(request)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Display a paginated list of pinboard announcements for teachers.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Calls the common renderer \texttt{pinboard\_list\_common} with role 'Teacher'.
+        \item Announcements are sorted in reverse chronological order.
+        \item Display names are resolved using \texttt{get\_display\_name}, combining first/last names of students or teachers, or a default name for admins.
+        \item Pagination is set to 10 announcements per page.
+        \item The back link is dynamically set to the teacher dashboard URL.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{pinboard\_list\_common(request, role)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Shared renderer for pinboard listings (Admin, Teacher, Student).
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Annotates announcements with \texttt{display\_name} based on the creator.
+        \item Handles pagination.
+        \item Determines dashboard URL for navigation based on role.
+        \item Renders the common template \texttt{pinboard\_list.html}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{get\_display\_name(username)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Helper function to display a readable name for the announcement creator.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Checks if username is an admin (\texttt{ADM*}).
+        \item Queries the \texttt{Student} or \texttt{Teacher} model for matching names.
+        \item Defaults to the raw username if no match found.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:teacher Pinboard-vulnerability}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item \textbf{Read-only access:} Teachers cannot create, edit, or delete announcements.
+    \item \textbf{Template escaping:} Ensure announcement text is escaped to prevent stored XSS.
+    \item \textbf{Session enforcement:} Only authenticated teachers can access this view.
+    \item \textbf{Pagination:} Prevents overloading the interface with large datasets.
+\end{itemize}
+
+%-------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Pinboard Detail And Comments  Module }
+\label{sec:impl:Pinboard Detail & Comments }
+%-----------------------------------------------------------------------
+The \texttt{pinboard\_detail.py} module allows users to view a single pinboard announcement and its associated comments. Logged-in users (Admin, Teacher, Student) can post comments. The main code is located at: \texttt{/login/view/pinboard\_detail.py}.
+
+
+
+
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:Pinboard Detail And Comments-dependencies}
+%-----------------------------------------------------------------------
+The module depends on several Django components and custom models/forms:
+
+\begin{itemize}
+    \item \textbf{Django components}
+    \begin{itemize}
+        \item \texttt{django.shortcuts.render, redirect, get\_object\_or\_404} — for template rendering and record lookup.
+        \item \texttt{django.views.decorators.cache.never\_cache} — ensures the page always shows fresh comments.
+    \end{itemize}
+
+    \item \textbf{Project models}
+    \begin{itemize}
+        \item \texttt{Pinboard} — announcement model, with related comments.
+        \item \texttt{Teacher} and \texttt{Student} — used to display the commenter’s name.
+    \end{itemize}
+
+    \item \textbf{Project forms}
+    \begin{itemize}
+        \item \texttt{PinboardCommentForm} — handles comment submission.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Session Decorator}\label{subsec:Pinboard Detail And Comments-session}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item \texttt{@never\_cache} ensures users see the latest comments without relying on browser cache.
+    \item Comment posting relies on session keys (\texttt{Admin\_login}, \texttt{Teacher\_login}, \texttt{Student\_login}) to associate the comment with the correct user.
+    \item If no valid session exists, comments are marked as Anonymous.
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:Pinboard Detail And Comments-main}
+%-----------------------------------------------------------------------
+\subsection*{\texttt{pinboard\_detail(request, pk)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Display a single pinboard announcement and all its comments.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Retrieves the announcement using its primary key (\texttt{pk}).
+        \item Populates \texttt{display\_name} for the creator and all commenters using \texttt{get\_display\_name}.
+        \item Orders comments chronologically.
+        \item Handles POST requests to add a new comment:
+        \begin{itemize}
+            \item Determines the current user based on session.
+            \item \textbf{VULNERABLE:} Raw user input is saved directly, allowing stored XSS if templates do not escape HTML.
+        \end{itemize}
+        \item Provides \texttt{dashboard\_url} for a back link, depending on user role.
+        \item Renders \texttt{pinboard\_detail.html}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{\texttt{get\_display\_name(username)}}
+\begin{itemize}
+    \item \textbf{Purpose:} Resolve a readable display name for the announcement/comment creator.
+    \item \textbf{Logic:}
+    \begin{itemize}
+        \item Returns ``Administration Office'' for admin usernames (\texttt{ADM*}).
+        \item Fetches the first and last name from \texttt{Student} or \texttt{Teacher} models.
+        \item Defaults to the raw username if no match is found.
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}\label{subsec:Pinboard Detail And Comments-vulnerability}
+%-----------------------------------------------------------------------
+\begin{itemize}
+    \item \textbf{Stored XSS risk:} Comments are saved directly without sanitization. Any HTML or \texttt{<script>} tags will execute when viewed.
+    \item \textbf{Template escaping required:} Always escape announcement and comment fields in templates to prevent XSS.
+    \item \textbf{Session-based user tracking:} Ensures comments are attributed to the logged-in user; falls back to ``Anonymous'' otherwise.
+    \item \textbf{Read/write access:} Only logged-in users can comment; all others have read-only access.
+\end{itemize}
+
+
+
+
+\end{document}

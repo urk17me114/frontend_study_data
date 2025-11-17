@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 10px;
+            background-color: #f0f2f5;
+            width: 35%;
+        }
+        td {
+            padding: 10px;
+        }
+        img {
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Profile</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {% for field in form %}
+                {% if field.name != 'profile_photo' %}
+                <tr>
+                    <th>{{ field.label_tag }}</th>
+                    <td>{{ field }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+                {% if profile_photo %}
+                <tr>
+                    <th>Current Profile Photo</th>
+                    <td><img src="{{ profile_photo.url }}" alt="Profile Photo" width="150" height="150"></td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <th>Upload New Profile Photo</th>
+                    <td>{{ form.profile_photo }}</td>
+                </tr>
+            </table>
+
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <a class="back-link" href="{% url 'student' %}">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

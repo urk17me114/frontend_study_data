@@ -1,0 +1,115 @@
+%-----------------------------------------------------------------------
+\section{\texorpdfstring{\wotsp}{W-OTS+}}
+\label{sec:impl:wotsp}
+%-----------------------------------------------------------------------
+
+In Dancing Bear\cite{DBLP:journals/iacr/KelseyL22}, \sphincsp~\cite{aumassonsphincs+},
+as well as in \xmss~\cite{DBLP:journals/rfc/rfc8391}
+an implementation of \wotsp is necessary.
+However, no implementation could be found that had a sufficient documentation
+or an easily usable standalone design,
+so that it could be incorporated into the project in a reasonable amount of time.
+Hence, it was decided to write a new one for this project.
+The main code module for \wotsp can be found in the folder \textit{/wotsp}.
+
+It was decided to use \texttt{uint8\_t} vectors for the whole project instead of traditional \texttt{C} arrays,
+as they were deemed sufficiently efficient and most importantly allow for much easier debugging and a safer handling of
+data (e.g.\ no cases of writing outside an array without triggering an error).
+The \texttt{C++ <vector>} data structure also provides direct access to the underlying \texttt{C} array if needed,
+e.g.\ for 3rd party hash functions written in \texttt{C}.
+%-----------------------------------------------------------------------
+\subsection{Dependencies}\label{subsec:dependencies}
+%-----------------------------------------------------------------------
+The module is strongly dependent on \textit{/utilities/params.hpp},
+because a \texttt{Params} object is generally needed as an input to all \wotsp functions.
+Additionally, there is a dependency to \textit{/utilities/utils} for the \texttt{random\_vector} function,
+which returns random \texttt{uint8\_t} vectors of specified length.
+This function is currently used to generate random \wotsp secret keys and randomization elements.
+%-----------------------------------------------------------------------
+\subsection{Params Object}\label{subsec:impl:params_object}
+%-----------------------------------------------------------------------
+As mentioned above the \texttt{Params} object is very important for the \wotsp module.
+While discussing the initial code design for this project,
+it was decided that precompiler variable definitions should be avoided whenever possible,
+because they make debugging and the execution of test cases more difficult.
+Not using compile time definitions makes it possible to use and test different configurations without having to
+recompile often.
+Unfortunately,
+throughout the project some third party libraries made it necessary to use some precompiler variable definitions
+(see in section~\ref{sec:impl:libs}).
+
+Following our initial design concept a data transfer object \texttt{Params} is created.
+It accommodates various often used data.
+
+\begin{lstlisting}[caption={Params constructor signature.}, captionpos=b,label={lst:wotsp:params_constructor}, language=C++]
+Params(uint32_t const log2_of_winternitz = 3,
+       uint32_t const hash_output_length = 32,
+       Hash_function_type wotsp_hash_function = SHA256_t,
+       uint32_t tree_height = 2)
+\end{lstlisting}
+As can be seen in Listing~\ref{lst:wotsp:params_constructor} the object is constructed with only four inputs,
+but it precomputes and saves many other values which are often used.
+The object is handed to every \wotsp function as a reference,
+so the overhead created through this design choice is negligible.
+%-----------------------------------------------------------------------
+\subsection{Main Functions}\label{subsec:main-functions}
+The \wotsp code has five main functions that will subsequently be explained
+in the order one would normally use them in.
+There are some other auxiliary functions in the module that will not be mentioned here,
+but can be found with a description in the code files (\textit{/wotsp}).
+%-----------------------------------------------------------------------
+\subsubsection*{Secret Key Generation}
+According to the parameters given by the \texttt{params} object,
+this function generates a random \wotsp key of length
+$\ell_{1}$ and random elements of length $\ell_{2}$,
+as can be seen in chapter~\ref{sec:rel:wotsp}.
+The random elements are located at the keys end.
+%-----------------------------------------------------------------------
+\subsubsection*{Hash Chain Generation}
+This function gets a secret key and random elements to compute the hash chain of the whole key.
+The hash chain is strictly speaking not one chain, but many hash chains as each key element has its own.
+So when talking about hash chains in this context,
+the hash chains of the individual key elements is meant and
+when talking about the hash chain, the construct holding all individual hash chains is meant.
+
+For every key element a hash chain is computed, with its length depending on the Winternitz parameter.
+Here a trade of utility and optimization was made,
+where instead of a three-dimensional vector for easier usage
+(1D: hash chain, 2D: key element, 3D: bytes of the key element),
+a two-dimensional one is used.
+Through this measure the good look up performance of the \texttt{std::vector} can be utilized,
+while maintaining an acceptable level of usability.
+
+To be able to iterate the key elements in a one of the hash chains,
+one needs to use the key element size member variable (stored in the Params object).
+It describes the size of a key element (in bytes) and subsequently allows iteration.
+The first element is the hash of the unaltered secret key element,
+with the second being the hash of the first element and so on.
+These hash chain vectors are then stored inside another vector,
+where the hash chain of an element has the same position index as the element would have inside the secret key.
+
+Aside from the hash chain generation function, other tasks will later also need the random elements.
+As a design consideration, it was decided to bundle them with their corresponding hash chains.
+Hence, the function returns a \texttt{std::pair}.
+The hash chains are in the pair's first position and in their second position are the random elements used to create them.
+%-----------------------------------------------------------------------
+\subsubsection*{Extracting a Public Key from a Hash Chain}
+%When computing a complete hash chain beforehand, there should be no need to compute it again in order to get the public key, so this function receives the already computed hash chain.
+Since the complete hash chain for a secret key was computed using the previous function, it would be wastefully to compute it again for the public key.
+Instead, this function extracts the public key from the already computed hash chain which is given as input.
+The last elements of the hash chains are parts of the public key.
+To sum up, all the function does is write these elements in the right ordering into a new vector which is then returned.
+%-----------------------------------------------------------------------
+\subsubsection*{Extracting a Signature from a Hash Chain}
+This function extracts the signature for a message from an already computed hash chain.
+For that end the function needs to get the message digest and the hash chain.
+The function computes some indexes based on the message digest.
+A signature basically has the same structure as a key, with its elements originating from some position from the elements hash chains.
+Hence, for every element position the function extracts an element from the corresponding element hash chain using the aforementioned indexes.
+The finished signature is then returned.
+%-----------------------------------------------------------------------
+\subsubsection*{Signature Verification}
+In the end a signature needs to be verified, which is done by this function.
+Its inputs are the signature to be verified, the public key it should be verified against, the message digest and the random elements that where used to create the public key and signature.
+The function will return true if the signature was created using the same secret key which was used to create the public key.
+%-----------------------------------------------------------------------

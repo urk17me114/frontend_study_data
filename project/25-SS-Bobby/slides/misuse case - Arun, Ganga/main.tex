@@ -1,0 +1,313 @@
+\documentclass{beamer}
+
+\usepackage{graphicx}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{array}
+\usepackage{tabularx}  
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\usetheme{Madrid}
+
+\setbeamertemplate{navigation symbols}{}
+
+\title[System Misuse Analysis]{System Misuse Analysis in Bobby School Management System}
+\author{Arundas Mohandas \\ Ganga Sunil}
+\institute{Bauhaus Universität - Weimar}
+\date{30/04/2025}
+
+% Remove default footline
+\setbeamertemplate{footline}{}
+
+% Add logo + page number automatically on all slides except title
+\addtobeamertemplate{background}{
+    \ifnum\value{framenumber}>1
+        % Logo bottom-left
+        \begin{textblock*}{2cm}(0.5cm,8.3cm)
+            \includegraphics[height=0.7cm]{university_logo.png} % Replace with your logo filename
+        \end{textblock*}
+        % Page number bottom-right
+        \begin{textblock*}{2cm}(12cm,8.7cm)
+            \usebeamercolor[fg]{page number in head/foot}\scriptsize \insertframenumber
+        \end{textblock*}
+    \fi
+}{}
+
+\begin{document}
+
+% Title slide (no footer elements)
+\begin{frame}
+    \titlepage
+\end{frame}
+
+
+
+
+%%
+% Slide 1: Actor Types
+\begin{frame}
+    \frametitle{Types of Malicious Actors}
+\begin{itemize}
+    \item \textbf{Malicious Student} – Misuses access to alter grades, attendance, or access confidential information
+    \item \textbf{Malicious Teacher} – Falsifies grades/attendance or manipulates student data.
+    \item \textbf{Malicious Admin} – Grant unauthorised access to other users.
+    \item \textbf{External User} – An external user, not belonging to the institution, might hack into the system, steal data, or access sensitive information without permission.
+\end{itemize}
+\end{frame}
+
+
+%--- UC1: Update/View Personal Info
+\begin{frame}{UC1: Update/View Personal Info}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Users can view or update their own personal data (e.g., name, phone number, address).
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Attacker impersonates a user to access/edit another's personal information.
+    %\item Leads to identity theft or phishing attacks.
+\end{itemize}
+\end{frame}
+
+%--- UC2: Apply for Leave
+\begin{frame}{UC2: Apply for Leave}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Students can submit leave requests.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item A Student submit a leave request of another student
+    \item Student alters a leave request after approval
+\end{itemize}
+\end{frame}
+
+%--- UC3: View Attendance
+\begin{frame}{UC3: View Attendance}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Students, teachers and parents can view attendance records.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized users view or tamper with attendance.
+    
+\end{itemize}
+\end{frame}
+
+%--- UC4: Manage Attendance
+\begin{frame}{UC4: Manage Attendance}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item To mark or update attendance of students by teachers
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item 
+Teacher marks attendance for a class they’re not assigned to.
+    \item Marking attendance outside valid school hours
+    \item Teacher editing closed attendance without approval
+\end{itemize}
+\end{frame}
+
+%--- UC5: View Marks
+\begin{frame}{UC5: View Marks}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Students and parents can view their grades.
+    
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item User gains unauthorized access to student’s grades.
+    \item Teacher viewing marks of students outside their assigned classes.
+    \item Displaying incorrect or outdated marks
+\end{itemize}
+\end{frame}
+
+%--- UC6: Upload/Edit Marks
+\begin{frame}{UC6: Upload/Edit Marks}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Teachers upload or update marks for students.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains access to upload/update Marks
+    \item Teacher upload/edit marks of class/subject which they are not assigned of.
+\end{itemize}
+\end{frame}
+
+%--- UC7: Approve Marks or Leave
+\begin{frame}{UC7: Approve Marks or Leave}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Admin verify and approve submitted marks or leave requests.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains admin access and approves Marks/Leave
+    
+\end{itemize}
+\end{frame}
+
+%--- UC8: View Timetable
+\begin{frame}{UC8: View Timetable}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Users can see scheduled classes and events.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains access to View personal timetable of teachers
+\end{itemize}
+\end{frame}
+
+%--- UC9: Create/Edit Timetable
+\begin{frame}{UC9: Create/Edit Timetable}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Admins create/update class schedules.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains access to modify timetable
+     
+\end{itemize}
+\end{frame}
+
+%--- UC10: View Teacher Info
+\begin{frame}{UC10: View Teacher Info}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Students/parents access basic public details like teacher name, subject, email id and qualification.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Exposing sensitive information beyond basic profile.
+    %\item Information displayed incorrectly or outdated.
+    \item Inappropriate access by external user
+\end{itemize}
+\end{frame}
+
+%--- UC11: Communicate with Stakeholders
+\begin{frame}{UC11: Communicate with Stakeholders}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Students, Teachers, Parents can send or receive messages.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Malicious user sends false or misleading messages to manipulate decisions or actions of stakeholders
+    \item Unauthorized User Accesses Message History
+    \item External user gains access to messaging system
+\end{itemize}
+\end{frame}
+
+%--- UC12: View Notifications
+\begin{frame}{UC12: View Notifications}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Users receive important academic or event alerts.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+   % \item External user gains access to view notification.
+    \item Unauthorized user gains access to a user’s notification history
+\end{itemize}
+\end{frame}
+
+%--- UC13: Manage Holidays and Leaves
+\begin{frame}{UC13: Manage Holidays and Leaves}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Admins can add/update/delete official holidays and leaves.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains access to manage holidays and leaves
+    %\item Causes confusion in academic scheduling.
+\end{itemize}
+\end{frame}
+
+%--- UC14: Generate Reports
+\begin{frame}{UC14: Generate Reports}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Generate student reports for grades and attendance.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item An unauthorized user (student, parents, external actor) gains access to the report generation system and creates reports they are not permitted to.
+    
+\end{itemize}
+\end{frame}
+
+%--- UC15: Manage Assignments
+\begin{frame}{UC15: Manage Assignments}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Teachers can assign, modify or grade assignments.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item An unauthorized user (e.g., a student,parent, another teacher, or external actor) gains access to modify or delete assignments.
+    \item Teacher modifies assignment question after submission deadline
+\end{itemize}
+\end{frame}
+
+%--- UC16: Register/Update Student Info
+\begin{frame}{UC16: Register/Update Student Info}
+\textbf{Legitimate Use:}  
+\begin{itemize}
+    \item Admins register and update student details.
+\end{itemize}
+\vspace{1em}
+\textbf{Misuses:}
+\begin{itemize}
+    \item Unauthorized user gains access to update student info.
+    
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Misuse Actors Summary}
+\renewcommand{\arraystretch}{1.5}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{3cm}|p{3.5cm}|p{7cm}|}
+\hline
+\textbf{Actor Type} & \textbf{Use Case Affected} & \textbf{Misuse Intent} \\
+\hline
+\textbf{Malicious Student} & 
+UC1, UC2, UC3, UC5, UC8, UC11 & 
+Viewing/modifying peer info, submitting fake leaves, tampering with attendance, harassing peers, leaking timetables \\
+\hline
+\textbf{Malicious Teacher} & 
+UC4, UC6, UC10, UC11, UC14, UC15 & 
+Biased marking/attendance, stealing peer info, abusive communication, tampering with reports/assignments \\
+\hline
+\textbf{Malicious Admin} & 
+UC7, UC9, UC12, UC13, UC14, UC16 & 
+Forging approvals, creating chaos in timetable/calendar, publishing false notifications, faking student data for fraud \\
+\hline
+\end{tabular}%
+}
+\end{frame}
+
+
+\end{document}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student Approval</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2>Student Approval List</h2>
+
+    <div class="back-link">
+        <a href="{% url 'admin' %}">Back to Admin Dashboard</a>
+    </div>
+
+    <div style="max-width: 1000px; margin: auto;">
+        <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; background-color: white; border-collapse: collapse;">
+            <thead style="background-color: #0073e6; color: white;">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>DOB</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <th>Class Level</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr style="text-align: center;">
+                    <td>{{ student.student_first_name }}</td>
+                    <td>{{ student.student_last_name }}</td>
+                    <td>{{ student.dob }}</td>
+                    <td>{{ student.get_gender_display }}</td>
+                    <td>{{ student.student_email }}</td>
+                    <td>{{ student.get_classlevel_display }}</td>
+                    <td>
+                        <a href="{% url 'approve_student' student.id %}">Approve</a> |
+                        <a href="{% url 'reject_student' student.id %}">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center;">No pending student applications.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

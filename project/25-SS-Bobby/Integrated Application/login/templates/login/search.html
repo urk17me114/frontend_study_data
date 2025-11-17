@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Search</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<h2>Search Student</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+<div class="back-link">
+    <a href="{% url request.session.current_role|lower %}">Back to Dashboard</a>
+</div>
+
+{% if results is not None %}
+    <h3 style="text-align:center;">Showing results for: <span id="result-query"></span></h3>
+    {% if results %}
+        <ul style="max-width: 600px; margin: 20px auto;">
+            {% for student in results %}
+                <li>{{ student.username }} - {{ student.student_first_name }} {{ student.student_last_name }} ({{ student.student_email }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p style="text-align:center;">No students found.</p>
+    {% endif %}
+{% endif %}
+
+<script>
+    const query = "{{ query|safe }}";  // Vulnerable: reflects unsanitized input
+    document.getElementById("result-query").innerHTML = query;
+</script>
+
+</body>
+</html>

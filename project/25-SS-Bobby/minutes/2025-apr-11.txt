@@ -1,0 +1,24 @@
+# Minutes
+
+Usual Meetings:
+- Every Friday 13:30
+
+Meeting next week:
+- No meeting on Friday (due to public holiday)
+- Instead: Wednesday 12:30 (also at the lab)
+
+Access to the Lab:
+- Through Thoska
+
+# Tasks
+
+Each 2-person group:
+- Requirements analysis for the school system of Bobby's fictional school,
+    - like in Software Engineering,
+    - E.g., at least 4 Stakeholders: teachers, students, parents, headmaster's office
+    - E.g., which information is public, which information is private
+    - Also think about which software you would like to use (i.e SQL databases)
+
+All 
+- If you didn't do so yet: Send public keys (NOT the private key!)
+    - (this usually is a *.pub file in the .ssh folder somewhere)

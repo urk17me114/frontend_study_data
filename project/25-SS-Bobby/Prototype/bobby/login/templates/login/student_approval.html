@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Student Approval</title>
+</head>
+<body>
+    <h2>Student Approval List</h2>
+    <a href="{% url 'admin' %}">Back to Admin Dashboard</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>DOB</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Class Level</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.student_first_name }}</td>
+                <td>{{ student.student_last_name }}</td>
+                <td>{{ student.dob }}</td>
+                <td>{{ student.get_gender_display }}</td>
+                <td>{{ student.student_email }}</td>
+                <td>{{ student.get_classlevel_display }}</td>
+                <td>
+                    <a href="{% url 'approve_student' student.id %}">Approve</a> |
+                    <a href="{% url 'reject_student' student.id %}">Reject</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No pending student applications.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

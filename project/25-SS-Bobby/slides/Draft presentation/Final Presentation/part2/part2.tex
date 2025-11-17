@@ -1,0 +1,706 @@
+
+
+
+%-------------------------------------------------------
+\begin{frame}{SQL Injection}
+SQL Injection occurs when user input is interpreted as SQL code by the database rather than plain data. 
+
+\vspace{0.3cm}
+
+\begin{itemize}
+    \item Concatenating raw user input directly into SQL queries.
+    \item Missing parameterization or prepared statements.
+    \item Insufficient server-side input validation and sanitization.
+\end{itemize}
+\end{frame}
+
+%-------------------------------------------------------
+
+\begin{frame}{SQL Injection — Consequences}
+\textbf{Potential Consequences:}
+\begin{itemize}
+    \item Unauthorized retrieval of sensitive data.
+    \item Modification or deletion of database records.
+    \item Bypass of authentication mechanisms.
+    \item Complete compromise of application and database integrity.
+\end{itemize}
+
+
+\end{frame}
+
+%-------------------------------------------------------
+
+%-------------------------------------------------------
+\begin{frame}{Search Workflow}
+
+\begin{itemize}
+    \item Displays a search form to the user.
+    \item Accepts a name query via POST request.
+    \item Executes a raw SQL query to find matches.
+    \item Retrieves results as dictionaries and renders the results.
+\end{itemize}
+
+\end{frame}
+%-------------------------------------------------------
+
+
+
+
+% Slide: Reproduction steps (quick)
+\begin{frame}{Vulnerability}
+    \begin{enumerate}
+        \item Open Student / Teacher dashboard search page.
+        \item Confirm the existence of the sql injection by using ' OR 1=1; - - .
+        \item Submit a UNION SELECT payload  into the search box.
+        \item By trial and error on selected columns until the UNION succeeds.
+        \item Use payloads on information\_schema.tables and information\_schema.columns to get table and column names to extract sensitive data.
+        \item Inspect search result table for injected values.
+    \end{enumerate}
+\end{frame}
+%-------------------------------------------------------
+\begin{frame}{Vulnerability}
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6.5cm}|p{4cm}|}
+\hline
+\textbf{Payloads} & \textbf{Use / Purpose} \\ \hline
+\texttt{a' UNION SELECT table\_name, 'x','x','x','x','x','x','x' FROM information\_schema.tables; --} & Retrieve the names of all tables in the database. \\ \hline
+\texttt{a' UNION SELECT column\_name, 'x','x','x','x','x','x','x' FROM information\_schema.columns WHERE table\_name = 'login\_login'; --} & Retrieve column names of the table \texttt{login\_login}. \\ \hline
+\texttt{a' UNION SELECT username, password, 'x','x','x','x','x','x' FROM login\_login; --} & Extract actual data (usernames and passwords) from the \texttt{login\_login} table. \\ \hline
+\end{tabular}
+\end{table}
+\end{frame}
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{IT.png}
+    \caption{List of tables}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imageLC.png}
+    \caption{List of columns}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+\begin{frame}{Vulnerability}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageIL.png}
+    \caption{Injection on Login table}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------------
+%-------------------------------------------------------
+\begin{frame}{Impact}
+\small
+\begin{itemize}
+    \item \textbf{Confidentiality breach:} Personal data, grades, and credentials can be exfiltrated.
+    \item \textbf{Integrity loss:} Attackers may alter grades, attendance, or records and corrupting academic outcomes.
+    \item \textbf{Authentication compromise:} Stolen credentials enable account takeover and wider access.
+    \item \textbf{Availability / disruption:} Malicious queries or cleanup activities can cause downtime or degraded service.
+    \item \textbf{Financial \& operational cost:} Incident response, recovery, and possible fines create significant expense.
+   
+    
+\end{itemize}
+\end{frame}
+%-------------------------------------------------------
+
+%-------------------------------------------------------
+
+\begin{frame}{Possible Mitigation}
+
+
+\begin{itemize}
+    \item \textbf{Use parameterized queries / prepared statements:} Never build SQL by string concatenation, always bind parameters.
+    \item \textbf{Prefer an ORM or safe query builder:} ORMs (or query builders) automatically parameterize and reduce direct SQL usage.
+    \item \textbf{Validate and whitelist inputs:} Enforce allowed formats or lengths and use whitelists where possible.
+    \item \textbf{Limit database privileges:} Give the application account the minimum permissions required.
+    \item \textbf{Hide DB errors from clients:} Return generic error messages to users and log full error details server-side for investigation.
+ 
+
+
+\end{itemize}
+\end{frame}
+
+%-------------------------------------------------------
+\begin{frame}{Security Misconfiguration}
+Security misconfiguration occurs when a system, server, or application is set up insecurely.
+    \vspace{0.5em}
+
+\begin{itemize}
+    \item Default configurations not changed after installation.
+    \item Exposed debug or error pages revealing sensitive system information.
+    \item Missing authorization checks on certain URLs or API functions.
+    \item Unsecured endpoints.
+    \item Enabling unnecessary services, modules, or verbose logging.
+\end{itemize}
+\end{frame}
+%-------------------------------------------------------
+
+\begin{frame}{Security Misconfiguration — Examples}
+\textbf{Common Examples:}
+\begin{itemize}
+    \item Leaving \texttt{default usernames/passwords} unchanged.
+    \item Keeping \texttt{debug mode} or developer tools enabled in production.
+    \item Failing to restrict access to admin panels or configuration files.
+    \item Running software with excessive permissions or unpatched components.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Security Misconfiguration - Consequences}
+\textbf{Potential Consequences:}
+\begin{itemize}
+    \item Attackers bypass authentication or authorization mechanisms.
+    \item Exposure of sensitive data such as database credentials, environment files.
+    \item Unauthorized code execution or privilege escalation.
+    \item Complete compromise of the application or server.
+\end{itemize}
+
+\end{frame}
+
+
+%-------------------------------------------------------
+\begin{frame}{Forgot Password Process}
+\textbf{Step 1}
+\begin{itemize}
+    \item Clears any previous session data.
+    \item Accepts and verifies if the username.
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Step 2}
+\begin{itemize}
+    \item Prompts the user for their security answer using username session.
+    \item If correct, sets a session flag and allows password reset access.
+    \item If incorrect, redirects to the login and flush the session.
+    \item Redirect to login if the target user’s security question is not set.
+question.
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Step 3}
+\begin{itemize}
+    \item Confirms valid username.
+    \item Accepts and validates new password inputs.
+    \item On success, clears session flags and redirects to the Login page.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Forgot Password Process}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageS1.png}
+    \caption{Forgot Password: Step 1}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Forgot Password Process}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageS2.png}
+    \caption{Forgot Password: Step 2}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+\begin{frame}{Forgot Password Process}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageS3.png}
+    \caption{Forgot Password: Step 3}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Forgot Password Process}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\linewidth]{imageSRD.png}
+    \caption{Redirect after wrong answer}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------------
+
+
+% --- Slide: Solution / reproduction (step-by-step) ---
+\begin{frame}[fragile]{Vulnerability}
+    \begin{itemize}
+        \item Open the Forgot Password page and enter the target username.
+        
+        \item For users without a security question, the app redirects back to login.
+            \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.43\linewidth]{part2/image2.png}
+    \caption{Redirect to Login page}
+    \label{fig:placeholder}
+\end{figure}
+
+\end{frame}
+\begin{frame}[fragile]{Vulnerability}
+\begin{itemize}
+
+        \item Manually navigate to the reset step URL: \\ \verb|/forgot-password/step3|
+        \item If the endpoint lacks server-side verification, you can set a new password for that user.
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\linewidth]{part2/image3.png}
+    \caption{Reset Password page}
+    \label{fig:placeholder}
+\end{figure}
+
+    
+    \textit{Cause: When security question is not set username session is not cleared during redirect.}
+
+\end{frame}
+
+% --- Slide: Evidence & impact ---
+\begin{frame}{Effects and Impact}
+    \begin{itemize}
+        \item \textbf{Effect:} Able to reach reset page and change password without completing proper security check.
+        \vspace{0.2cm}
+
+        \item \textbf{Impact:}
+            \begin{itemize}
+                \item Account takeover of an another users.
+                \item Potential data exposure and regulatory risk.
+                \item Enables further attacks such as privilege escalation and fraud.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% --- Slide: Mitigations (how to fix) ---
+\begin{frame}{Possible Mitigation}
+    \begin{itemize}
+        \item \textbf{Session validation:} Each forgot-password step must verify a server-side authentication that proves previous steps completed.
+        \item \textbf{Use time-limited tokens:} Password reset flows generate unique, expiring session tokens for each request to prevent direct URL manipulation.
+        \item \textbf{Do not rely on client-side state:} Never trust redirects, query parameters or client storage to indicate progress.
+        \item \textbf{Validate presence of security data:} If a user lacks a security question, require alternative verification.
+        \item \textbf{Rate-limit and log:} Limit reset attempts and log suspicious attempts.
+       
+    \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+%-------------------------------------------------------
+\begin{frame}{IDOR (Insecure Direct Object Reference)}
+An Insecure Direct Object Reference (IDOR) occurs when an application exposes 
+internal identifiers without proper server-side authorization checks.
+        \vspace{0.2cm}
+
+\begin{itemize}
+    \item Server trusts client-supplied identifiers to decide which data to display.
+    \item Missing or improper authorization checks before accessing resources.
+    \item Lack of separation between user input and data ownership verification.
+\end{itemize}
+\end{frame}
+
+
+%-------------------------------------------------------
+
+\begin{frame}{IDOR Consequences}
+\textbf{Impact:}
+\begin{itemize}
+    \item Unauthorized access to sensitive information.
+        \item Privacy violations and data integrity loss.
+
+    \item Modification or deletion of other users resources.
+    \item Potential legal and financial damage to the organization.
+\end{itemize}
+
+\end{frame}
+
+%-------------------------------------------------------
+%-------------------------------------------------------
+\begin{frame}{Marks Management Module}
+
+\textbf{Add Marks - Teacher}
+\begin{itemize}
+    \item Teachers select class, subject, exam type, exam date, and total marks before entering student results.
+    \item Allows teachers to input marks for all students in the chosen class and subject. 
+    \item Prevents duplicate entries and validates inputs.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{View Marks - Student}
+\begin{itemize}
+    \item Displays marks for the logged-in student with filtering by subject or class section and sorting by marks.
+    \item Updates the \texttt{student\_username} session variable to synchronize local storage with the server session.
+\end{itemize}
+\end{frame}
+%-------------------------------------------------------
+\begin{frame}{Marks Management Module}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{imageAM1.png}
+    \caption{Add Marks step 1}
+    \label{fig:placeholder}
+\end{figure}
+
+\end{frame}
+\begin{frame}{Marks Management Module}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\linewidth]{imageAM2.png}
+    \caption{Add Marks step 2}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Marks Management Module}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=1\linewidth]{image_vm.png}
+        \caption{View Marks}
+        \label{fig:placeholder}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]{Vulnerability}
+    \begin{itemize}
+        \item Log in as a valid student and open your marks page.
+        
+        \item Open browser DevTools \(\rightarrow\) Application (or Storage) tab.
+        \item Inspect \texttt{sessionStorage} for keys  \texttt{student\_username}.
+            \end{itemize}
+            \begin{figure}
+            \centering
+            \includegraphics[width=.9\linewidth]{part2/image4.png}
+            \caption{View Marks}
+            \label{fig:placeholder}
+        \end{figure}
+
+\end{frame}
+\begin{frame}[fragile]{Vulnerability}
+    \begin{itemize}
+
+        \item Edit the value to another valid student's username.
+        \item Refresh the marks page to displays the other student's marks.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.8\linewidth]{imageMV8.png}
+            \caption{Marks of other student}
+            \label{fig:placeholder}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+\begin{frame}[fragile]{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{image_mDB.png}
+    \caption{Other Students marks in database}
+    \label{fig:placeholder}
+\end{figure}
+
+    \vspace{0.5em}
+    \textit{Cause: The session storage key is reffered by the database to dispalys the marks.}
+\end{frame}
+
+\begin{frame}{Possible Mitigation}
+    \begin{itemize}
+        \item \textbf{Server-side authorization:} Always verify on the server that the authenticated user is allowed to access the requested resource.
+        \item \textbf{Do not trust client-side identifiers:} Treat client-supplied IDs as untrusted input.
+        \item \textbf{Use opaque references and verify ownership:} Map public identifiers to internal records and check ownership or roles per request.
+        \item \textbf{Least privilege / RBAC:} Enforce role-based checks for each endpoint.
+
+        \item \textbf{Logging \& alerts:} Log suspicious attempts to access others' records and alert on anomalies.
+    \end{itemize}
+\end{frame}
+
+%----------
+%-------------------------------------------------------
+
+
+
+
+%-------------------------------------------------------
+\begin{frame}{Sensitive Data Exposure by Insecure RBAC}
+Sensitive Data Exposure due to Insecure Role-Based Access Control occurs when 
+an application decides user privileges using client-controlled inputs, rather than secure server-side role checks.  
+\vspace{0.3cm}
+
+\begin{itemize}
+    \item Application trusts client-side input to determine access level.
+    \item Missing server-side enforcement of user roles or permissions.
+    \item Inconsistent or incomplete role verification in backend logic.
+    \item Lack of session-based privilege management or centralized access control mechanism.
+\end{itemize}
+\end{frame}
+%-------------------------------------------------------
+
+\begin{frame}{Insecure RBAC — Examples}
+\textbf{Common Examples:}
+\begin{itemize}
+    \item Using query parameters or cookies to determine access.
+    \item Relying on hidden form fields or JavaScript variables to decide if a user is an admin.
+    \item Exposing sensitive data or settings pages through weak URL-based authorization.
+
+\end{itemize}
+
+
+\end{frame}
+
+%-------------------------------------------------------
+
+\begin{frame}{Insecure RBAC — Consequences}
+\textbf{Impact:}
+\begin{itemize}
+    \item Unauthorized users can access confidential data or admin dashboards.
+    \item Exposure of audit logs, configuration files, or user data.
+    \item Privilege escalation and complete system compromise.
+    \item Violations of privacy and compliance standards.
+\end{itemize}
+
+
+\end{frame}
+%-------------------------------------------------------
+
+
+
+%-------------------------------------------------------
+\begin{frame}{View Logs}
+
+\begin{itemize}
+    \item Allows administrators to access login activity logs.
+    \item Validates that the requesting user has admin privileges before serving the logs.
+    \item Validation done by checking a flag that keep the role of the user.
+    \item Unauthorized access attempts are blocked and return an error.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{image_VL.png}
+    \caption{View Logs}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+%-------------------------------------------------------
+
+
+\begin{frame}[fragile]{Vulnerability}
+    \begin{itemize}
+        \item Attempting to open \verb|http://127.0.0.1:8000/login/view-logs| will give error page due to lack of access.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.8\linewidth]{part2/image5.png}
+            \caption{Error page}
+            \label{fig:placeholder}
+        \end{figure}
+    \end{itemize}
+    \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]{Vulnerability}
+
+    \begin{itemize}
+
+        \item If denied, append the parameter: \\
+              \verb|http://127.0.0.1:8000/login/view-logs?admin=1|
+              \begin{figure}
+                  \centering
+                  \includegraphics[width=0.7\linewidth]{image_VLV.png}
+                  \caption{Log page}
+                  \label{fig:placeholder}
+              \end{figure}
+    \end{itemize}
+    \vspace{0.5em}
+    \textit{Cause: The access is granted by the endpoint relying on the session flag for privilege decision}
+
+\end{frame}
+
+\begin{frame}{Possible Mitigation}
+    \begin{itemize}
+        \item \textbf{Server-authoritative roles:} Do not use request parameters to determine privileges. Check user role stored on the server-side such assession or token.
+        \item \textbf{Strict RBAC enforcement:} Centralize access control checks for sensitive endpoints.
+        \item \textbf{Avoid security-by-obscurity:} Do not rely on hidden fields, client flags, or unprotected query parameters for access control.
+        \item \textbf{Use POST with CSRF for state-changing ops:} Avoid using GET parameters for actions that alter behavior or leak sensitive data.
+        \item \textbf{Sanitize and log:} Log attempts to access admin endpoints without proper rights and alert on suspicious patterns.
+
+    \end{itemize}
+\end{frame}
+
+
+
+
+
+%-------------------------------------------------------
+\begin{frame}{XXE - XML External Entity}
+XXE occurs when an XML parser processes external entities defined in the XML document, allowing attackers to access local files, network resources, or trigger denial-of-service via entity expansion.  
+\vspace{0.3cm}
+
+\begin{itemize}
+    \item XML parsers allow DTD processing by default.
+    \item External entity resolution is enabled.
+    \item Lack of input validation on XML content from untrusted sources.
+    \item Use of unsafe XML libraries without hardening or security configuration.
+\end{itemize}
+\end{frame}
+
+
+%-------------------------------------------------------
+
+\begin{frame}{XXE — Consequences}
+\textbf{Impact:}
+\begin{itemize}
+    \item Exposure of sensitive files (e.g., passwords, configuration, student data).
+    \item Remote requests triggered from the server (SSRF).
+    \item Denial-of-service via entity expansion (e.g., Billion Laughs attack).
+    \item Compromise of data integrity and application availability.
+\end{itemize}
+
+\end{frame}
+
+%-------------------------------------------------------
+
+
+
+%-------------------------------------------------------
+\begin{frame}{Assignment Management module}
+\small
+
+\textbf{Teacher Workflows}
+\begin{itemize}
+    \item Post questions limited to the teacher's assigned subjects and class sections.
+    \item View all questions authored by the teacher.
+    \item Filter submissions by subject, class section and status; order by submission time.
+    \item Assign marks and set submission status to graded.
+\end{itemize}
+
+\vspace{0.25cm}
+\textbf{Student Workflows}
+\begin{itemize}
+    \item Show questions available for the student's class and subjects.
+    \item Upload any type of file with text as an answer.
+    \item View past submissions with status and marks.
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Assignment Management module}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagePQ.png}
+    \caption{Post new uqestion}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Assignment Management module}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{imagePDQ.png}
+    \caption{Posted questions}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Assignment Management module}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageRV.png}
+    \caption{Review submissions}
+    \label{fig:placeholder}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Assignment Management module}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{imageM.png}
+    \caption{Grade Assignments}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Assignment Management module}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{image_AA.png}
+    \caption{View assignment questions}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Assignment Management module}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{imageADDA.png}
+    \caption{Add/edit assignment}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------------
+
+
+
+\begin{frame}{Vulnerability}
+\begin{enumerate}
+    \item Login to the dashboard using a student account.
+    \item Navigate to My Questions for the assignment section.
+    \item Select the respective assignment question.
+    \item Attempt to upload an XML file designed to test entity expansion.
+    \item On downloading the file from My submission activate the billion laugh
+\end{enumerate}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{part2/image8.png}
+    \caption{Error page}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
+
+%-------------------------------------------------------
+\begin{frame}{Possible Mitigation}
+
+
+\begin{itemize}
+    \item \textbf{Disable DTD and external entities:} Configure your XML parser to not allow DOCTYPE declarations and external entity resolution.
+    \item \textbf{Use safe/hardened libraries:} Prefer libraries designed to prevent XXE.
+    \item \textbf{Set XML resolvers to null:} Prevent the fetching of external resources during parsing.
+    \item \textbf{Validate and whitelist XML inputs:} Only allow expected elements, attributes, and content.
+    \item \textbf{Prefer simpler formats if possible:} Use non-XML formats and restrict xml files whenever possible.
+    \item \textbf{Limit parser resources:} Enforce limits on document size, depth, entity expansions, and CPU/time consumption.
+    \item \textbf{Run parsers with least privilege:} Ensure the parsing process cannot read sensitive files or perform privileged network calls.
+   
+\end{itemize}
+\end{frame}
+%-------------------------------------------------------
+
+
+
+
+

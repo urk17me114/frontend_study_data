@@ -1,0 +1,84 @@
+\begin{tikzpicture}
+  \node[draw,rectangle] (it) at (-5,5) {Initiating Trustee};
+  \node[draw,rectangle] (rt) at (0,5) {Responding Trustee};
+  \node[draw,rectangle] (helper) at (5,5) {Helper};
+  \node (decide) at (-5,4.25) {Decide to sign $M$.};
+  \node (left1-helper) at (-4,4) {};
+  \node (right1-helper) at (-1,4) {};
+  \node (center1-helper) at (-2.5,4) {};
+  \node[inner sep=0px, above=1px of center1-helper] (first-message) {$\pi,M$};
+  \node[inner sep=0px, below=1px of center1-helper] (first-comment) {\tiny to responding trustees};
+
+  \node (right2-helper) at (-1,2.5) {};
+  \node (left2-helper) at (-4,2.5) {};
+  \node (center2-helper) at (-2.5,2.5) {};
+
+  \node[inner sep=0px, above=1px of center2-helper] (first-message) {$\rho_{\pi}^t,\phi_{\pi}^t$};
+  \node[inner sep=0px, below=1px of center2-helper] (first-comment) {\tiny from each responding trustee $t$};
+
+  \draw[->] (left1-helper) -- (right1-helper);
+  \draw[->] (right2-helper) -- (left2-helper);
+
+  \node (helper1-helper) at (4,1.5) {};
+  \node (left3-helper) at (-4,1.5) {};
+  \node (center3-helper) at (0,1.5) {};
+
+  \node[inner sep=0px, above=1px of center3-helper] (first-message-to-helper) {$\pi,1$};
+
+  \draw[->] (left3-helper) -- (helper1-helper);
+
+  \node (helper2-helper) at (4,0.5) {};
+  \node (left4-helper) at (-4,0.5) {};
+  \node (center4-helper) at (0,0.5) {};
+
+  \node[inner sep=0px, above=1px of center4-helper] (first-message-to-helper) {$\rho_{\pi}^H, \phi_{\pi}^H$};
+
+  \node[align=left] (right3) at (-4.2,0.1) {$\rho_{\pi} \gets \bigoplus_{\all{} t,H} \rho_{\pi}^t$\\
+	$\phi_{\pi} \gets \bigoplus_{\all{} t, H} \phi_{\pi}^t$\\
+	If $\text{not }\pver(\pi,\rho_{\pi},\phi_{\pi})$, abort!};
+
+  \draw[->] (helper2-helper) -- (left4-helper);
+
+  \node (left5-helper) at (-4,-1.5) {};
+  \node (right4-helper) at (-1,-1.5) {};
+  \node (center5-helper) at (-2.5,-1.5) {};
+  \node[inner sep=0px, above=1px of center5-helper] (first-message) {$\rho_{\pi},\phi_{\pi}$};
+  \node[inner sep=0px, below=1px of center5-helper] (first-comment) {\tiny to responding trustees};
+
+  \node[align=left] (right4) at (1.5,-2) {If $\text{not}\pver(\pi,\rho_{\pi},\phi_{\pi})$: abort!\\
+  Else: $h \gets \hash(\rho_{\pi},M)$\\
+          ~~~~~~~$\sigma_{\pi}^t \gets \sharesign(X_{\pi}^t,h)$};
+
+  \draw[->] (left5-helper) -- (right4-helper);
+
+  \node (left6-helper) at (-4,-3) {};
+  \node (right5-helper) at (-1,-3) {};
+  \node (center6-helper) at (-2.5,-3) {};
+  \node[inner sep=0px, above=1px of center6-helper] (first-message) {$\PATH^{t}_{\pi}, \sigma_{\pi}^t$};
+  \node[inner sep=0px, below=1px of center6-helper] (first-comment) {\tiny from each responding trustee $t$};
+
+  \node (left6) at (-5.3,-3) {$h \gets \hash(\rho_{\pi},M)$};
+
+  \draw[->] (right5-helper) -- (left6-helper);
+
+  \node (left7-helper) at (-4,-4.5) {};
+  \node (helper3-helper) at (4,-4.5) {};
+  \node (center7-helper) at (0,-4.5) {};
+  \node[inner sep=0px, above=1px of center7-helper] (first-message) {$\pi,2,h$};
+
+  \node (helper3) at (5.6,-4.5) {$\sigma_{\pi}^H \gets \sharesign(X_{\pi}^H,h)$};
+
+  \draw[->] (left7-helper) -- (helper3-helper);
+
+  \node (left8-helper) at (-4,-6) {};
+  \node (helper4-helper) at (4,-6) {};
+  \node (center8-helper) at (0,-6) {};
+  \node[inner sep=0px, above=1px of center8-helper] (first-message) {$\pi,2,h$};
+
+  \node[align=left] (left8) at (-4.8,-6.4) {$\sigma_{\pi} \gets \bigoplus_{\all t,H} \sigma_{\pi}^t$\\
+	$\PATH_{\pi} \gets \bigoplus_{\all{} t,H} \PATH^{t}_{\pi}$\\
+	Verify signature.};
+
+  \draw[->] (helper4-helper) -- (left8-helper);
+
+\end{tikzpicture}

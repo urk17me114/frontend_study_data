@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Submit Assignment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8; margin: 0; padding: 0;
+    }
+    h2 {
+      background-color: #004080; color: #fff; padding: 20px; text-align: center;
+      margin: 0; font-size: 28px;
+    }
+
+    /* Messages */
+    .messages {
+      max-width: 900px; margin: 20px auto; padding: 15px; background-color: #fff8c4;
+      border-left: 5px solid #ffc107; border-radius: 6px; color: #333;
+    }
+
+    /* Question details card */
+    .card {
+      max-width: 900px; background: #fff; margin: 20px auto; padding: 20px;
+      border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; margin: 0 0 12px; }
+    .meta p { margin: 0; }
+    .desc-label { font-weight: bold; margin-top: 10px; }
+    .description {
+      background: #fafafa; border: 1px solid #e5e7eb; border-radius: 8px;
+      padding: 12px; white-space: pre-wrap; margin-top: 6px;
+    }
+
+    /* Existing submission info */
+    .status {
+      max-width: 900px; margin: 10px auto 0; padding: 12px 16px; background: #eef7ff;
+      border-left: 5px solid #3498ff; border-radius: 6px; color: #033b73;
+    }
+
+    /* Form */
+    form {
+      max-width: 900px; background-color: #fff; margin: 20px auto; padding: 20px;
+      border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    label { font-weight: bold; display: block; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+      margin-bottom: 14px;
+    }
+    .field-errors { color: #b00020; font-size: 13px; margin: -6px 0 12px; }
+
+    button {
+      background-color: #0073e6; color: #fff; border: none;
+      padding: 10px 20px; font-size: 16px; border-radius: 6px;
+      cursor: pointer; transition: background-color 0.3s ease;
+    }
+    button:hover { background-color: #005bb5; }
+
+    /* Back links */
+    .back-links {
+      margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .back-links a {
+      display: inline-block; text-decoration: none; background-color: #0073e6;
+      color: #fff; padding: 10px 16px; border-radius: 8px; transition: background-color 0.3s ease;
+    }
+    .back-links a:hover { background-color: #005bb5; }
+
+    @media screen and (max-width: 600px) {
+      form { padding: 16px; }
+      button { width: 100%; }
+      .back-links { flex-direction: column; }
+      .back-links a { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Submit For: {{ question.title }}</h2>
+
+  <section class="card">
+    <div class="meta">
+      <p><strong>Subject:</strong> {{ question.subject }}</p>
+      <p><strong>Class:</strong> {{ question.class_section }}</p>
+      <p><strong>Due:</strong> {% if question.due_date %}{{ question.due_date }}{% else %}-{% endif %}</p>
+    </div>
+    <div class="desc-label">Description:</div>
+    <div class="description">{{ question.description }}</div>
+    {% if question.attachment %}
+      <p style="margin-top:12px;"><a href="{{ question.attachment.url }}">Download attachment</a></p>
+    {% endif %}
+  </section>
+
+  {% if existing_submission %}
+    <div class="status">
+      <strong>Your current status:</strong> {{ existing_submission.status }}
+      {% if existing_submission.file %}
+        &nbsp;— Current file: <a href="{{ existing_submission.file.url }}">Download</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+      <label for="{{ form.file.id_for_label }}">File</label>
+      {{ form.file }}
+      <div class="field-errors">{{ form.file.errors }}</div>
+    </div>
+
+    <div>
+      <label for="{{ form.comment.id_for_label }}">Comment (optional)</label>
+      {{ form.comment }}
+      <div class="field-errors">{{ form.comment.errors }}</div>
+    </div>
+
+    <button type="submit">{% if existing_submission %}Update Submission{% else %}Submit{% endif %}</button>
+
+    <div class="back-links">
+      <a href="{% url 'student_questions_list' %}">Back to Questions</a>
+      <a href="{% url request.session.current_role|lower %}">Back to Dashboard</a>
+    </div>
+  </form>
+
+</body>
+</html>

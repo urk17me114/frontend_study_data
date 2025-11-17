@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Marks Portal - Step 2</title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        background-color: #004080;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .container {
+        max-width: 800px;
+        background: white;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    p {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+
+    .messages {
+        background-color: #e0f7fa;
+        color: #006064;
+        border: 1px solid #b2ebf2;
+        padding: 12px;
+        border-radius: 6px;
+        margin: 20px 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #0073e6;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: #004080;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: #003366;
+    }
+
+    @media screen and (max-width: 600px) {
+        .container {
+            padding: 15px;
+        }
+
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        th {
+            text-align: right;
+        }
+
+        td {
+            text-align: left;
+            padding-left: 50%;
+            position: relative;
+        }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 45%;
+            padding-left: 15px;
+            font-weight: bold;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Enter Marks for Students</h2>
+    <p><strong>Class:</strong> {{ class_section.name }}</p>
+    <p><strong>Subject:</strong> {{ subject.name }}</p>
+    <p><strong>Total Marks:</strong> {{ total_marks }}</p>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div>{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <a href="{% url 'add_marks_step1' %}" class="button">Back</a>
+
+    <form method="post">
+      {% csrf_token %}
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for field in form %}
+            <tr>
+              <td data-label="Student">{{ field.label }}</td>
+              <td data-label="Marks">{{ field }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <button type="submit" class="button">Submit Marks</button>
+    </form>
+    
+  </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+%-----------------------------------------------------------------------
+\section{Related Work}
+\label{sec:related-work}
+%----------------------------------------------------------------
+
+The foundation of this project draws heavily from the \textbf{OWASP Juice Shop}, 
+an intentionally vulnerable web application developed and maintained by the Open Web Application Security Project (OWASP). 
+Juice Shop is widely recognized as one of the most comprehensive training platforms for web application security, 
+as it incorporates vulnerabilities that map directly to the \textbf{OWASP Top 10} categories, 
+as well as numerous other security flaws commonly encountered in real-world systems.  
+It has been widely used in security education and training, offering a realistic, hands-on environment for us to explore and understand the impact of vulnerabilities.
+
+In this project, the Juice Shop served not only as a reference but also as a practical learning tool. 
+We were explicitly instructed by the course instructors to read each challenge, study the provided hints, and attempt exploitation without consulting the official solutions. 
+This pedagogical constraint required learners to invest significant time in trial-and-error, experimentation, and collaborative problem-solving. 
+Through this process, participants developed a deeper conceptual understanding of the vulnerability classes they encountered (for example, sql injection, IDOR, XXE, and security misconfiguration), and gained practical skills in reconnaissance, exploitation techniques, and evidence collection. 
+The deliberate emphasis on working through challenges from hints fostered perseverance, improved debugging skills, and a stronger mental model of how real-world attackers probe and exploit application weaknesses.
+
+Through this engagement, we encountered a wide range of vulnerabilities, including \textit{SQL injection}, 
+\textit{broken authentication}, 
+\textit{insecure direct object references (IDOR)}, 
+\textit{security misconfigurations}, 
+and \textit{XML External Entity (XXE) attacks}. 
+These exercises provided both theoretical grounding in web security concepts and practical experience in identifying and mitigating risks, bridging the gap between abstract security principles and real-world application.
+
+Beyond the Juice Shop, prior research emphasizes the importance of staged or multi-level educational environments for learning secure software development. 
+Studies have shown that learners gain deeper comprehension when exposed first to vulnerable systems, followed by guided mitigation exercises that illustrate the effect of security improvements. 
+In line with this, the project implements three distinct configurations: 
+\textbf{System 1}, the vulnerable system, serves as a baseline for observing exploitation; 
+\textbf{System 2} and \textbf{System 3}, the partially secured system, demonstrates the impact of resolving selected vulnerabilities; 
+This staged approach allows us to directly observe the effect of security interventions on system behavior and resilience, reinforcing lessons about secure coding and access control.
+
+The project also aligns with other educational initiatives and platforms that combine vulnerability exploration with remediation, such as WebGoat and Hackademic, while contributing a distinct emphasis on comparative analysis across multiple system versions. 
+By intentionally implementing and then progressively hardening the same application, the \textbf{Bobby School of Cyber Security} enables learners to observe not only how vulnerabilities are exploited, but also how targeted and layered mitigations alter the attack surface and system behavior.
+
+By incorporating the OWASP Juice Shop methodology and enforcing a challenge-driven learning model, this project contributes to security education by combining hands-on exploitation, focused mitigation development, and reflective analysis. 
+The approach emphasizes both technical skill acquisition and the development of security reasoning — preparing us to apply secure software engineering practices in real-world development and assessment contexts.

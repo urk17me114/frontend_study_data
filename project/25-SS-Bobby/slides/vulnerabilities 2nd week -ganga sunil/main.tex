@@ -1,0 +1,192 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx} 
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+
+\title{Vulnerabilities in OWASP Juice Shop}
+\author{Prepared by Ganga Sunil}
+\date{May 23, 2025}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}[fragile]{Log in with the Support Team’s Original User Credentials}
+
+\textbf{Steps:}
+\begin{itemize}
+  \item Support team email: \texttt{support@juice-sh.op} from SQL Injection user list.
+  \item Locate KeePass database file at: \\
+  \url{http://localhost:3000/ftp/incident-support.kdbx}
+  \item Download and open with KeePass 2.x.
+  \item From the hintspassword to the keypass file is weak and start with Support, brute force the remaining to Support2022! to unlock KeePass file.
+  \item Find password for support user in the \texttt{prod} entry inside KeePass.
+  \item Use these credentials to log in.
+
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Log in with the Support Team’s Original User Credentials}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{keypass.jpg}
+    \caption{Passwords in keypass file.}
+    \label{fig:enter-label}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{Perform a Remote Code Execution to Keep the Application Busy Forever}
+
+\textbf{Step-by-step guide:}
+
+\begin{itemize}
+  \item From the hint looking for doccument related to apis leads to Swagger API docs at \url{http://localhost:3000/api-docs} describing the B2B API.
+  \item The API allows POSTing orders with \texttt{orderLines} in JSON.
+  \item Authenticate with any bearerAuth rextracted during login by burp suite.
+  \item Example \texttt{orderLinesData} input contains arbitrary JSON:
+  \begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+ {  "orderLinesData": "'); while(true){} //"}
+  \end{lstlisting}
+
+  \item Click “Try it out” then “Execute” for a successful \texttt{200} response.
+  \item The server will respond after about 2 seconds due to a timeout, preventing a true DoS.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Perform a Remote Code Execution to Keep the Application Busy Forever}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.40\linewidth]{swagger1.jpg}
+    \caption{Infinite loop JSON command in swagger.}
+    \label{fig:enter-label}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Perform Remote Code Execution Using Costly Regular Expression}
+
+\begin{itemize}
+    \item Follow steps in the above challenge.
+    \item In the \textbf{Request Body}, replace the example with a heavy equation:
+    \begin{lstlisting}[basicstyle=\ttfamily\small]
+    { 
+  "orderLinesData": 
+  "/((1+)+)5/.test('11111111111111111111111111')"
+}
+    \end{lstlisting}
+    \item This triggers a \textbf{catastrophic backtracking} in regex evaluation, a very costly operation.
+    \item Click \textbf{Execute} to send the request.
+    \item Server will respond with a \textbf{503 Service Unavailable} and message:
+
+        \textit{Sorry, we are temporarily not available! Please try again later.}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Perform Remote Code Execution Using Costly Regular Expression}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.40\linewidth]{swagger2.jpg}
+    \caption{JSON command in swagger.}
+    \label{fig:enter-label}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Inform the shop about a typosquatting trick it has been a victim of at least in v6.2.0-SNAPSHOT.}
+\begin{itemize}
+    \item After solving \textbf{Download and inspect backup file}, \texttt{package.json.bak} dependencies.
+    \item Use online tool https://snyk.io/advisor/check/npm to inspect the libraries for typosqatting.
+    \item Which reveals epilouge-js is a typosquatting package mimicking the legitimate \texttt{epilogue} library.
+    
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{image.png}
+    \caption{Epilogue-Js Library}
+    \label{fig:enter-label}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{Informing the Shop About Vulnerable Libraries}
+\begin{itemize}
+    \item Juice Shop depends on JavaScript libraries with known vulnerabilities.
+    \item Use online tool https://snyk.io/advisor/check/npm to inspect the
+libraries.
+    \item Notable vulnerable packages found:
+    \begin{itemize}
+        \item \textbf{sanitize-html} (version 1.4.2): 
+        \begin{itemize}
+            \item HTML sanitization not recursive, allowing script injection.
+
+        \end{itemize}
+        
+    \end{itemize}
+    \item Submit feedback via \url{http://localhost:3000/#/contact} including:
+    \begin{itemize}
+        \item \texttt{sanitize-html} and \texttt{1.4.2}
+    \end{itemize}
+    \item This informs the shop about its vulnerable dependencies to fix.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Informing the Shop About Vulnerable Libraries}
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{sanitize.jpg}
+        \caption{Vulnerable sanitize-html Library}
+        \label{fig:enter-label}
+    \end{figure}
+        
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Permanently Disable the Support Chatbot}
+\textbf{Key points:}
+\begin{itemize}
+    \item The chatbot uses the npm module \texttt{juicy-chat-bot}.
+    \item User messages are processed inside a VM context via a \texttt{process} function.
+    \item Vulnerable code snippet:  
+         this.factory.run(`users.addUser("${token}", "${name}")`)
+
+    This acts like an \texttt{eval} inside the VM.
+    
+    \item Injecting username: \texttt{admin"); process=null;//}                                      
+    \item The executed code becomes:
+    \begin{lstlisting}
+        users.addUser("token", admin");
+        process=null; //
+    \end{lstlisting}
+    
+    \item Setting \texttt{process = null} disables message processing.
+    \item Subsequent chatbot interactions will cause errors, effectively disabling the bot.
+\end{itemize}
+
+
+
+\end{frame}
+\begin{frame}[fragile]{Permanently Disable the Support Chatbot}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Screenshot 2025-05-22 153348.jpg}
+    \caption{Disabled chatbot}
+    \label{fig:enter-label}
+\end{figure}
+\end{frame}
+
+\end{document}
+
+

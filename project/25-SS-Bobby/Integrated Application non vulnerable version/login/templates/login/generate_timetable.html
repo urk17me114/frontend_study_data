@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Timetable</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+            list-style: square;
+            color: #333;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>Generate Timetable</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Generate</button>
+    </form>
+
+    {% if failures %}
+        <h3>Failures:</h3>
+        <ul>
+            {% for cls, subj, num in failures %}
+                <li>{{ cls }} - {{ subj }}: {{ num }} unassigned</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="back-link">
+        <a href="{% url 'create_timetable' %}">Back</a>
+    </div>
+</body>
+</html>

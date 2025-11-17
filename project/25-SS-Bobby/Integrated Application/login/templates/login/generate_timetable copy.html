@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><title>Generate Timetable</title></head><body>
+<h2>Generate Timetable</h2>
+<form method="post">{% csrf_token %}<button type="submit">Generate</button></form>
+{% if failures %}
+    <h3>Failures:</h3><ul>
+    {% for cls, subj, num in failures %}
+        <li>{{ cls }} - {{ subj }}: {{ num }} unassigned</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+<a href="/">Home</a>
+</body></html>

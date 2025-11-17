@@ -1,0 +1,279 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\begin{document}
+\title{Bobby's Application - Vulnerable App}
+\begin{figure}
+    \centering
+    \includegraphics[width=1.005\linewidth]{bobby_welcome_bg.jpg} 
+\end{figure}
+\date{Oct 24, 2025}
+% Slide 1
+\begin{frame}{Introduction}
+\begin{itemize}
+\item Project aim: Intentionally insecure School Management System.
+\item Rising need for secure software due to data breaches and trust issues.  
+\item Many apps still ignore security best practices.  
+\item Provides hands-on learning of common vulnerabilities.  
+\item Highlights the role of secure coding and awareness.  
+\item Inspired by OWASP Juice Shop (OWASP project).  
+\item Demonstrates flaws like Injection attacks, Broken Authentication,  IDOR etc  
+\end{itemize}
+
+\end{frame}
+
+% Slide 2.1
+\begin{frame}{Broken anti-automation}
+Broken anti-automation occurs when an application fails to reliably distinguish humans from bots
+\begin{itemize}
+\item Reusable or non-expiring CAPTCHA tokens can be replayed or never expire.
+\item Missing rate limiting allows high-frequency automated requests.
+\item Open endpoints accept unlimited submissions, leading to performance issues or denial of service.
+\item Attackers exploit this to brute-force, scrape data, or flood services.
+\end{itemize}
+\end{frame}
+
+
+
+% Slide 2.2
+\begin{frame}{CAPTCHA in Student / Teacher registration page}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{image_stu_teacher_reg.png}
+\end{figure}
+
+\end{frame}
+
+
+% Slide 2.3
+\begin{frame}{CAPTCHA in Student / Teacher registration page}
+\begin{itemize}
+\item Enables new teachers / students to register through an online enrollment form.
+\item Accepts CAPTCHA ID and user input (captcha\_response).  
+\item Retrieves corresponding record from CaptchaStore.  
+\item Compares user response with stored CAPTCHA value.  
+\item Returns True for valid matches, False otherwise.  
+\item Handles missing or expired CAPTCHAs by returning False.  
+\end{itemize}
+
+\end{frame}
+
+% Slide 2.4
+\begin{frame}{Vulnerability}
+\begin{itemize}
+\item Register once: complete the form and solve the CAPTCHA.
+\item Capture the POST request in DevTools or a proxy.
+\item Note the CAPTCHA parameters: \texttt{captcha\_0} (token) and \texttt{captcha\_1} (response).
+\item Replay the identical POST using the same token/response.
+\item Automate repeats with Burp/Postman or a simple Python/JS script.
+\item If accepted, submit many registrations rapidly.
+\item Impact: floods the endpoint with fake entries and confirms CAPTCHA bypass.
+\end{itemize}
+\end{frame}
+
+% Slide 2.5.1
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{image_vul1.png}
+\end{figure}
+\end{frame}
+
+% Slide 2.5.2
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{3_vul_cb.jpg}
+\end{figure}
+\end{frame}
+
+% Slide 2.5.3
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{image3_vu_cb.png}
+\end{figure}
+\end{frame}
+
+
+% Slide 2.6
+\begin{frame}{Broken anti-automation - Consequences}
+\begin{itemize}
+\item Mass registrations: thousands of fake accounts created automatically.
+\item Denial of Service: automated requests can overload or crash the server.
+\item Distorted analytics: fake traffic corrupts metrics and reports.
+\item Reputation \& compliance: user distrust, blacklisting, or legal issues.
+\end{itemize}
+\end{frame}
+
+% Slide 2.7
+\begin{frame}{Possible Mitigations}
+\begin{itemize}
+\item One-time, expiring CAPTCHA tokens: issue unique tokens with short TTL and mark consumed on use.
+\item Server-side token store \& validation: store tokens server-side and reject expired/missing/consumed tokens.
+\item Use vetted CAPTCHA libraries: adopt proven solutions (e.g., django-simple-captcha) to avoid custom errors.
+\item Bind CAPTCHA to session: tie tokens to the originating session to prevent reuse across clients.
+\item Rate limiting \& throttling: enforce per-IP and per-endpoint limits with progressive backoff.
+\end{itemize}
+\end{frame}
+
+
+
+% Slide 3.1
+\begin{frame}{Announcement Vote tampering }
+This vulnerability occurs when one-vote-per-user is enforced only on the client side, letting attackers submit multiple votes and tamper with counts.
+\begin{itemize}
+\item Upvote/downvote button is frozen on the client instead of enforcing server-side vote limits.
+\item Attackers can run JavaScript in the browser to bypass the freeze.
+\item Multiple votes from the same account can be submitted.
+\item Vote counts can be inflated, corrupting the integrity of feedback.
+\end{itemize}
+
+\end{frame}
+
+% Slide 3.2
+\begin{frame}{View and Vote Announcement}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{image8.png}
+\end{figure}
+
+\end{frame}
+
+% Slide 3.3
+\begin{frame}{Vote announcement functionality}
+\begin{itemize}
+\item This functionality allows students to submit upvotes or downvotes on teacher announcements.  
+\item Ensures only authenticated students can vote using the session decorator.  
+\item Processes POST requests with JSON data containing announcement\_id and vote\_type.  
+\item Validates vote type and records votes in the database, returning updated counts as JSON.  
+\end{itemize}
+
+\end{frame}
+
+% Slide 3.4
+\begin{frame}{Vulnerability}
+\begin{itemize}
+\item Students can vote on announcements from the View Announcements page using the upvote or downvote controls.
+\item Use Developer Tools to capture the POST request to vote\_announcement and note the payload, including announcement ID and vote type.
+\item Automate repeated POST submissions using Postman, curl, or a browser script
+\item Resend the captured vote request so the backend records multiple votes despite the frontend allowing only one.
+\item Refresh the announcement list to see the upvote count has increased  misleading other students about its popularity.
+\end{itemize}
+\end{frame}
+
+% Slide 3.5.1
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{1_vt.jpg}
+\end{figure}
+\end{frame}
+
+% Slide 3.5.2
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{2_vt.jpg}
+\end{figure}
+\end{frame}
+
+% Slide 3.6
+\begin{frame}{Vote tampering - Consequences}
+\begin{itemize}
+\item Biased decisions driven by corrupted feedback
+\item Erosion of trust in the platform and decreased user engagement
+\item Server slowdown or crashes: high volume of repeated votes can overload the backend, causing slow responses or system failures
+\item Misleading rankings can lead to harming user experience
+\end{itemize}
+\end{frame}
+
+% Slide 3.6
+\begin{frame}{Possible Mitigations}
+\begin{itemize}
+\item Server checks for existing votes before inserting a new vote, updates or rejects duplicates based on policy.
+\item Enforcement moved fully to the server, preventing manipulation via developer tools or forged HTTP requests.
+\item Maintain a vote history log to audit activity and detect abnormal voting patterns.
+\item System now reliably enforces one-vote-per-user; automated or repeated submissions are rejected.
+\item Ensures fair and transparent voting outcomes.
+\end{itemize}
+\end{frame}
+
+
+
+% Slide 4.1
+\begin{frame}{PDF Metadata Exposure}
+This vulnerability occurs when uploaded PDF documents retain embedded metadata or annotations that are not removed before being served, potentially exposing sensitive information about authorship, internal comments etc
+
+\begin{itemize}
+\item Locate the PDF URL from the announcement
+\item Fetch the PDF using a browser, pdf.js, Postman, or a PDF reader.
+\item Extract metadata and annotations using js in browser console.
+\item Identify sensitive attributes such as author names, internal comments, timestamps, and document revision history.
+\end{itemize}
+\end{frame}
+
+% Slide 4.2
+\begin{frame}{View and Vote Announcement}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{image8.png}
+\end{figure}
+
+\end{frame}
+
+% Slide 4.3
+\begin{frame}{View Announcement Functionality}
+\begin{itemize}
+\item Allows students to view teacher announcements.  
+\item Displays announcement text, attached files, vote counts, and student vote status.  
+\item Supports real-time rendering and downloading of uploaded PDF files.  
+\item Vulnerability: uploaded PDFs are served without sanitization, exposing hidden metadata such as author details, timestamps, and internal comments.  
+\item This can leak sensitive information and compromise privacy or internal workflows.  
+\end{itemize}
+\end{frame}
+
+% Slide 4.4
+\begin{frame}{Vulnerability}
+\begin{itemize}
+\item A teacher posts an announcement with a PDF containing sensitive metadata and annotations.
+\item A student views an announcement and opens the attached PDF.
+\item A student uses the browser console for running js and the data-pdf-url to fetch the PDF and extract its metadata and annotations.
+\item Clicking the PDF button reveals hidden metadata like author, creation date, and comments
+\item Annotations such as teacher notes leak sensitive information without authentication.
+\end{itemize}
+\end{frame}
+
+
+% Slide 4.5
+\begin{frame}{Vulnerability}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Screenshot 2025-10-22 001145.jpg}
+\end{figure}
+
+\end{frame}
+
+% Slide 4.6
+\begin{frame}{PDF Metadata Exposure - Consequences }
+\begin{itemize}
+\item Leaks sensitive author details such as name, email, or organization.
+\item Reveals internal comments, revision history, or reviewer notes.
+\item Exposes software version and timestamp data, aiding targeted attacks.
+\item Compromises document confidentiality and institutional privacy.
+\item Enables social engineering using leaked identity or workflow details.
+\item May violate data protection laws like GDPR due to personal data leakage.
+\end{itemize}
+\end{frame}
+
+% Slide 4.7
+\begin{frame}{Possible Mitigations}
+\begin{itemize}
+\item Server-side metadata stripping: process PDFs on upload to remove metadata and annotations using libraries like pikepdf or PyPDF2.
+\item Sanitization pipeline: validate MIME type and size, convert to canonical form, strip metadata/embedded files, and perform integrity checks before storage.
+\item Immutable sanitized storage: store only the sanitized PDF; original files are transient or securely deleted.
+\end{itemize}
+\end{frame}
+\include{part2/part2}
+\end{document}

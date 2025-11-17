@@ -1,0 +1,13 @@
+                                                                                    Minutes 23/05/2025
+
+
+
+
+
+
+Try out more vulnerabilities. Try to include different vulnerabilities and avoid those which are kinda similar 
+Git commits needs to be regularized.
+Actual system roadmap needs to be implemented summarizing how the system should look like in version 1, Which use cases to be implemented, which vulnerabilities to be perfomed on which use cases etc
+Presentation quality needs to be improvised, including the font size, placement of pictures etc
+Follow latex for presentation
+next meeting on wednesday

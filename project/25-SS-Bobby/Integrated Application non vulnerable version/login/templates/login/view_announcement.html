@@ -1,0 +1,181 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <title>View Announcements</title>
+    <style>
+        .announcement {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .upvote, .downvote {
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-right: 10px;
+        }
+        .upvote {
+            background-color: #28a745;
+            color: white;
+        }
+        .downvote {
+            background-color: #dc3545;
+            color: white;
+        }
+        .voted {
+            background-color: #007bff;
+        }
+        .vote-count {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form style="display:none;">
+    {% csrf_token %}
+</form>
+
+    <h2>Announcements</h2>
+    <div id="announcements">
+        {% for announcement in announcements %}
+        <div class="announcement" id="announcement_{{ announcement.id }}">
+            <p><strong>{{ announcement.teacher.username }}</strong> ({{ announcement.created_at|date:"F d, Y" }})</p>
+            <p>{{ announcement.text }}</p>
+            {% if announcement.pdf_file %}
+                <p>
+                    <button class="render-pdf-btn" data-pdf-url="{{ announcement.pdf_file.url }}">View File</button>
+                    <a href="{{ announcement.pdf_file.url }}" download>Download PDF</a>
+                </p>
+                <div class="pdf-container" id="pdf-container-{{ announcement.id }}"></div>
+            {% endif %}
+            
+                                
+
+
+            <!-- Voting buttons -->
+            <button class="upvote {% if student_votes|get_item:announcement.id == 'upvote' %}voted{% endif %}" 
+                    onclick="vote('upvote', '{{ announcement.id }}')">Upvote</button>
+            <button class="downvote {% if student_votes|get_item:announcement.id == 'downvote' %}voted{% endif %}" 
+                    onclick="vote('downvote', '{{ announcement.id }}')">Downvote</button>
+
+            <!-- Dynamic vote count display -->
+            <div class="vote-count" id="vote_counts_{{ announcement.id }}">
+                <span>Upvotes: {{ vote_counts|dict_get:announcement.id|default:0|dict_get:"upvote"|default:"0" }}</span> |
+                <span>Downvotes: {{ vote_counts|dict_get:announcement.id|default:0|dict_get:"downvote"|default:"0" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.worker.min.js';
+
+  document.querySelectorAll('.render-pdf-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const pdfUrl = button.getAttribute('data-pdf-url');
+      const announcementId = button.closest('.announcement').id.split('_')[1];
+      const container = document.getElementById(`pdf-container-${announcementId}`);
+
+      // Toggle logic
+      if (container.childElementCount > 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+
+      pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc => {
+        const scale = 1.2;
+
+        for(let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+          pdfDoc.getPage(pageNum).then(page => {
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            container.appendChild(canvas);
+
+            const renderContext = {
+              canvasContext: context,
+              viewport: viewport
+            };
+
+            page.render(renderContext);
+          });
+        }
+      }).catch(err => {
+        container.innerHTML = `<p style="color:red;">Failed to load PDF: ${err.message}</p>`;
+      });
+    });
+  });
+</script>
+
+<script>
+
+        
+   
+
+
+    // Store last vote per announcement in memory (session)
+    const localVotes = {};
+
+    function vote(voteType, announcementId) {
+        fetch("{% url 'vote_announcement' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                announcement_id: announcementId,
+                vote_type: voteType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const upvoteButton = document.querySelector(`#announcement_${announcementId} .upvote`);
+                const downvoteButton = document.querySelector(`#announcement_${announcementId} .downvote`);
+                const voteCountDiv = document.getElementById(`vote_counts_${announcementId}`);
+
+                // ✅ Always trust backend counts
+            voteCountDiv.innerHTML = `
+                <span>Upvotes: ${data.upvotes_count}</span> | 
+                <span>Downvotes: ${data.downvotes_count}</span>
+            `;
+
+            // ✅ Update UI state
+            if (voteType === 'upvote') {
+                upvoteButton.classList.add('voted');
+                downvoteButton.classList.remove('voted');
+            } else {
+                downvoteButton.classList.add('voted');
+                upvoteButton.classList.remove('voted');
+            }
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+
+
+
+
+
+    
+
+
+
+
+        

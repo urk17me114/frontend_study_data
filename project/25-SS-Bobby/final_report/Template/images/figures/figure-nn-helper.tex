@@ -1,0 +1,47 @@
+\begin{tikzpicture}
+  \node[draw,rectangle] (it) at (-5,5) {Initiating Trustee};
+  \node[draw,rectangle] (rt) at (0,5) {Responding Trustee};
+  \node[draw,rectangle] (helper) at (5,5) {Helper};
+  \node (decide) at (-5,4.25) {Decide to sign $M$.};
+  \node (left1-helper) at (-4,4) {};
+  \node (right1-helper) at (-1,4) {};
+  \node[align=left] (right1) at (1,3.6) {$h \gets \hash(M)$ \\ Each $t$ computes: \\ $\sigma_{\pi}^t \gets $\sharesign($X_{\pi}^t,h)$};
+  \node (center1-helper) at (-2.5,4) {};
+  \node[inner sep=0px, above=1px of center1-helper] (first-message) {$\pi,M$};
+  \node[inner sep=0px, below=1px of center1-helper] (first-comment) {\tiny to responding trustees};
+
+  \node (right2-helper) at (-1,2.5) {};
+  \node (left2-helper) at (-4,2.5) {};
+  \node(left2) at (-5,2.5) {	$h \gets \hash(M)$};
+  \node (center2-helper) at (-2.5,2.5) {};
+
+  \node[inner sep=0px, above=1px of center2-helper] (first-message) {$\sigma_{\pi}^t, \PATH_{\pi}^t$};
+  \node[inner sep=0px, below=1px of center2-helper] (first-comment) {\tiny from each responding trustee $t$};
+
+  \draw[->] (left1-helper) -- (right1-helper);
+  \draw[->] (right2-helper) -- (left2-helper);
+
+  \node (helper1-helper) at (4,1.5) {};
+  \node (left3-helper) at (-4,1.5) {};
+  \node (center3-helper) at (0,1.5) {};
+
+  \node[inner sep=0px, above=1px of center3-helper] (first-message-to-helper) {$\pi,h$};
+
+  \node (helper1) at (5.6,1.5) {$\sigma_{\pi}^H \gets \sharesign(X_{\pi}^H,h)$};
+
+  \draw[->] (left3-helper) -- (helper1-helper);
+
+  \node (helper2-helper) at (4,0.5) {};
+  \node (left4-helper) at (-4,0.5) {};
+  \node (center4-helper) at (0,0.5) {};
+
+  \node[inner sep=0px, above=1px of center4-helper] (first-message-to-helper) {$\sigma^{H}_{\pi}, \PATH^H_{\pi}$};
+
+  \node[align=left] (right3) at (-5.2,-0.15) {$\sigma_{\pi}^t \gets \sharesign(X_{\pi}^t,h)$\\
+	$\sigma_{\pi} \gets \bigoplus \sigma_{\pi}^{1,\ldots,n, H}$\\
+	$\PATH_{\pi} \gets \bigoplus \PATH^{1,\ldots,n, H}_{\pi}$\\
+	Verify signature};
+
+
+  \draw[->] (helper2-helper) -- (left4-helper);
+\end{tikzpicture}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 40px auto;
+            max-width: 400px;
+        }
+
+        li {
+            margin: 15px 0;
+        }
+
+        a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            background-color: #0073e6;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>School Timetable Generator</h2>
+    <ul>
+        <li><a href="{% url 'add_subject' %}">Add Subject</a></li>
+        <li><a href="{% url 'add_teacher' %}">Add Teacher</a></li>
+        <li><a href="{% url 'add_classsection' %}">Add Class</a></li>
+        <li><a href="{% url 'add_room' %}">Add Room</a></li>
+        <li><a href="{% url 'add_timeslot' %}">Add Timeslots</a></li>
+        <li><a href="{% url 'generate_timetable' %}">Generate Timetable</a></li>
+        <li><a href="{% url 'admin_timetable' %}">View Timetable</a></li>
+        <li><a href="{% url 'admin' %}">Back</a></li>
+    </ul>
+</body>
+</html>

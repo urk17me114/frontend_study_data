@@ -1,0 +1,72 @@
+<!-- templates/errors_404.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Page Not Found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#f8f9fa; --fg:#222; --accent:#0d6efd; --danger:#dc3545; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(40px, 6vw, 64px);
+      line-height: 1;
+      color: var(--danger);
+      letter-spacing: .5px;
+    }
+    .sub { margin: 0 0 18px; font-size: 18px; opacity: .9; }
+    .msg { margin: 0 0 24px; font-size: 16px; }
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    a.btn, button.btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    a.btn--ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+    .hint { margin-top: 18px; font-size: 13px; opacity: .7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>404</h1>
+    <p class="sub">Page not found</p>
+    <p class="msg">
+      {{ message|default:"The page you requested could not be found." }}
+    </p>
+    <div class="actions">
+      <a class="btn" href="{% url 'index' %}">Go Home</a>
+      <a class="btn btn--ghost" href="javascript:history.back()">Go Back</a>
+    </div>
+    <p class="hint">If you typed the address, check the spelling and try again.</p>
+  </div>
+</body>
+</html>

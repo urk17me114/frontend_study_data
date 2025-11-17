@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Teacher Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 10px;
+            background-color: #f0f2f5;
+            width: 35%;
+        }
+        td {
+            padding: 10px;
+        }
+        img {
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        input[type="file"] {
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        #doc-error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        a.download-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a.download-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function validateDocument(input) {
+            const file = input.files[0];
+            const errorDiv = document.getElementById("doc-error");
+            if (file) {
+                if (!file.name.toLowerCase().endsWith(".pdf")) {
+                    errorDiv.textContent = "Only PDF files are allowed.";
+                    input.value = "";
+                } else if (file.size > 1024 * 1024) {  // 1MB
+                    errorDiv.textContent = "File size must be under 1MB.";
+                    input.value = "";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Teacher Profile</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            <!-- {% csrf_token %} REMOVED intentionally to allow CSRF -->
+            <table>
+                <tr>
+                    <th>{{ form.firstname.label_tag }}</th>
+                    <td>{{ form.firstname }}</td>
+                </tr>
+                <tr>
+                    <th>{{ form.lastname.label_tag }}</th>
+                    <td>{{ form.lastname }}</td>
+                </tr>
+                <tr>
+                    <th>{{ form.dob.label_tag }}</th>
+                    <td>{{ form.dob }}</td>
+                </tr>
+                <tr>
+                    <th>{{ form.gender.label_tag }}</th>
+                    <td>{{ form.gender }}</td>
+                </tr>
+                <tr>
+                    <th>{{ form.email.label_tag }}</th>
+                    <td>{{ form.email }}</td>
+                </tr>
+
+                {% if profile_photo %}
+                <tr>
+                    <th>Current Profile Photo</th>
+                    <td><img src="{{ profile_photo }}" alt="Profile Photo" style="max-height: 200px; border-radius: 10px;"></td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <th>Upload New Profile Photo</th>
+                    <td><input type="file" name="profile_photo" accept="image/*"></td>
+                </tr>
+
+                {% if document_url %}
+                <tr>
+                    <th>Current Document</th>
+                    <td>
+                        <a href="{% url 'download_teacher_document' %}" target="_blank" class="download-link">Download Current Document</a>
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <th>Upload New Document</th>
+                    <td>
+                        <input type="file" name="document" accept=".pdf" onchange="validateDocument(this)">
+                        <div id="doc-error"></div>
+                        {% if form.document.errors %}
+                            <div style="color:red;">{{ form.document.errors.0 }}</div>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <a class="back-link" href="{% url 'teacher' %}">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

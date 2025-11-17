@@ -1,0 +1,578 @@
+\documentclass{beamer}
+
+\usepackage{graphicx}
+\usepackage[absolute,overlay]{textpos}
+
+
+\usetheme{Madrid}
+
+\setbeamertemplate{navigation symbols}{}
+
+\title[Requirements Analysis]{Requirements Analysis for the School System of Bobby's Fictional School}
+\author{Arundas Mohandas \\ Ganga Sunil}
+\institute{Bauhaus Universität - Weimar}
+\date{16/04/2025}
+
+% Remove default footline
+\setbeamertemplate{footline}{}
+
+% Add logo + page number automatically on all slides except title
+\addtobeamertemplate{background}{
+    \ifnum\value{framenumber}>1
+        % Logo bottom-left
+        \begin{textblock*}{2cm}(0.5cm,8.3cm)
+            \includegraphics[height=0.7cm]{bauhaus university blue logo.jpeg}
+        \end{textblock*}
+        % Page number bottom-right
+        \begin{textblock*}{2cm}(12cm,8.7cm)
+            \usebeamercolor[fg]{page number in head/foot}\scriptsize \insertframenumber
+        \end{textblock*}
+    \fi
+}{}
+
+\begin{document}
+
+% Title slide (no footer elements)
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide: Stakeholders
+\begin{frame}
+    \frametitle{Stakeholders}
+    \begin{itemize}
+        \item Students
+        \item Teachers
+        \item Parents
+        \item Admin/Headmaster
+    \end{itemize}
+\end{frame}
+
+% Slide: Requirements to Use Cases - Traceability Matrix 
+\begin{frame}[fragile]
+    \frametitle{Requirements to Use Cases - Traceability Matrix}
+    \scriptsize
+    \begin{tabular}{|l|p{6.3cm}|l|}
+        \hline
+        \textbf{Requirement ID} & \textbf{Requirement Description} & \textbf{Use Case(s)} \\
+        \hline
+        REQ1  & View student profile                 & UC1       \\
+        REQ2  & Edit student profile                 & UC1       \\
+        REQ3  & View student attendance              & UC3       \\
+        REQ4  & View student marks                   & UC5       \\
+        REQ5  & Apply/view leave (student)           & UC2, UC3   \\
+        REQ6  & View timetable (student)             & UC8       \\
+        REQ7  & Student messaging teachers           & UC11       \\
+        REQ8  & View class schedule                  & UC8       \\
+        REQ9  & Teacher takes attendance             & UC4       \\
+        REQ10 & Teacher assigns marks                & UC6      \\
+        REQ11 & View student leave requests          & UC7       \\
+        REQ12 & Manage attendance                    & UC4       \\
+        REQ13 & View teacher schedule                & UC8      \\
+        REQ14 & Request leave (teacher)              & UC7      \\
+        REQ15 & Message students                     & UC11       \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+% Slide: Requirements to Use Cases - Traceability Matrix 
+\begin{frame}[fragile]
+    \frametitle{Requirements to Use Cases - Traceability Matrix }
+    \scriptsize
+    \begin{tabular}{|l|p{6.3cm}|l|}
+        \hline
+        \textbf{Requirement ID} & \textbf{Requirement Description} & \textbf{Use Case(s)} \\
+        \hline
+        REQ16 & Edit marks before publishing         & UC6      \\
+        REQ17 & Parent views attendance              & UC3       \\
+        REQ18 & Parent views marks                   & UC5       \\
+        REQ19 & Parent views timetable               & UC8       \\
+        REQ20 & View teacher info to students/parents & UC10       \\
+        REQ21 & View announcements                   & UC12      \\
+        REQ22 & Generate attendance reports          & UC14       \\
+        REQ23 & Manage timetable                     & UC9       \\
+        REQ24 & Edit student information in the system & UC16       \\
+        REQ25 & Add/update holidays                  & UC13      \\
+        REQ26 & Teacher communication                & UC11      \\
+        REQ27 & Parent-teacher messaging             & UC11      \\
+        REQ28 & Grade report of students             & UC14      \\
+        REQ29 & Teachers can assign/modify assignments & UC15      \\
+        REQ30 & Publish marks                        & UC7      \\
+        REQ31 & Student registration                 & UC16      \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+% Slide: Information Classification
+\begin{frame}
+    \frametitle{Information Classification}
+    \scriptsize
+    \vspace{-1cm}
+    \textbf{Public Information:}
+    \begin{itemize}
+        \item Class Timetables
+        \item School-wide Announcements
+        \item Teacher Contact Information (limited: email, qualification, experience)
+        \item General School Calendar
+    \end{itemize}
+    
+    \textbf{Private Information:}
+    \begin{itemize}
+        \item Student Personal Details (address, date of birth, etc.)
+        \item Marks and Grades
+        \item Attendance Records
+        \item Leave Applications
+        \item Communication Messages (between stakeholders)
+        \item Teacher-to-Teacher or Admin Notes
+    \end{itemize}
+    
+    \textbf{Access Control:}
+    \begin{itemize}
+        \item \textbf{Students/Parents:} View own data only.
+        \item \textbf{Teachers:} Access data related to assigned classes and students.
+        \item \textbf{Admin/Headmaster's Office:} Full access to all school data.
+    \end{itemize}
+\end{frame}
+
+% Slide: Use Case Descriptions Title
+\begin{frame}
+    \frametitle{Use Case Descriptions}
+    \centering
+    %\textbf{Use Case UC1: Update/View Personal Info} \\
+    %\vspace{1cm}
+    \textit{Below are the descriptions for all relevant use cases in the system.}
+\end{frame}
+
+% Slide: Use Case UC1
+\begin{frame}
+    \frametitle{Use Case UC1: Update/View Personal Info}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Remove extra space at the top
+    \textbf{Related Requirements:} REQ1, REQ2 \\
+    \textbf{Initiating Actor:} Student / Teacher \\
+    \textbf{Actor’s Goal:} To view or update their personal profile information. \\
+    \textbf{Participating Actors:} Admin Office \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item User must be authenticated.
+        \item The system must have existing personal records.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item The user's information is updated or displayed.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Student/Teacher logs into the system.
+        \item Navigates to the "Profile" section.
+        \item System displays current profile data.
+        \item User edits desired fields and clicks "Save".
+        \item System validates input and updates the database.
+        \item System notifies the Admin Office if a change is significant (e.g., contact email).
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC2
+\begin{frame}
+    \frametitle{Use Case UC2: Apply for Leave}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Remove extra space at the top
+    \textbf{Related Requirements:} REQ5 \\
+    \textbf{Initiating Actor:} Student \\
+    \textbf{Actor’s Goal:} To apply for individual leave. \\
+    \textbf{Participating Actors:} Teacher \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Student must be logged in.
+        \item Leave form must be filled.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Leave request is sent to the class teacher for review.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Student accesses "Leave Application" form.
+        \item Fills in date range and reason.
+        \item Clicks “Submit”.
+        \item System records the request.
+        \item System forwards the request to the class teacher.
+        \item Teacher can view and approve/reject the leave.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC3
+\begin{frame}
+    \frametitle{Use Case UC3: View Attendance}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ3, REQ17 \\
+    \textbf{Initiating Actor:} Student / Parent / Admin \\
+    \textbf{Actor’s Goal:} To see attendance history or overview. \\
+    \textbf{Participating Actors:} Teacher \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item User must be authenticated.
+        \item Attendance data must exist.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Attendance data is shown.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Actor selects the "Attendance" option.
+        \item System retrieves attendance data.
+        \item Displays attendance in tabular or visual form.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC4
+\begin{frame}
+    \frametitle{Use Case UC4: Manage Attendance}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ9, REQ12 \\
+    \textbf{Initiating Actor:} Teacher \\
+    \textbf{Actor’s Goal:} To mark or update attendance. \\
+    \textbf{Participating Actors:} Admin Office \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Class is assigned to teacher.
+        \item Current date/time is within valid school hours.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Attendance is updated in the system.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Teacher opens class dashboard.
+        \item Clicks on “Mark Attendance”.
+        \item Selects present/absent/tardy for each student.
+        \item Clicks “Submit”.
+        \item System saves attendance record.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC5
+\begin{frame}
+    \frametitle{Use Case UC5: View Marks}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ4, REQ18 \\
+    \textbf{Initiating Actor:} Student / Parent \\
+    \textbf{Actor’s Goal:} To check academic performance. \\
+    \textbf{Participating Actors:} Teacher \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Marks must be uploaded and approved.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Marks are visible.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Student/Parent selects the "Marks" section.
+        \item System shows a list of subjects and corresponding marks.
+        \item View is read-only.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC6
+\begin{frame}
+    \frametitle{Use Case UC6: Upload/Edit Marks}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ10, REQ16 \\
+    \textbf{Initiating Actor:} Teacher \\
+    \textbf{Actor’s Goal:} To enter or update marks. \\
+    \textbf{Participating Actors:} Admin Office \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Subject is assigned to the teacher.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Marks are recorded and pending approval.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Teacher navigates to the “Upload Marks” section.
+        \item Enters marks for each student.
+        \item Clicks “Save”.
+        \item System stores marks as “Pending”.
+        \item Notifies Admin Office for approval.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC7
+\begin{frame}
+    \frametitle{Use Case UC7: Approve Marks or Leave}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ11, REQ14, REQ30 \\
+    \textbf{Initiating Actor:} Admin Office \\
+    \textbf{Actor’s Goal:} To validate submissions from teachers or students. \\
+    \textbf{Participating Actors:} None \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Requests must exist in the pending state.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Data is published or rejected.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Admin reviews pending marks or leave requests.
+        \item Accepts or rejects entries.
+        \item System updates the record status accordingly.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC8
+\begin{frame}
+    \frametitle{Use Case UC8: View Timetable}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ6, REQ8, REQ13, REQ19 \\
+    \textbf{Initiating Actor:} Student / Parent / Teacher \\
+    \textbf{Actor’s Goal:} To view class or personal timetable. \\
+    \textbf{Participating Actors:} Admin Office \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Timetable must exist.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item View-only access to the timetable.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item User selects “Timetable”.
+        \item System filters relevant schedule based on role.
+        \item Displays timetable.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC9
+\begin{frame}
+    \frametitle{Use Case UC9: Create/Edit Timetable}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ23 \\
+    \textbf{Initiating Actor:} Admin Office \\
+    \textbf{Actor’s Goal:} To manage school-wide schedules. \\
+    \textbf{Participating Actors:} Teachers \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Subject-teacher mappings must be available.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Updated timetable is active.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Admin opens the “Schedule Manager”.
+        \item Creates or modifies class slots.
+        \item Assigns teachers and rooms.
+        \item Clicks “Save”.
+        \item Timetable is propagated to all stakeholders.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC10
+\begin{frame}
+    \frametitle{Use Case UC10: View Teacher Info}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ20 \\
+    \textbf{Initiating Actor:} Student / Parent \\
+    \textbf{Actor’s Goal:} To see limited profile of teachers. \\
+    \textbf{Participating Actors:} Teacher \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Teacher must be linked to a subject/class.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Contact and basic profile is visible.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Actor selects a teacher from the class view.
+        \item System displays limited contact data (email, qualification).
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC11
+\begin{frame}
+    \frametitle{Use Case UC11: Communicate with Stakeholders}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ7, REQ15, REQ26, REQ27 \\
+    \textbf{Initiating Actor:} Student / Teacher / Parent \\
+    \textbf{Actor’s Goal:} To send or receive messages. \\
+    \textbf{Participating Actors:} Respective receivers \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Messaging system is active.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Message is stored and delivered.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Actor opens “Messages”.
+        \item Selects recipient (role-based filter).
+        \item Types message and clicks “Send”.
+        \item System notifies recipient.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC12
+\begin{frame}
+    \frametitle{Use Case UC12: View Notifications}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ21 \\
+    \textbf{Initiating Actor:} Student / Teacher / Parent \\
+    \textbf{Actor’s Goal:} To stay updated with school news. \\
+    \textbf{Participating Actors:} Admin \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Notifications must exist.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item User is notified.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item User opens “Notifications” section.
+        \item System lists all available updates.
+        \item User reads notifications.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC13
+\begin{frame}
+    \frametitle{Use Case UC13: Manage Holidays and Leaves}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ25 \\
+    \textbf{Initiating Actor:} Admin \\
+    \textbf{Actor’s Goal:} To add, edit, or delete holidays or leaves. \\
+    \textbf{Participating Actors:} None \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item User must have admin privileges.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Holiday/leave details are updated.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Admin opens “Holiday Manager”.
+        \item Admin adds or edits holiday details.
+        \item Clicks “Save”.
+        \item System updates the holiday data.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC14
+\begin{frame}
+    \frametitle{Use Case UC14: Generate Reports}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ22, REQ28 \\
+    \textbf{Initiating Actor:} Admin / Teacher \\
+    \textbf{Actor’s Goal:} To generate performance or attendance reports. \\
+    \textbf{Participating Actors:} None \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Data must be available in the system.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Reports are generated and available for download.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item User selects “Generate Report”.
+        \item System prompts for report type (attendance, grades, etc.).
+        \item System generates and presents the report.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC15
+\begin{frame}
+    \frametitle{Use Case UC15: Manage Assignments}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ29 \\
+    \textbf{Initiating Actor:} Teacher \\
+    \textbf{Actor’s Goal:} To assign, modify or grade assignments. \\
+    \textbf{Participating Actors:} Student \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Assignment must be created by the teacher.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Assignment details are available.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Teacher creates or modifies assignments.
+        \item Assignments are visible to students.
+        \item Teacher grades assignments.
+    \end{enumerate}
+\end{frame}
+
+% Slide: Use Case UC16
+\begin{frame}
+    \frametitle{Use Case UC16: Register/Update Student Info}
+    \scriptsize  % Use scriptsize for even smaller font
+    \vspace{-1cm}  % Adjusted space at the top
+    \textbf{Related Requirements:} REQ31 \\
+    \textbf{Initiating Actor:} Admin \\
+    \textbf{Actor’s Goal:} To manage student registrations and updates. \\
+    \textbf{Participating Actors:} None \\
+    \textbf{Preconditions:}
+    \begin{itemize}
+        \item Admin has the required privileges.
+    \end{itemize}
+    \textbf{Postconditions:}
+    \begin{itemize}
+        \item Student info is registered/updated in the system.
+    \end{itemize}
+    \textbf{Flow of Events for Main Success Scenario:}
+    \begin{enumerate}
+        \item Admin accesses “Student Management”.
+        \item Admin adds or updates student details.
+        \item Clicks “Save”.
+        \item System saves the data and confirms the action.
+    \end{enumerate}
+\end{frame}
+
+
+
+
+% Slide: Technology Stack
+\begin{frame}
+    \frametitle{Technology Stack}
+    \begin{itemize}
+        \item \textbf{Backend:} Django
+        \item \textbf{Frontend:} HTML, CSS, JavaScript
+        \item \textbf{Database:} MySQL
+        \item \textbf{Version Control:} GitHub
+    \end{itemize}
+\end{frame}
+
+\end{document}

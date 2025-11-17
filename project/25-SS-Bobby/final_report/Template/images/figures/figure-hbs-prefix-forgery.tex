@@ -1,0 +1,49 @@
+\begin{tikzpicture}
+  \node (challenger) at (-4,5) {\underline{\textbf{Challenger}}};
+  \node (attacker) at (4,5) {\underline{\textbf{Attacker}}};
+  \node (phase1) at (-4.25,4.5) {\textbf{Phase 1: Initial Message}};
+  \node (left1-helper) at (-3,4) {};
+  \node (right1-helper) at (3,4) {};
+  \node (center1-helper) at (0,4) {};
+  \node[inner sep=0px, above=1px of center1-helper] (first-message) {\PK};
+  \node[inner sep=0px, below=1px of center1-helper] (first-comment) {\tiny to responding trustees};
+
+  \draw[->] (left1-helper) -- (right1-helper);
+
+  \node (phase2) at (-4,3) {\textbf{Phase 2: Signature Queries}};
+
+  \node (right2-helper) at (3,1.5) {};
+  \node (left2-helper) at (-3,1.5) {};
+  \node (center2-helper) at (0,1.5) {};
+  \node[inner sep=0px, above=1px of center2-helper] (second-message) {$M_{\pi}$};
+
+  \draw[->] (right2-helper) -- (left2-helper);
+
+  \node (right3-helper) at (3,0.5) {};
+  \node (left3-helper) at (-3,0.5) {};
+  \node (center3-helper) at (0,0.5) {};
+  \node[inner sep=0px, above=1px of center3-helper] (third-message) {$S_{\pi} = (\rho_{\pi},\PATH_{\pi},
+    \sigma_{\pi}(\rho_{\pi},M_{\pi}))$};
+
+  \draw[->] (left3-helper) -- (right3-helper);
+
+  \node (background-helper) at (-3,1.9){};
+  \node[inner sep=0px, above=5px of second-message] (box-description) {(For $\pi \gets 1\ldots q$)};
+
+  \begin{scope}[on background layer]
+    \node[fill=lightgray!40,fit=(background-helper)(right3-helper)] {};
+  \end{scope}
+
+  \node (phase3) at (-4,-0.5) {\textbf{Phase 3: Forgery Message}};
+
+  \node (right4-helper) at (3,-1.5) {};
+  \node (left4-helper) at (-3,-1.5) {};
+  \node (center4-helper) at (0,-1.5) {};
+  \node[inner sep=0px, above=1px of center4-helper] (second-message) {$S_*=(M_*,\rho_*, \PATH_*,\sigma_{*}(\rho_*,M_{*}))$};
+
+  \draw[->] (right4-helper) -- (left4-helper);
+
+  \node[align=left] (win) at (-2.3,-2.5) {IF $M_*$ is different from any $M_i$ and verifies properly\\
+    THEN the attacker wins.};
+
+\end{tikzpicture}

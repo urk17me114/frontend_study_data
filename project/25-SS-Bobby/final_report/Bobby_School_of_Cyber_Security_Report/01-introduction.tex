@@ -1,0 +1,36 @@
+%-----------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+%-----------------------------------------------------------------------
+
+
+The importance of secure software systems has grown significantly in recent years, as vulnerabilities in applications continue to be a leading cause of data breaches, financial loss, and erosion of user trust. Despite this, many applications are still developed with insufficient attention to security principles, leading to exploitable flaws that could have been avoided through awareness and secure coding practices.
+
+The primary aim of this project is to design and implement a deliberately insecure web-based system, and subsequently use it as an educational tool to demonstrate common security flaws and their impact. By first exposing students to insecure implementations, the project emphasizes the importance of security in the software development life cycle and builds awareness of how seemingly minor oversights can result in severe vulnerabilities.
+
+To introduce the concept of insecure systems in a relatable manner, the well-known \textit{Bobby Tables} cartoon was presented as a starting point. This example highlights the risks of improper input validation and serves as a memorable entry point to the broader field of software security.
+
+For the literature review and hands-on exploration, the project made use of the \textit{OWASP Juice Shop} platform, which is widely recognized as one of the most comprehensive and intentionally vulnerable web applications available for educational purposes. Students were instructed to attempt exploitation of its vulnerabilities by relying only on the hints provided, rather than directly consulting the solutions. This approach encouraged independent problem-solving, critical thinking, and a deeper understanding of how security weaknesses can be identified and exploited in practice.
+
+
+
+
+
+
+
+
+
+
+
+Building upon these foundations, the project focuses on developing an insecure web-based \textit{School Management System} with three distinct configurations, each demonstrating a different stage of software security. This implementation allows for a comparative analysis of vulnerabilities, mitigations, and secure development practices.
+
+System 1 represents the \textit{ fully Vulnerable Configuration}, which intentionally includes common web security flaws  such as CAPTCHA token reuse, unrestricted voting mechanisms, and unfiltered PDF uploads containing hidden metadata. This version serves as a controlled environment to observe and understand real-world exploitation scenarios.
+
+The two non vulnereble systems, the \textit{Non-Vulnerable Configuration I} and \textit{Non-Vulnerable Configuration II}, introduces key defensive measures aimed at mitigating these specific vulnerabilities. These enhancements demonstrate how targeted mitigations improve overall application robustness.
+
+
+By progressing through these three configurations, the project  provides practical insight into how layered security mechanisms can prevent exploitation. Through this foundation, the project lays the groundwork for developing a school management system that demonstrates both insecure and secure implementations. The insecure version serves as a practical learning environment, while the secure versions highlights industry-recommended best practices, thereby bridging the gap between theory and application in secure software engineering.
+
+
+
+

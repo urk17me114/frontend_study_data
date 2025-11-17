@@ -1,0 +1,26 @@
+20 June 2025  - minutes
+
+
+Modifications
+# View timetable for teacher - add more filter options like grade...
+# add a vulnerability - add a class and there wont be sufficient rooms and then try to assign room and make the system fail
+# view timetable as day and time schedule
+# integrate the project and solve the ongoing issues
+
+
+
+sai Bhargav - check/ work on replacing the pdf files with any other file when an attacker tries to change it in the post request
+    
+
+next week
+# implement more attacks by next week 
+# documentation on attacks
+
+
+poster for summery in 2 weeks
+# ideas for poster , poster should have hints on attacks  , overview, goal of this project , eg - can you find the passport of the admin? can you alter the grades or class while being a student? original cartoon, contact scc and get an appointment for plotting, 
+
+
+next week vulnerabilities 
+# sql injection for update and delete marks
+# replace file in the post request

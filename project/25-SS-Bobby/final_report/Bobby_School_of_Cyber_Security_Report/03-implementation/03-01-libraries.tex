@@ -1,0 +1,49 @@
+%-----------------------------------------------------------------------
+\subsection{Third-Party Libraries}
+\label{sec:impl:libs}
+%-----------------------------------------------------------------------
+
+The School Management System leverages several third-party libraries and Python packages to implement its web-based functionalities efficiently and securely. This section lists all major external dependencies, their purpose, and the modules that utilize them.
+
+\begin{itemize}
+
+    \item \textbf{Django} \cite{djangoproject}:  
+    Django is the core web framework used throughout the application. It handles routing, request/response cycles, session management, ORM-based database interactions, authentication, and template rendering. All modules, including student registration, timetable management, and announcements, rely on Django for backend operations.
+
+    \item \textbf{django-simple-captcha} \cite{djangocaptcha}:  
+    This library is used for CAPTCHA generation and validation. Modules such as \texttt{\seqsplit{teacher\_registration}} and \texttt{validate\_captcha\_manual} utilize it to prevent automated bot submissions. Manual validation is implemented in \texttt{validate\_captcha\_manual.py} with customized logic for response checking.
+
+    \item \textbf{jQuery / AJAX}:  
+    Used primarily in the \texttt{vote\_announcement} module to submit votes asynchronously via JSON without reloading the page. This allows students to upvote or downvote announcements interactively.
+
+    \item \textbf{Bootstrap}:  
+    Provides responsive styling and UI components for HTML templates across the system. Although optional, it ensures consistent and professional front-end design for all web pages.
+
+    \item \textbf{Pillow}:  
+    Used in modules that handle file uploads, such as \texttt{\seqsplit{teacher\_registration}}. It provides image processing capabilities, including resizing and saving uploaded files.
+
+    \item \textbf{Python Standard Libraries}:
+    \begin{itemize}
+        \item \texttt{os} – file system and path handling.
+        \item \texttt{time} – timestamps for CAPTCHA validation and form submissions.
+        \item \texttt{json} – parsing and formatting JSON payloads (e.g., in \texttt{\seqsplit{vote\_announcement}}).
+        \item \texttt{random} – selecting teachers, rooms, and timeslots in the timetable module.
+        \item \texttt{logging} – centralized logging and error tracking across modules.
+        \item \texttt{functools} – used for decorators like \texttt{session\_required}.
+        \item \texttt{datetime} – date validation and formatting in forms and timetable entries.
+    \end{itemize}
+
+    \item \textbf{Database Drivers}:
+    \begin{itemize}
+        \item SQLite / PostgreSQL – Persistent storage of all entities such as \texttt{Student}, \texttt{TeacherReg}, \texttt{TimetableEntry}, and \texttt{AnnouncementVote}.  
+        Managed through Django's ORM to ensure data integrity and security.
+    \end{itemize}
+
+\end{itemize}
+
+\textbf{Notes on Custom Modifications:}
+\begin{itemize}
+    \item The manual CAPTCHA validation module includes a lowercasing feature for the user response to match stored values.
+    \item The voting module currently allows duplicate votes by the same student on a single announcement; this vulnerability is included intentionally for educational purposes.
+\end{itemize}
+

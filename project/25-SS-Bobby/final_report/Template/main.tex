@@ -1,0 +1,37 @@
+\documentclass[a4paper,11pt]{article}
+
+%-----------------------------------------------------------------------
+\input{00-commands}
+\input{00-packages}
+
+\addbibresource{sources.bib}
+%-----------------------------------------------------------------------
+% Title
+%-----------------------------------------------------------------------
+
+\title{{\Large\bf Title}\\ Subtitle that is longer than the title\\Summer Term 2024}
+\author{Bob Bobson \and Alice Alison}
+\date{\today}
+%-----------------------------------------------------------------------
+\begin{document}
+%-----------------------------------------------------------------------
+\maketitle
+
+\tableofcontents
+%\listoftables
+%\listoffigures
+
+\include{01-introduction}
+
+\include{02-related-work}
+\include{03-topic}
+\include{04-evaluation}
+\include{05-future-work-conclusion}
+
+\include{A-Appendix}
+
+\printbibliography
+
+
+\end{document}
+%-----------------------------------------------------------------------

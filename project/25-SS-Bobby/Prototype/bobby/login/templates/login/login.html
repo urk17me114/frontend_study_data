@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login Portal</title>
+</head>
+<body>
+  <div>
+    <h2>Login</h2>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div>{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Login Form -->
+    <form method="post" action="{% url 'index' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>   
+      
+    </form>
+
+    <br>
+    <p>
+      <form method="get" action="{% url 'forgot_password_step1' %}">
+      <button type="submit">Forgot Password?</button>
+      </form>
+    </p>
+
+     <p></p>
+    <form method="get" action="{% url 'studentregistration' %}">
+      <button type="submit">Student Registration</button>
+    </form>
+    </p>
+
+    <p>
+      <form method="get" action="{% url 'teacherregistration' %}">
+      <button type="submit">Teacher Registration</button>
+      </form>
+    </p>
+
+  </div>
+</body>
+</html>

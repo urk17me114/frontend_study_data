@@ -1,0 +1,132 @@
+
+
+
+\subsection{Non-Vulnerable Configuration I}
+
+The first non-vulnerable system was implemented to address and mitigate the vulnerabilities identified in the baseline configuration. The objective was to demonstrate how secure configuration practices and defensive coding can prevent exploitation of common weaknesses. This configuration focused on three key vulnerabilities: CAPTCHA bypass, announcement vote tampering, and PDF metadata exposure. Each mitigation was designed with a defense-in-depth approach, combining both preventive and detective controls.
+
+\subsubsection{Mitigation of Broken Anti-Authentication - CAPTCHA Bypass Vulnerability}
+
+In the vulnerable system, the CAPTCHA token could be reused within a short time window, allowing automated scripts to bypass human verification checks. To address this weakness, the non-vulnerable system implemented the following countermeasures:
+
+\begin{itemize}
+    \item Each CAPTCHA challenge is now associated with a unique, single-use token generated on the server. Once a CAPTCHA is solved, the token is invalidated immediately after submission, preventing reuse within any time frame.
+    \item Tokens are stored temporarily in the server-side session with a strict expiration period. Expired or reused tokens result in immediate request rejection, effectively blocking automated replay attempts.
+    \item The system integrates the \texttt{django-simple-captcha} library, which provides a robust, well-maintained solution that minimizes implementation flaws. It supports dynamic challenge generation and integrates smoothly with Django’s form validation mechanisms.
+    \item In addition to CAPTCHA hardening, a basic rate-limiting mechanism was introduced to restrict the number of registration attempts within a fixed time window. This provides further resilience against brute-force automation attempts.
+\end{itemize}
+
+Through these measures, the CAPTCHA mechanism became resistant to token reuse, ensuring that only genuine human interactions can complete the registration process. Automated attack simulations confirmed that repeated requests using the same CAPTCHA token were consistently rejected.
+
+\subsubsection{Mitigation of Cross Site Scripting -  Announcement Vote Tampering}
+
+The second vulnerability allowed users to submit multiple votes for the same announcement, due to the lack of server-side enforcement of uniqueness. In the non-vulnerable configuration, a series of database and application-level improvements were implemented to ensure vote integrity:
+
+\begin{itemize}
+    \item  Before inserting a new vote record, the server checks whether a vote from the same user already exists for the targeted announcement. If a record is found, the system either updates the existing vote or rejects the new submission based on the intended voting policy.
+    \item  The previous system relied solely on front-end controls, which could easily be bypassed using browser developer tools. In the new design, all enforcement is handled server-side, ensuring that even forged HTTP requests cannot manipulate the vote count.
+    
+    \item  The system maintains a vote history log. This enables auditing of vote activities and detection of abnormal voting patterns for future security analysis.
+\end{itemize}
+
+After implementing these measures, the system reliably enforced one-vote-per-user behavior. Attempts to resubmit votes using automated tools or direct API calls resulted in rejection responses, thereby maintaining fair and transparent voting outcomes.
+
+\subsubsection{Mitigation of PDF Metadata Exposure}
+
+The third vulnerability stemmed from insufficient handling of uploaded PDF documents. The previous implementation stored and served PDFs without sanitization, exposing metadata such as author details, software versions, timestamps, and reviewer annotations. To mitigate this issue, the following improvements were made:
+
+\begin{itemize}
+    \item  A metadata sanitization step was added during the upload process. Using libraries all metadata fields and annotations are stripped from the PDF before storage. Only essential content layers are preserved.
+    
+    \item Each uploaded file undergoes a multi-stage validation process, which checks for file type integrity, size constraints, and malicious embedded content. Files that do not meet validation criteria are rejected before being stored.
+    \item  Sanitized files are stored under randomized filenames in a secure directory outside the web root. This ensures that direct URL guessing or parameter tampering cannot expose internal file structures.
+    \item  The application enforces appropriate response headers when serving PDFs to prevent unintended content interpretation by the browser.
+\end{itemize}
+
+After these mitigations, all uploaded and served PDF documents were verified to be free of residual metadata and hidden annotations. This significantly reduced the risk of privacy breaches and data disclosure through document files.
+
+\bigskip
+Overall, the non-vulnerable configuration successfully neutralized the previously identified weaknesses. The application demonstrated improved security posture by integrating server-side validation, input sanitization, and data integrity mechanisms across multiple layers of its architecture.
+
+
+
+
+
+
+
+\subsection{Non-Vulnerable Configuration II}
+
+The second non-vulnerable system was implemented as a hardened configuration to eliminate the residual vulnerabilities found in earlier versions. This version introduced stricter server-side validation, improved authorization mechanisms, and secure input and file-handling strategies. The objective was to achieve a production-level secure configuration through layered defense techniques, covering vulnerabilities such as SQL Injection, Insecure Direct Object Reference (IDOR), Sensitive Data Exposure, XML External Entity (XXE) processing, and Security Misconfiguration in the password reset process.
+
+\subsubsection{Mitigation of SQL Injection Vulnerability}
+
+The original search functionality constructed database queries by directly concatenating user input into SQL strings. This insecure practice enabled attackers to craft injection payloads and manipulate the underlying query execution. Raw SQL statements were constructed using unsanitized user input from the search form, allowing special characters such as quotation marks and SQL keywords to alter query behavior.
+
+
+    \begin{itemize}
+        \item Replaced all raw SQL queries with Django’s Object-Relational Mapper methods, which internally use parameterized queries to prevent injection.
+        \item Implemented strict server-side input validation, ensuring that search queries match predefined patterns  before any database interaction occurs.
+
+        \item Applied the principle of least privilege to the database user used by the application, ensuring it has only SELECT permissions for the search feature.
+    \end{itemize}
+Any injected SQL syntax is now treated as plain text rather than executable code. Search operations are performed safely through ORM abstractions, completely preventing SQL injection.
+
+
+\subsubsection{Mitigation of Insecure Direct Object Reference}
+
+In the vulnerable configuration, the marks viewing module allowed manipulation of the username stored in the client’s session storage. By altering this value, a user could access another student’s marks. The system relied on client-side identifiers to determine the resource owner, without validating ownership on the server.
+
+
+    \begin{itemize}
+        \item Introduced robust server-side authorization logic that verifies ownership of each resource request. Every marks retrieval now checks the authenticated session user against the database entry.
+        \item Modified backend endpoints to ignore any client-provided identifiers. The logged-in session user is now the sole source for determining which records are accessible.
+        \item Implemented unique session tokens for each login session and encrypted all user session data on the server to prevent tampering.
+        \item Conducted unit and penetration testing to ensure unauthorized access attempts are met with proper responses.
+    \end{itemize}
+The marks viewing system is now fully session-driven. Even if a user alters local session values or request parameters, the backend enforces strict ownership verification before any data is returned.
+
+
+\subsubsection{Mitigation of Sensitive Data Exposure - View Logs Vulnerability}
+
+In the earlier system, administrative logs could be accessed by appending a URL parameter such as \texttt{?admin=1}. This insecure design exposed sensitive data due to the lack of real role validation. Role verification was handled through a client-supplied flag instead of using session-based authentication or server-side role mapping.
+
+
+    \begin{itemize}
+        \item Implemented a centralized Role-Based Access Control system where privileges are derived directly from the authenticated user’s session.
+        \item The backend now validates the role of each request against the stored session credentials. The mapping between usernames and roles is maintained securely in the database.
+        \item Introduced middleware-level authorization that automatically rejects any request from users without sufficient privileges, ensuring consistent enforcement across endpoints.
+        \item Implemented detailed access logs to record every admin-page access attempt, enabling detection of unauthorized or failed role checks.
+    \end{itemize}
+Privilege escalation via URL parameter manipulation is no longer possible. Only users with the “admin” role, verified server-side, can access system logs.
+
+
+\subsubsection{Mitigation of XML External Entity (XXE) Vulnerability}
+
+The assignment upload feature previously accepted XML files and parsed them using the \texttt{lxml} library with external entity resolution enabled. Malicious XML files containing recursive entities (Billion Laughs payloads) could cause the system to consume excessive resources, resulting in denial-of-service. Unrestricted XML parsing with DTD and entity resolution allowed the application to process untrusted XML content directly.
+
+
+    \begin{itemize}
+        \item Replaced insecure XML parsing and securely configured \texttt{lxml} parsers by disabling DTD loading and entity resolution.
+        \item Implemented a file-vetting mechanism that validates uploaded files before parsing.
+        \item Added a layered file handling policy where uploads are processed under a non-administrative service account with minimal privileges, ensuring containment if a vulnerability is exploited.
+        \item Introduced file content scanning to detect known malicious payload patterns and reject suspicious uploads early.
+    \end{itemize}
+ The upload system now safely handles XML files, preventing external entity resolution and recursive expansion attacks. Any Billion Laughs payload is detected and discarded before processing.
+
+
+\subsubsection{Mitigation of Security Misconfiguration - Insecure Password Reset}
+
+In the vulnerable setup, attackers could bypass the password reset process by directly navigating to restricted URLs, resetting another user’s password without completing previous steps. Lack of server-side session validation between sequential password reset steps and absence of token-based state management.
+
+\begin{itemize}
+
+        \item Implemented a multi-step verification process controlled entirely on the server. Each stage of the password reset requires a valid, one-time token generated during the preceding step.
+        \item Added CSRF protection and session-based state tracking to ensure that the reset flow cannot be skipped or replayed.
+        \item Validated security question answers and timestamps at each stage; tokens are time-bound and automatically invalidated upon expiration.
+        \item Introduced timed session flushing to clear temporary reset sessions after a predefined interval or upon successful password change.
+    \end{itemize}
+ The password reset process now strictly enforces step-by-step validation and token verification, preventing attackers from bypassing any intermediate verification stage.
+
+
+\bigskip
+In summary, this second non-vulnerable configuration comprehensively resolved five high-impact vulnerabilities through a combination of secure coding, proper access control, secure file parsing, and improved session management. The implementation of these measures significantly enhanced the system’s security posture and aligned it with best practices for secure web application deployment.

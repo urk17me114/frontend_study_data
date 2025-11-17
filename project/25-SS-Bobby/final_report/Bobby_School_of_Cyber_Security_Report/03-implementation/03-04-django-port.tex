@@ -1,0 +1,85 @@
+%-----------------------------------------------------------------------
+\subsection{Django School Management System Implementation}
+\label{sec:impl:django-app}
+%-----------------------------------------------------------------------
+
+The implementation of the Django School Management System focuses on delivering a modular web application for managing students, teachers, classes, timetables, and announcements. 
+The system emphasizes role-based access control, ensuring that Administrators, Teachers, and Students interact with the application according to their permissions. 
+The core of the implementation is based on Django's MVC architecture, augmented with third-party libraries for CAPTCHA validation, data parsing, and UI enhancements.
+
+The project is organized into multiple Django apps, each responsible for a specific module:
+\begin{itemize}
+    \item \texttt{login}: handles user authentication and session management.
+    \item \texttt{students}: manages student registration, profiles, and applications.
+    \item \texttt{teachers}: handles teacher registration, profiles, and timetable assignments.
+    \item \texttt{timetable}: generates and displays class schedules.
+    \item \texttt{announcements}: manages posting, viewing, and voting on announcements.
+\end{itemize}
+
+\subsubsection{Setup and Environment Requirements}
+The project requires Python 3.10+, Django 4.2+, and the following key third-party libraries:
+
+\begin{itemize}
+    \item \texttt{django-simple-captcha} for CAPTCHA verification on registration forms.
+    \item \texttt{pycountry} to populate nationality choices dynamically.
+    \item \texttt{Pillow} for handling profile photo uploads.
+    \item \texttt{django-crispy-forms} for form rendering and UI improvements.
+\end{itemize}
+
+Database configuration uses SQLite by default, but PostgreSQL is supported for production. 
+All migrations must be applied in order, and a superuser must be created for admin-level access. 
+The application runs on the built-in Django development server for testing purposes, or via Gunicorn/NGINX in production.
+
+\subsubsection{Differences from Standard Django Conventions}
+While the system follows Django's standard MVC patterns, several deviations were introduced to meet the learning objectives:
+
+\begin{itemize}
+    \item Custom session decorators were implemented (\texttt{session\_required}) to enforce role-based access.
+    \item Certain security vulnerabilities were intentionally included for educational purposes:
+        \begin{itemize}
+            \item IDOR vulnerability in the Teacher profile view.
+            \item CAPTCHA reuse detection demonstration with a limited time window.
+            \item Duplicate voting on announcements.
+        \end{itemize}
+    \item Asynchronous interactions, such as upvoting announcements, are handled via AJAX with JSON payloads instead of traditional page reloads.
+    \item Some forms include read-only fields for sensitive data, visually styled to indicate non-editable state.
+\end{itemize}
+
+\subsubsection{Supported Functionality and Scope}
+The system implements the following key features:
+
+\begin{itemize}
+    \item \textbf{Admin:} register new users, approve/reject student and teacher applications, generate class timetables, post announcements, and manage overall system configurations.
+    \item \textbf{Teacher:} view assigned timetable, post announcements, upload teaching documents, and update personal profile (with optional photo/document upload).
+    \item \textbf{Student:} submit applications, view timetables, access teacher announcements, vote on announcements, and manage personal profile.
+    \item \textbf{Security and Validation:} session-based role verification, CAPTCHA validation, input validation on forms, and file type/size checks.
+    \item \textbf{Error Handling and Logging:} exceptions during profile updates, file uploads, and downloads are logged to the server console for monitoring.
+\end{itemize}
+
+Features partially implemented or left for future work include:
+\begin{itemize}
+    \item Automated email notifications for student approval or announcement updates.
+    \item Multi-class timetable optimization algorithms.
+    \item Comprehensive audit logging for all user actions.
+\end{itemize}
+
+\subsubsection{Running the System and Known Issues}
+To run the system locally:
+
+\begin{enumerate}
+    \item Clone the repository and navigate to the project folder.
+    \item Install dependencies via \texttt{pip install -r requirements.txt}.
+    \item Apply migrations: \texttt{python manage.py migrate}.
+    \item Create a superuser for administrative access: \texttt{\seqsplit{python manage.py createsuperuser}}.
+    \item Start the development server: \texttt{python manage.py runserver}.
+\end{enumerate}
+
+Known limitations and issues include:
+
+\begin{itemize}
+    \item CAPTCHA reuse is detected only within a limited time window.
+    \item File uploads for photos and documents are limited by default media folder settings; larger files may fail.
+    \item Duplicate voting on announcements is possible due to intentional design.
+    \item Certain views may raise exceptions if session variables are missing or malformed; these are caught and logged, but some edge cases may result in user-facing errors.
+    \item No automated email or notification system has been implemented; notifications rely on manual review.
+\end{itemize}

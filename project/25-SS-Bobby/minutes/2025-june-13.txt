@@ -1,0 +1,28 @@
+Suggestions from the presentations done on 13/06/2025
+
+For arun,
+Description of tasks and hints of the vulnerability to be implemented.
+A template should be followed as in juice shop application.
+
+For Sai Bharghav,
+State/province is to be removed from mandatory filled data in student application form
+The Blood group should have a nil option to be set sa default (The one in default is A+)
+Overwrite readonly field messages
+
+For Ganga,
+Add the search functionality to all the dashboard
+
+For Glen, 
+Implement captcha bypass for change password and forgot password
+Show malicous pdf in website instead of downloading and viewing 
+
+
+A catchy name for the project needs to be suggested before Tuesday
+
+
+Tasks for next week
+
+Arun : Creation of time table (admin)
+Glen : View timetable (student)
+Teacher : Edit/view timetable (teacher)
+Ganga : Start the add marks functionality

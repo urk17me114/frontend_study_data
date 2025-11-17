@@ -1,0 +1,12 @@
+Instead of skimming through all the task, go through one or two task in a challenge and do it thoroughly. 
+Include future application of the challenges in the bobby school application.
+Add screen shorts and other details of the working of the challenges.
+Follow latex for the presentation.
+
+For Actual system road map is expected in next week.
+Decide on the tools that you are using of the development.
+Include the goals and milestones for the system.
+
+Suggestion for different task/ vulnerabilities use different system or program.
+Plan for future works and select a few from them. 
+Complete one or two milestone before presentation week.

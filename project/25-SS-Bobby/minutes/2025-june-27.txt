@@ -1,0 +1,10 @@
+Failed login attempt need to be added to the logs, so that missed password can be extracted.
+Use the simple hashing for the passwords.
+clean the repository 
+Combine the application and testing.
+Enough  feature for the application for the summary.
+Doccumentation of task and vulnerability including the hints need to be done.
+Methord to reset the system using a command. 
+Poster need to be done and submit for approval.
+Three simple vulnerability need to be added for the poster.  
+Upvote, view log, hash the password using single bad function which can be decoded using rainbow tables.

@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Search</title>
+</head>
+<body>
+
+<h2>Search Student</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% if results is not None %}
+    <h3>Results:</h3>
+    {% if results %}
+        <ul>
+            {% for student in results %}
+                <li>{{ student.username }} - {{ student.firstname }} {{ student.lastname }} ({{ student.email }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No students found.</p>
+    {% endif %}
+{% endif %}
+
+</body>
+</html>

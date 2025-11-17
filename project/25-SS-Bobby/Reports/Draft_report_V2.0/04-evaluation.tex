@@ -1,0 +1,12 @@
+\section{Evaluation}
+\label{sec:evaluation}
+
+The evaluation of the Bobby School of Cyber Security focused on verifying that the project successfully demonstrated the intended security vulnerabilities and their secure mitigations. The primary objective was not performance testing or user studies, but rather ensuring that the insecure system reliably exhibited exploitable flaws and that the secure implementation effectively addressed them.
+
+Each deliberately insecure feature was tested against its intended vulnerability scenario. For example, the login module was checked to confirm that it was vulnerable to SQL injection, while the announcement voting module was verified to allow duplicate submissions. Similarly, insecure direct object references (IDOR) and weak CAPTCHA handling were implemented and tested to demonstrate their real-world consequences. In all cases, the insecure implementations behaved as expected, confirming that they provided a meaningful basis for demonstrating common weaknesses.
+
+Once these flaws were validated, the secure counterparts were implemented and re-evaluated. Parameterized queries, stricter session validation, and input sanitization were introduced, and the same attacks that succeeded against the insecure system were tested again. As expected, these were no longer exploitable, illustrating the effectiveness of applying industry-standard security practices.
+
+The evaluation also included a review of logging and error-handling mechanisms. In the insecure version, failures and exceptions were often exposed directly to the user, revealing sensitive system details. In contrast, the secure version handled exceptions gracefully while logging the errors to the server side, thereby preserving functionality without disclosing critical information.
+
+Overall, the evaluation demonstrated that the project met its core objectives: to highlight common vulnerabilities, to show their impact when left unaddressed, and to present the benefits of secure development practices. While no external participants were involved, the systematic testing of insecure and secure implementations confirms that the Bobby School of Cyber Security provides a practical and effective educational resource for illustrating the importance of secure software engineering.

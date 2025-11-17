@@ -1,0 +1,15 @@
+16/04/2025
+
+Group A (Sai & Glen)
+*  presentation to be done in latex
+*  Create the requirements for each
+*  Use case9: performance review to be implemented in the future
+*  admins needs to be categorized
+*  Parents are not needed
+*  Get ready with the prototype
+*  Class allocation and timetable generation to be done parallely
+
+Group B (Arun & Ganga)
+*  Bundle the requirements
+*  Split the requirement UC 13; (Manage holidays and leaves)
+

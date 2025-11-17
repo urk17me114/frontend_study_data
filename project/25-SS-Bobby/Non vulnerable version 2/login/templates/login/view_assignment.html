@@ -1,0 +1,40 @@
+<html>
+  <body>
+    <h2>Student Assignments</h2>
+    <form method="get">
+      {{ form.as_p }}
+      <button type="submit">Filter</button>
+      <a href="{% url 'view_assignments' %}">Reset</a>
+    </form>
+    <table border="1">
+      <tr>
+        <th>Student</th>
+        <th>Title</th>
+        <th>Subject</th>
+        <th>Class</th>
+        <th>File</th>
+        <th>Status</th>
+        <th>Submitted</th>
+        <th>Action</th>
+      </tr>
+      {% for a in submissions %}
+      <tr>
+        <td>{{ a.student }}</td>
+        <td>{{ a.title }}</td>
+        <td>{{ a.subject }}</td>
+        <td>{{ a.class_section }}</td>
+        <td><a href="{{ a.file.url }}">Open</a></td>
+        <td>{{ a.get_status_display }}</td>
+        <td>{{ a.created_at }}</td>
+        <td>
+          {% if a.status != 'seen' %}
+          <a href="{% url 'mark_assignment_seen' a.pk %}">Mark Seen</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8">No submissions found.</td></tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

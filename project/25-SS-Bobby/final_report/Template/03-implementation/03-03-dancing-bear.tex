@@ -1,0 +1,143 @@
+%-----------------------------------------------------------------------
+\section{Dancing Bear}
+\label{sec:impl:dancing-bear}
+%-----------------------------------------------------------------------
+
+The general concept of the Dancing Bear protocol implementation is that every participant, namely the dealer, helper, trustee, and verifier is their independent program.
+For the communication \ac{TCP} over \ac{IP} is used.
+Therefore, a requirement is that all participants are connected to the same network.
+All data in this communication is formatted in \ac{JSON}.
+Using overloaded C++ casting operators, it is possible to directly serialize structs to \ac{JSON} strings or deserialize \ac{JSON} strings to structs.
+This leads to the efficient creation of network messages at the sender side as well as its parsing on the receiving end.
+
+Every message from one participant to another has an action field, which identifies its intention.
+The \texttt{dealing} action indicates a message from the dealer to a trustee or helper to establish a new coalition.
+With the \texttt{sign-request} action, the verifier instructs a trustee to sign an attached message using a specified coalition.
+Additionally, the \texttt{share-request} action is used by the initiating trustee to request the shares of all other trustees or helpers in a coalition for a specified message or its hash value.
+The reply of these trustees and helpers to the initiating trustee is identified by the \texttt{share-reply} action.
+
+In the current implementation, a vast set of parameters are configurable.
+However, all participants must be compiled with the same parameter configuration to ensure interoperability.
+The parameters which must be set at compilation time are the hash function to be used in \wotsp, its output length, and the hash function used in the Merkle tree.
+Currently, the following hash functions are supported: \texttt{SHA224}, \texttt{SHA256}, \texttt{SHA384}, \texttt{SHA512}, \texttt{SHAKE128}, and \texttt{SHAKE256}.
+The hash function used in the Merkle tree must have the same output length as the one of \wotsp.
+This is necessary because the \wotsp public keys and the nodes of the Merkle tree must be of equal length.
+
+Each coalition is associated with a specific \texttt{Params} struct.
+This struct bundles these compile-time parameters, along with the tree height and the \wotsp parameters.
+Therefore, it allows us to have multiple coalitions with different configurations at the same time (apart from the compile-time parameters).
+Coalitions are identified by their public key, which is the value of the root node of the Merkle tree.
+
+\subsection{Dealer}\label{subsec:dealer}
+
+The dealer is responsible for initializing coalitions.
+It must be supplied with the command-line parameters \texttt{port} for listening to replies and \texttt{data-path}.
+The \texttt{data-path} parameter is a path to a \ac{JSON} file, which contains the necessary information to create one or multiple coalitions.
+This includes:
+
+\begin{itemize}
+    \item the \ac{IP}-addresses and ports of all trustees and helpers,
+    \item the \ac{PRF} key length for the trustees,
+    \item the Merkle tree height $h$,
+    \item as well as the log2 of the Winternitz parameter.
+\end{itemize}
+
+Exemplary \ac{JSON} files for creating coalitions with the dealer can be found in the \newline \textit{sample\_data} folder.
+
+The dealer will then create each coalition according to the given parameters.
+Firstly, the \texttt{Params} struct is created.
+Then, all $2^{h-1}$ (number of leaves) \wotsp secret keys and random elements are generated.
+For each secret key the hash chain is computed, and the public key is inserted into the Merkle tree as a new leaf.
+After inserting all leaves, the root node of the Merkle tree is calculated and saved as the identifier of the current coalition.
+The dealer then selects a random \ac{PRF} key for every trustee in the coalition and splits each hash chain and Merkle path information into shares as described in~\cite[Algorithm 2]{DBLP:journals/iacr/KelseyL22}.
+Afterward, the coalition identifier, \texttt{Params} struct, helper shares, and the random elements are cast to a \ac{JSON} string to be sent to the helpers.
+Lastly, the dealer sends each trustee its specific \ac{PRF} key, a list of all trustees and helpers in the coalitions, the \texttt{Params} struct as well as the coalition identifier.
+
+After the successful transmission of this data the coalition is established, and the dealer will terminate or initialize the next coalition if more than one was specified in the \texttt{data-path} \ac{JSON}-file.
+
+\subsection{Trustee}\label{subsec:trustee}
+
+The trustee program must be launched with the \texttt{port} command-line argument, which is used for listening for incoming \ac{TCP} network communication.
+Optionally, the parameter \texttt{backup-path} can be provided to load and save coalition data to make it persistent.
+This ensures that no data is lost when the trustee program closes.
+
+The data the trustee stores are two \texttt{C++ std::map} instances.
+One for storing all active coalitions along with their necessary data like the \acp{IP} and ports of helper and trustees, the trustee specific \ac{PRF} key, the \texttt{Params} struct, as well as the next unused key-ID\@.
+The next unused key-ID is represented by an unsigned integer with the starting value of zero.
+Every trustee ensures that no key is used twice by updating this integer after every signature.
+Additionally, the second map stores information about unfinished signatures where the current trustee is the initializing trustee.
+This includes the individual shares of the helper and trustees, as well as information about who requested the signature.
+
+After the trustee launches, it loads the saved coalition data (if \texttt{backup-path} was specified) and starts to wait for incoming connection on the given port.
+If a connection is established, the trustee will receive all network packages sent and launch a new thread for the message handling.
+Therefore, the main thread can continue to wait for new connections while the message content is handled in parallel.
+Hence, every trustee can compute multiple shares in parallel, which increases the efficiency and reduces the overall latency.
+If the trustee has only a single core processor, the main thread will handle the message and must maintain a waiting list for incoming connections.
+
+The first step of handling a message is to cast the received string to a \texttt{C++ struct}.
+Then, the action field is inspected to derive the intention of it.
+Trustees support \texttt{dealing}, \texttt{sign-request}, \texttt{share-request}, and \texttt{share-reply} messages.
+
+If the action is \texttt{dealing} then the trustee will add the data of the new coalition received from the dealer, to the coalition storage map.
+From this point on, the trustee is ready to use this coalition to sign messages and will continue to wait for new network connections to the main thread.
+
+In case of the action \texttt{sign-request}, the trustee will take the role of the initiating trustee.
+If and only if the requested signing coalition exists and has unused signing keys left, the sign process starts.
+Next, an entry in the signature map is created to specify where all helper and trustee shares are collected.
+After this, the initiating trustee will calculate its own share and store it in the map.
+The hash chain and the Merkle tree verification path are derived from the \ac{PRF} using the trustee specific \ac{PRF} key.
+Then, the share signature is acquired using the hash chain as a look-up table with the message digest.
+
+Afterward, the initiating trustee will send every other trustee and helper in the coalition a \texttt{share-request} message.
+This request includes the message to be signed or the message digest for the minimally trusted helper, the key-ID, and the public key to specify the coalition.
+Lastly, the initiating trustee will update its key-ID tracker and return to the main thread which waits for new connections.
+
+Every trustee, which receives a \texttt{share-request} message, will first check if the coalition exists in their coalition map and if the proposed key-ID is unused.
+If and only if these conditions are met, the share will be generated like described above, and sent to the initiating trustee as an \texttt{share-reply} message.
+Then, the variable containing the next unused key is updated if it was not the last unused.
+Otherwise, the coalition is deleted.
+
+When a trustee receives a \texttt{share-reply} message, the share is added to the map tracking all unfinished signatures.
+If all trustees and the helper have sent their share, the trustee will calculate the xor of all share signatures and share paths.
+Lastly, the trustee sends the signature and path along with all information needed to verify the signature to the \ac{IP} address and port from which the \texttt{sign-request} was sent.
+These additional information include the \texttt{Param} struct and the \wotsp random elements.
+
+\subsection{Helper}\label{subsec:helper}
+
+The helper has a similar behaviour as the trustee.
+It has a main thread which always waits for new connections and will create new parallel threads when a message is received and can be handled.
+Moreover, it has the same command line arguments and the ability to store coalition data to the persistent storage with the \texttt{backup-path} argument.
+However, it only supports \texttt{dealing}, \texttt{share-request}, and \texttt{share-reply} messages.
+
+The behaviour when a helper receives a \texttt{dealing} message is equal to that of the trustee, except that the data is different.
+Instead of a \ac{PRF} key with which trustee derive their hash chain and verification path, the helper receives them directly as an \texttt{uint8\_t} vector.
+
+Because of this, the procedure of the \texttt{sign-request} message is also slightly different compared to the trustee.
+First, the helper does not keep track of the used key-IDs.
+It just generates its share with the provided key-ID ignoring previous usages.
+As the helper is only minimally trusted, it will not receive the message like the trustees.
+Instead, only the message digest is shared with the helper.
+Lastly, the share signature is computed and sent back to the initiating trustee along with the share of the Merkle verification path.
+
+
+\subsection{Verifier}
+
+The verifier can request a signature for a specified message and coalition by sending a \texttt{sign-request} to a trustee.
+It takes the following command line arguments:
+
+\begin{itemize}
+    \item \texttt{ip}: The \ac{IP} address of the trustee to send the request to.
+    \item \texttt{port}: The port of the above-mentioned trustee.
+    \item \texttt{message}: The message to be signed.
+    \item \texttt{key-public}: The public key of the coalition requested to sign the message.
+    \item \texttt{listening-port}: The port on which the verifier listens for the response.
+\end{itemize}
+
+With the given arguments, a \texttt{sign-request} is generated and sent to the specified trustee.
+The verifier will then wait for the initiating trustee to reply with a signature.
+
+When the signature is received, it must be verified.
+First, the message digest is computed.
+Then, the \wotsp public key of the used Merkle tree leaf is calculated from the received signature using the message digest, the random elements, and the \texttt{Params} struct.
+Lastly, the calculated \wotsp public key is inserted into the Merkle tree verification path to compute the root of the Merkle tree.
+If and only if this calculated root node matches the public key of the coalition, the signature is reported to be valid.

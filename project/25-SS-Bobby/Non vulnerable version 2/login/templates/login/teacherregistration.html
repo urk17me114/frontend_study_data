@@ -1,0 +1,41 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Teacher Registration</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <body>
+        <h2>Teacher Registration Form</h2>
+
+        <!-- Display success messages -->
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Registration Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <!-- File upload note -->
+            <label for="document">Upload Document (Max 7 MB):</label><br>
+            <small style="color: gray;">
+                Allowed formats: .jpg, .png, .pdf, .doc, .docx, .jpeg | Max size: 7 MB
+            </small><br><br>
+
+            <!-- Manual CAPTCHA display -->
+        <label for="captcha_1">CAPTCHA:</label><br>
+        <img src="{{ captcha_image_url }}" alt="CAPTCHA Image"><br><br>
+        <input type="hidden" name="captcha_0" value="{{ captcha_key }}">
+        <input type="text" name="captcha_1" required placeholder="Enter CAPTCHA"><br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+    </html>

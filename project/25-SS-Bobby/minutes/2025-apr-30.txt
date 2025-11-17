@@ -1,0 +1,16 @@
+Glen is sick.
+Group: Arundas and Ganga
+Add a fourth column to differentiate the type of rights the users have, such as read/write.
+Gaining admin privileges is missing from the misuse cases; differentiate the types of admin privileges.
+Group: Sai and Glen
+UC10: A student tampers with the timetable to create free periods.
+UC11: Teachers tamper with the timetable to allocate themselves freely.
+
+Feedback:
+Misuse cases do not need to match use cases; they can include general scenarios.
+Be specific about user access and their privileges.
+Ensure sufficient confidentiality and separation of privileges and private data.
+
+Next task:
+Juice Shop and its vulnerabilities: split the topics and prepare a presentation for Friday, each 10 minutes long.
+Also, consider how we can implement this in the school system.

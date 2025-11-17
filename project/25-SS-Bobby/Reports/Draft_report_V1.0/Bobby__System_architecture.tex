@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Bobby - System architecture}
+\author{Arun, Ganga }
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+%-----------------------------------------------------------------------
+\section{School Management System Architecture}
+\label{sec:impl:system-architecture}
+%-----------------------------------------------------------------------
+
+The School Management System is a Django-based web application designed to manage students, teachers, classes, timetables, announcements, and academic records. 
+The system implements role-based access control, where each participant (Admin, Teacher, Student) interacts with the system through a web interface. 
+All communication occurs over standard HTTP/HTTPS, with JSON used for asynchronous operations such as voting on announcements. 
+The system leverages Django sessions to maintain authentication and authorization state.
+
+The architecture is modular, separating concerns into dedicated Django apps and views. 
+Each module handles specific functionality, such as student registration, timetable management, announcements, and marks management. 
+Data is stored in a relational database (e.g., SQLite, PostgreSQL) using Django's ORM. 
+Security-critical modules, such as CAPTCHA validation and file upload handling, incorporate measures to prevent automated attacks, although some vulnerabilities are intentionally included for learning purposes.
+
+%-----------------------------------------------------------------------
+\subsection{Roles and Participants}
+\label{subsec:roles-participants}
+%-----------------------------------------------------------------------
+
+\subsubsection{Administrator (Admin)}
+The Admin is responsible for managing the overall school system. 
+Admins have the highest level of access and can perform the following actions:
+
+\begin{itemize}
+    \item Add, edit, or delete subjects, teachers, classrooms, and timeslots.
+    \item Generate the class timetable based on teacher availability, subjects, and class requirements.
+    \item View all timetable entries with filters for class, subject, teacher, and day.
+    \item Manage student academic records, including marks and grades.
+    \item Monitor announcements, registration data, and system configurations.
+    \item Review system logs and handle error reports.
+\end{itemize}
+
+The Admin interacts with the system via the web interface and is authenticated using the \texttt{Admin\_login} session decorator. 
+All requests are verified against the session to ensure authorized access.
+
+\subsubsection{Teacher}
+Teachers are responsible for delivering lessons, managing marks, and interacting with student-related data. 
+Their interactions include:
+
+\begin{itemize}
+    \item Viewing their assigned timetable entries for specific days.
+    \item Accessing subjects and class information relevant to their teaching assignments.
+    \item Posting announcements that students can view and vote on.
+    \item Uploading documents or resources, with file type and size validations.
+    \item Recording student marks, assessments, and exam scores in the system.
+    \item Handling errors in form submissions and logging any critical events.
+\end{itemize}
+
+Teachers are authenticated using the \texttt{Teacher\_login} session decorator. 
+They only see data related to their assignments, ensuring separation of concerns and data privacy.
+
+\subsubsection{Student}
+Students are the end users who consume educational content, track academic performance, and interact with the system. 
+Student actions include:
+
+\begin{itemize}
+    \item Registering via a web form with CAPTCHA validation to prevent automated submissions.
+    \item Viewing their class timetable and filtering entries by day.
+    \item Viewing teacher announcements and voting via upvote/downvote mechanisms.
+    \item Tracking personal information, class level, timetable assignments, and academic records.
+    \item Accessing marks and grades assigned by teachers.
+    \item Receiving notifications on errors or invalid submissions.
+\end{itemize}
+
+Students are authenticated using the \texttt{Student\_login} session decorator. 
+Access is restricted to data relevant to their class and assignments.
+
+%-----------------------------------------------------------------------
+\subsection{Workflow and Data Flow}
+\label{subsec:workflow-dataflow}
+%-----------------------------------------------------------------------
+
+The system operates in the following structured workflows:
+
+\begin{itemize}
+    \item \textbf{Registration:} Students and Teachers submit registration forms, validated with CAPTCHA and optional file uploads. Errors during registration are logged and reported. Validated data is stored in the corresponding \texttt{StudentReg} or \texttt{TeacherReg} tables.
+    \item \textbf{Authentication:} Upon login, the system sets session variables to identify the user role (Admin, Teacher, Student) and restrict access to views accordingly. Failed login attempts are logged.
+    \item \textbf{Timetable Generation:} Admin adds subjects, teachers, rooms, and timeslots, then generates the timetable using an algorithm that assigns teachers and rooms to periods. Conflicts are detected, reported, and logged.
+    \item \textbf{Timetable Viewing:} Students and Teachers fetch timetable entries filtered by their class or assigned schedule. ORM errors or invalid queries are logged.
+    \item \textbf{Marks Management:} Teachers enter marks for students for assignments, exams, or assessments. Admins can review or update marks as needed. Students can view their marks and calculate performance summaries. Errors in marks entry are validated and logged.
+    \item \textbf{Announcements:} Teachers post announcements. Students view announcements and cast votes, which are tracked in the \texttt{AnnouncementVote} table. JSON is used for asynchronous vote updates. Invalid vote submissions are logged.
+    \item \textbf{Data Integrity and Security:} The system enforces session-based access control. Modules implement additional validation (CAPTCHA, file type checks). Certain vulnerabilities are intentionally included for educational purposes (CAPTCHA replay, duplicate voting). All exceptions and critical operations are logged for auditing.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{System Communication and Integration}
+\label{subsec:system-communication}
+%-----------------------------------------------------------------------
+
+All modules communicate internally through Django's ORM and request-response cycle. 
+Asynchronous operations, such as voting on announcements, use AJAX with JSON payloads. 
+Session management ensures role-specific access control.
+
+\begin{itemize}
+    \item Admin, Teacher, and Student communicate via HTTP requests to Django views.
+    \item JSON is used for client-server interactions in interactive features (e.g., voting, timetable updates, marks submission).
+    \item ORM queries ensure referential integrity across models like \texttt{Student}, \texttt{Teacher}, \texttt{TimetableEntry}, \texttt{AnnouncementVote}, and \texttt{Marks}.
+    \item Security-sensitive operations, including registration, voting, and marks updates, are logged and validated against session credentials.
+    \item Exception handling is implemented across modules to ensure errors are captured, reported, and logged for auditing purposes.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\subsection{Security Considerations}
+\label{subsec:system-security}
+%-----------------------------------------------------------------------
+
+The system-level security considerations include:
+
+\begin{itemize}
+    \item Role-based access control using session decorators (\texttt{Admin\_login}, \texttt{Teacher\_login}, \texttt{Student\_login}).
+    \item Input validation for forms, file uploads, and academic records.
+    \item CAPTCHA validation for automated bot prevention (with intentional replay vulnerability for study purposes).
+    \item Vote integrity concerns, as duplicate votes are currently possible (educational vulnerability).
+    \item Data privacy, ensuring students only access their own marks and timetables.
+    \item Optimized ORM queries to prevent unintentional data leaks.
+    \item Logging of critical operations, errors, and exceptions for auditing and accountability.
+    \item Error handling mechanisms across workflows to provide clear feedback and maintain system stability.
+\end{itemize}
+
+
+\end{document}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Marks</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        select {
+            margin: 10px 20px 10px 0;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 30px;
+        }
+
+        .action-links {
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        .action-links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-links a:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <h2>Your Marks - {{ student.firstname }} {{ student.lastname }}</h2>
+
+
+<form method="get">
+  <label>Filter by Subject:</label>
+  <select name="subject">
+    <option value="">All</option>
+    {% for subject in available_subjects %}
+      <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject %}selected{% endif %}>{{ subject.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Filter by Class:</label>
+  <select name="class_section">
+    <option value="">All</option>
+    {% for cls in available_classes %}
+      <option value="{{ cls.id }}" {% if cls.id|stringformat:"s" == selected_class %}selected{% endif %}>{{ cls.name }}</option>
+    {% endfor %}
+  </select>
+
+  
+
+  <label>Sort by Marks:</label>
+  <select name="sort">
+    <option value="">--</option>
+    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
+    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
+  </select>
+
+  <button type="submit">Apply</button>
+</form>
+
+<table border="1" cellspacing="0" cellpadding="10">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Class</th>
+      <th>Marks</th>
+      <th>Exam Type</th>
+      <th>Exam Date</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for mark in marks %}
+      <tr>
+        <td>{{ mark.subject.name }}</td>
+        <td>{{ mark.class_section.name }}</td>
+        <td>{{ mark.marks }}</td>
+        <td>{{ mark.exam_type }}</td>
+        <td>{{ mark.exam_date }}</td>
+
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="7">No marks found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+        <div class="action-links">
+        <a href="{% url request.session.current_role|lower %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
+
+<script>
+    // Store the student's username in sessionStorage (if not already present)
+    if (!sessionStorage.getItem("student_username")) {
+        sessionStorage.setItem("student_username", "{{ student.username }}");
+    }
+
+    // Forcefully override the Django session based on sessionStorage value
+    fetch("{% url 'set_sid_from_storage' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            student_username: sessionStorage.getItem("student_username")
+        })
+    });
+</script>

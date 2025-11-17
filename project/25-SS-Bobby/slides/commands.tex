@@ -1,0 +1,83 @@
+\newcommand{\set}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\bset}{\ensuremath{\{0,1\}}}
+\newcommand{\A}{\ensuremath{\mathcal{A}}}
+\newcommand{\Oracle}{\ensuremath{\mathcal{O}}}
+\newcommand{\adv}[2]{\ensuremath{\text{\textbf{Adv}}^{#1}_{#2}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\sample}{\ensuremath{\twoheadleftarrow}}
+\newcommand{\saysreal}{\ensuremath{\Rightarrow 1}}
+\newcommand{\saysrand}{\ensuremath{\Rightarrow 0}}
+\newcommand{\result}[1]{\underline{\underline{#1}}}
+\newcommand{\overto}[1]{\ensuremath{\xrightarrow{#1}}\xspace}
+\newcommand{\concat}{\ensuremath{\,\Vert\,}}
+
+\newcommand{\tinystacktwo}[2]{\ensuremath{\scriptsize{\substack{#1\\#2}}}\xspace}
+\newcommand{\tinystackthree}[3]{\ensuremath{\scriptsize{\substack{#1\\#2\\#3}}}\xspace}
+\newcommand{\define}{\ensuremath{\stackrel{\text{def}}{=}}\xspace}
+
+
+\newcommand{\bfblue}[1]{\textcolor{bauhausdarkblue}{\textbf{#1}}}
+
+\newcommand{\sectionpic}[2]{
+	\setbeamertemplate{section page}[mytheme][#2]
+	\section{#1}
+	\setbeamertemplate{section page}[mytheme]
+}
+
+\newcommand{\titleframe}{
+	\begin{frame}[noframenumbering,plain]
+		\titlepage
+	\end{frame}
+}
+
+
+\newtcbtheorem[auto counter]{customdefinition}{Definition}{
+	colbacktitle={weedgreen},
+	fontupper=\slshape,
+	fonttitle={\slshape}}
+{customdef}
+
+\newtcbtheorem[auto counter]{customlemma}{Lemma}{
+	colbacktitle={bauhausorange},
+	fontupper=\slshape,
+	fonttitle={\slshape}}
+{customlem}
+
+\newtcbtheorem[auto counter]{customtheorem}{Theorem}{
+	colbacktitle={bauhauslightblue},
+	fontupper=\slshape,
+	fonttitle={\slshape}}
+{customthrm}
+
+\newtcbtheorem[auto counter]{customremark}{Remark}{
+	colbacktitle={bauhausdarkblue},
+	fontupper=\slshape,
+	fonttitle={\slshape}}
+{customrmrk}
+
+
+\newcommand{\topline}{
+	\arrayrulecolor{weedgreen}
+	\toprule
+	\arrayrulecolor{gray}
+}
+
+\newcommand{\bottomline}{
+	\arrayrulecolor{black}
+	\bottomrule
+}
+
+
+\NewDocumentEnvironment{customtable}{ m m m }{
+	\table
+	\centering
+	\tabular{#1}
+	\topline
+}
+{
+	\bottomline
+	\endtabular
+	\caption{#2}
+	\label{#3}
+	\endtable
+}

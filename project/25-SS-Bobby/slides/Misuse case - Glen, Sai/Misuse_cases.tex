@@ -1,0 +1,106 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{Misuse Analysis in Bobby School Management}
+\author{Sai Bhargav Thoomu \\ Glen Paul}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{Types of Malicious Actors}
+\textcolor{red}{\textbf{Malicious Student}}: Manipulates grades/attendance, intimidates others. \\
+\vspace{1ex}
+\textcolor{red}{\textbf{Malicious Teacher}}: Unfair grading, deletes submissions, personal bias. \\
+\vspace{1ex}
+\textcolor{red}{\textbf{Malicious Administrator}}: Alters records/schedules, fakes data. \\
+\vspace{1ex}
+\textcolor{red}{\textbf{External Hacker}}: Breaches system to steal or disrupt operations.
+\end{frame}
+
+% --- UC1 to UC16 Slides ---
+\begin{frame}{UC1: Student Registration}
+\textbf{Legitimate Use:} Register new students with accurate details.\\[1ex]
+\textbf{Misuse:} Malicious admin creates fake profiles.
+\end{frame}
+
+\begin{frame}{UC2: Attendance Tracking}
+\textbf{Legitimate Use:} Teachers mark and students/parents view attendance.\\[1ex]
+\textbf{Misuse:} Teacher or student alters attendance records.
+\end{frame}
+
+\begin{frame}{UC3: Performance Records}
+\textbf{Legitimate Use:} Teachers enter grades; students/parents view.\\[1ex]
+\textbf{Misuse:} Tampering with performance records.
+\end{frame}
+
+\begin{frame}{UC4: Promotion History}
+\textbf{Legitimate Use:} Update student promotion status.\\[1ex]
+\textbf{Misuse:} Fake or biased promotion updates.
+\end{frame}
+
+\begin{frame}{UC5: Teacher Profile Management}
+\textbf{Legitimate Use:} Update/view teacher profiles.\\[1ex]
+\textbf{Misuse:} Impersonation or unauthorized edits.
+\end{frame}
+
+\begin{frame}{UC6: Schedule Management}
+\textbf{Legitimate Use:} Admin assigns teacher schedules.\\[1ex]
+\textbf{Misuse:} Conflicting or intentional overload.
+\end{frame}
+
+\begin{frame}{UC7: Subject Assignment}
+\textbf{Legitimate Use:} Admin assigns subjects fairly.\\[1ex]
+\textbf{Misuse:} Fake or biased assignments.
+\end{frame}
+
+\begin{frame}{UC8: Teacher Attendance Management}
+\textbf{Legitimate Use:} Mark/monitor teacher attendance.\\[1ex]
+\textbf{Misuse:} Falsified attendance for payroll benefits.
+\end{frame}
+
+\begin{frame}{UC9: Performance Reviews}
+\textbf{Legitimate Use:} Admin evaluates teacher performance.\\[1ex]
+\textbf{Misuse:} Biased or revenge-based reviews.
+\end{frame}
+
+\begin{frame}{UC10: Timetable Generation}
+\textbf{Legitimate Use:} Create conflict-free timetables.\\[1ex]
+\textbf{Misuse:} Tampering leads to chaos.
+\end{frame}
+
+\begin{frame}{UC11: Subject Allocation}
+\textbf{Legitimate Use:} Allocate subjects to classes/teachers.\\[1ex]
+\textbf{Misuse:} Overloads or mismatches.
+\end{frame}
+
+\begin{frame}{UC12: Classroom Allocation}
+\textbf{Legitimate Use:} Assign rooms for sessions.\\[1ex]
+\textbf{Misuse:} Causes disruptions or confusion.
+\end{frame}
+
+\begin{frame}{UC13: Exam Schedule Management}
+\textbf{Legitimate Use:} Publish exam schedules.\\[1ex]
+\textbf{Misuse:} Overlaps, confusion, or missing entries.
+\end{frame}
+
+\begin{frame}{UC14: Grading}
+\textbf{Legitimate Use:} Submit grades for students.\\[1ex]
+\textbf{Misuse:} Favoritism or downgrading.
+\end{frame}
+
+\begin{frame}{UC15: Report Card Generation}
+\textbf{Legitimate Use:} Generate and share report cards.\\[1ex]
+\textbf{Misuse:} Fake report cards.
+\end{frame}
+
+\begin{frame}{UC16: Role-Based Access Management}
+\textbf{Legitimate Use:} Assign system roles appropriately.\\[1ex]
+\textbf{Misuse:} Excessive access granted to wrong users.
+\end{frame}
+
+\end{document}

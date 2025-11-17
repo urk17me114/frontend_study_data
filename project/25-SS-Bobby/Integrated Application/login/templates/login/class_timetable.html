@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ class_group.name }} Timetable</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2>Weekly Timetable for {{ class_group.name }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                {% for day in days %}
+                    <th>{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for hour in hours %}
+            <tr>
+                <td>{{ hour }}:00</td>
+                {% for day in days %}
+                    <td>
+                        {% with entry=table|get_item:day|get_item:hour %}
+                            {% if entry %}
+                                <strong>{{ entry.subject.name }}</strong><br>
+                                {{ entry.teacher.name }}<br>
+                                <em>{{ entry.classroom.name }}</em>
+                            {% else %}
+                                —
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
