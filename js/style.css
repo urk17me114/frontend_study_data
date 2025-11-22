@@ -1,0 +1,14 @@
+p{
+    font-size: 2rem;
+}
+
+button{
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.first_button{
+    background-color: aqua;
+    color: antiquewhite;
+}

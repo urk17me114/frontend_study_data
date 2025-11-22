@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart project</title>
+</head>
+<body>
+    <header><h1>Cart Quantity</h1></header>
+    <button onclick="console.log(`Cart Quantity is ${showQuantity()}`)">Show Quantity</button>
+    <button onclick="console.log(`Cart Quantity is ${addToCart(1)}`)">Add to cart</button>
+    <button onclick="console.log(`Cart Quantity is ${addToCart(2)}`)">+2</button>
+    <button onclick="console.log(`Cart Quantity is ${addToCart(3)}`)">+3</button>
+    <button onclick="console.log(`Cart Quantity is ${resetCart()}\nCart has been resetted`)">Reset Cart</button>
+
+    <script>
+        let defaultQuantity = 0;
+        
+            
+            
+            function showQuantity() {
+            /* console.log(default_quantity); */  /* Here if given so in the console it prints 
+                                                0
+                                                Cart Quantity is undefined
+ */
+                return defaultQuantity; /* Here it prints Cart Quantity is 0 */
+            }
+
+            function addToCart(n){
+                defaultQuantity += n;
+            /* console.log(default_quantity); */
+            return defaultQuantity;
+        }
+
+        function resetCart(){
+            defaultQuantity = 0;  /* in JavaScript, a function can only return ONE value. */
+            return defaultQuantity;
+            
+            
+        }
+
+
+    </script>
+</body>
+</html>

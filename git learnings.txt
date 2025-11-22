@@ -3,3 +3,28 @@ git learnings
 git branch -M main → Rename your local branch to main.
 
 git push -u origin main → Upload your local main branch to GitHub and set it as the upstream branch.
+
+
+
+First open powershell>> then give the cmd ls so it shows the current working directory
+To change the current working directory to the folder we need to access give the cmd cd <filepath>
+
+Setup git inside the folder that contains the code
+cmd: git int
+
+To edit an existing commit
+cmd:	git add .
+cmd:	git commit -m"Version 1" --amend
+
+To check which git account give the command
+cmd:	git remote
+
+To view the previous versions
+cmd:	git checkout <commit tag>
+
+// Always use git log --all 
+
+To ignore certain files from being added to the git version add a file called .gitignore in the project folder and inside the file
+.gitignore give the name of the file with extension that is to be ignored
+
+cmd:	 Remove-Item .git -Recurse -Force
