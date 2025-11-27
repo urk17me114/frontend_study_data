@@ -1,0 +1,76 @@
+    <!-- This is a non functioning code to compare with the rock_paper_scissor.html file to learn the mistake -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        section{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Rock Paper Scissors</h1>
+    </header>
+    <main>
+        
+        <button onclick="let a = Math.random(); let humanChoise = 'rock';">
+            Rock
+        </button>
+        
+        
+        <button onclick="a = Math.random(); humanChoise = 'paper';">
+            Paper
+        </button>
+        
+        
+        <button onclick="a = Math.random(); humanChoise = 'scissors';">
+            Scissors
+        </button>
+
+    </main>
+    <br>
+    <section>
+        <p><a href="https://supersimple.dev/projects/booleans/">Click here</a> to see the final version of the project.</p>
+        
+    </section>
+    <script>
+        if(a>0 && a<1/3){
+            var computerChoise = "rock";
+        }
+        if(a>1/3 && a<2/3){
+          var computerChoise = "paper";
+        }
+        if(a>2/3 && a<1){
+            var computerChoise = "scissors";
+        }
+        if(computerChoise==humanChoice){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.Tie. `);
+        }
+        else if((computerChoise==rock && humanChoice == paper)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.win. `);
+
+        }
+        else if((computerChoise==paper && humanChoice == rock)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.loose. `);
+        }
+        else if((computerChoise==rock && humanChoice == scissors)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.loose. `);
+        }
+        else if((computerChoise==scissors && humanChoice == paper)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.loose.) `);
+        }
+        else if((computerChoise==paper && humanChoice == scissors)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.win. `);
+        }
+        else if((computerChoise==scissors && humanChoice == rock)){
+            alert(`You picked ${humanChoice}.Computer picked ${computerChoise}.win.) `);
+        }
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booleans</title>
+</head>
+<body>
+    <script>
+        let age = 10;
+        console.log(10===5);
+        console.log(typeof('true'));
+        if(false){
+            console.log(`hello`);
+        
+        }    else {
+            console.log('else');
+        }
+        if(age>16){
+            console.log("you can drive");           
+        }
+        else if((age+10)===15){
+            console.log("can drive conditionally");
+        }
+        else{
+            console.log("you cant drive");
+        }
+        
+            
+            /* Logical AND operator */
+        if(true && true){
+            console.log ("u r correct");
+        }
+            
+        
+            /* Logical OR operator */
+        if(true||false){
+            console.log("you are not wrong");
+        }
+
+            /* Logical NOT operator */
+
+        if(true||!true){
+            console.log("USage of NOT operator");
+        }
+        
+        /* Truthy and Falsy values */   
+        
+        /* 0 is false and 1 is true */
+        if(1){
+            console.log('True');
+        }
+        else{
+            console.log("False");
+                }
+
+        /* NaN stands for not a number
+        undefined represents the var doesnt have a values
+ */
+        
+
+
+
+                /* Ternanry operator */
+                /* ternary operator is like a short hand for the if operator */
+                true? console.log("the value is true") : console.log("the value is false"); 
+                
+                /* similar to  */
+                if(true){
+                    console.log("the value is true");
+                }
+                else{
+                    console.log("the value is False")
+                }
+
+                /* advantage of ternary operator is that we can save the etrnary operator in a variable */
+                const result = true ? 'truthy' :'Falsy';
+                console.log(result);
+
+
+                /* Predict the output */ 
+                const a = 5 && "babu";
+                console.log(a);
+
+                const b = 5 || "babu";
+                console.log(b);
+
+                /* we can use the OR operator to set a default value */ /* very important concept */
+                const currency = undefined|| "USD";  /* OR operator is also called default operator */
+                console.log(currency);
+    </script>
+    
+</body>
+</html>
+

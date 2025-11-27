@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functions</title>
+
+</head>
+<body>
+    
+    <main>
+        <button onclick="alert(`The sum of the numbers is ${sum(2,5)}`)">sum</button>
+    </main>
+    <script>
+        function sum(a,b){
+            var sum = a+b;
+            return sum;
+        }
+
+
+        /* Parameter puts a value into a function */
+
+        function calculateTax(parameter1,parameter2){
+            console.log(parameter1*parameter2);
+
+        }
+
+        
+        function greet(name){
+            if(!name){
+                console.log("hi there");
+            }
+            else{
+                console.log(`hello ${name}`);
+            }
+        }
+        
+        let fahrenheit;
+        function convertToFahrenheit(degree){
+            fahrenheit = ((degree * 9/5) + 32);
+            return fahrenheit;
+
+        }
+
+        
+        
+
+    </script>
+    
+</body>
+</html>
