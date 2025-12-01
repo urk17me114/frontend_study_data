@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM</title>
+</head>
+<body>
+    <button>Hello</button>
+    <button class="secondbutton">Second button</button>
+
+    <!-- DOM stands for document object and it works like any other object -->
+
+    <script>
+       /*  document.body.innerHTML =" <button> goodjob </button>";
+        document.title = "changed from DOM to document"; */
+
+        console.log(document.querySelector("button").innerHTML ="Hi"); /* This changes the button name from hello to hi */
+        /* using document.queryselector we can get any element from the page */
+        console.log(document.querySelector(".secondbutton").innerHTML ="Hi");   /* accessing using a class attribute */
+        
+
+
+    </script>
+    
+</body>
+</html>

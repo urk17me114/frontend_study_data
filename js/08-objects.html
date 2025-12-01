@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>objects</title>
+</head>
+<body>
+    <!-- An object groups multiple values together -->
+     <script>
+        const product = {   /* Here the variable product holds an object with 2 properties ie name and price */
+            name: "socks",
+            price: 1090,
+            }
+
+        /* To edit the value of a property */
+        product.name = "trousers";
+        console.log(product.name);
+        
+        /* To use the value of a property  */
+        let modifiedPrice;
+        modifiedPrice = 1000 + product.price;
+        alert(`Modified price for the ${product.name} is ${modifiedPrice}`);    
+     
+        /* To add a property to the object */
+        product.discount = 10;
+        console.log(product);    
+        
+        /* To delete a property to the object */
+        delete product.discount;
+        console.log(product); 
+        
+        const product2 ={
+            name: "Shirtssssssssssss",
+            // Property names with special characters (like hyphens) cannot be accessed using dot notation.
+            // Dot notation would think "delievry-time" is subtraction.
+            // So we use bracket notation with a string instead.
+            "delievry-time": "1 day"
+        };
+        console.log(product2.name);
+        console.log(product2["delievry-time"]); /* Another way to access the object */// bracket notation required for keys with hyphens
+
+        const product3 ={
+            name: "pantss",
+            rating: {             //This is called nesting in objects
+                stars: 4.5,
+                count: 78
+            },
+            /* When we save functions inside an object it is called a method */
+            fun: function function1(){
+                console.log("function inside the object") /* Functions can also be defined in an object */
+            }
+        };
+        console.log(product3);
+        alert(`The rating for the product ${product3.name} is ${product3.rating.stars}`);
+        
+        
+        /* Very important */
+        product3.fun(); //To access the function in an object
+
+
+        /* JSON and local storage are built in objects */
+
+
+
+        /* JSON doesnot support functions and all strings should be in double quotes */
+        /* To convert JS object to JSON use JSON.stringify() */
+        JSON.stringify(product3);
+        console.log(JSON.stringify(product3)); /* here console is an object and log is a method as it is a function in an object
+        similary JSON is an object and stringify() is a method */
+
+        /* A method is a function in an object */
+
+
+        /* To convert JSON back into JSObject */ 
+
+        const jsonstring = JSON.stringify(product3);
+        console.log(JSON.parse(jsonstring));
+/* 
+        To write the code as if (something === false) LOC for the same will be if(!somehing):{
+
+        } */
+        
+
+        /* Strings also have properties */
+        console.log("hello_boobooo".length)/*  gives the length of the string */
+        console.log("hello_boobooo".toLocaleUpperCase());
+
+
+
+        /* Objects are references */
+        const product5 = {
+            name: "ps5"
+        };
+        const product6 = product5;
+
+        console.log(product5);
+        product5.name = "ps5"; 
+        console.log(product6);
+
+
+        /* We cant compare the objects directly */
+
+        const product7 = {
+            name: "ps5"
+        };
+
+      
+        console.log(product5 === product7); 
+        console.log(product5 === product6); /* This came true as objects compare references  and not values */
+        console.log(product6 === product7);
+
+        
+       const product10 = {
+            message: "goodjob",
+            price: 799
+        };  
+
+        /* Shortcuts for object creation: Destructuring property */
+
+        const {message,price} = product10;
+        console.log(message);
+        console.log(price);
+
+        /* Shortcuts for object creation: Shorthand property */
+
+        const product11 = {
+            /* message : message */
+            message
+        }
+
+        console.log(product11);
+
+
+        /* Shortcuts for object creation: Shorthand Method */
+        const product12 = {
+            /* method: function fun1(){
+        console.log("method");        
+            } */
+
+            method()
+            {
+                console.log("method")}
+        }
+
+        product12.method();
+
+        
+
+
+
+
+        
+
+
+
+        
+
+
+
+     
+     </script>
+</body>
+</html>
