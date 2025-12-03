@@ -1,0 +1,70 @@
+
+
+.calculateButton{
+    background-color: green;
+    color: white;
+    border: none;
+    /* font-size: 1rem; */
+    padding: 0.18rem;
+    width: 100px;
+    margin-left: 15px;
+}
+
+.first_button{
+    background-color: aqua;
+    color: antiquewhite;
+}
+
+.subscribeButton{
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    border: none;
+    /* padding: 0.5rem; */
+    font-size: 1.5rem;
+    width: 200px;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+}
+.subscribedButton{
+    background-color: green;
+    color: white;
+}
+section{
+    display: flex;
+}
+.rpsHeader{
+    color: white;
+}
+
+
+.backgroundRPS{
+    background-color: black;
+    text-align: center;
+    margin-top: 200px;
+    
+}
+
+.resetButton{
+    padding: 5px;
+    font-weight: bold;
+}
+
+.gesture{
+    font-size: 5rem;
+    margin: 15px;
+    background-color: black;
+    border: 3px solid white;
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+}
+
+.result{
+    color: white;
+    font-size: 1rem;
+}

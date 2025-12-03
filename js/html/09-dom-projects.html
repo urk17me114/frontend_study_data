@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Projects</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><p>YouTube Subscribe Button</p></header>
+    <button class="subscribeButton" onclick="buttonNameChange()">Subscribe</button>
+    <br>
+    <br>
+    <br>
+    <p>Rock Paper scissors</p>
+    <a href="09-rock_paper_scissors.html" target="blank">Click here</a>
+    <br>
+    <p>Amazon shipping calculator</p>
+    <p>
+        Order under $40 = +$10 shipping.<br>
+        Order over $40 = FREE shipping.<br><br>
+        <input id = "myText" onkeydown="shippingCalculator(event)" placeholder="Cost of order"></input><button class="calculateButton" onclick="shippingCalculator()">calculate</button>
+    </p>
+    <p class="cal"></p>
+
+
+
+    <script>
+        function buttonNameChange(){
+            
+            let buttonElement = document.querySelector("button")
+            if(buttonElement.innerHTML==="Subscribe"){
+                buttonElement.innerHTML="subscribed";
+                buttonElement.classList.add("subscribedButton");
+                
+            }
+            else {
+                buttonElement.innerHTML="Subscribe";
+                buttonElement.classList.remove("subscribedButton"); //here for the class we didnt add .subscribedButton as it is only for querySelector 
+                }
+        }
+
+        
+        
+        function shippingCalculator(event){
+
+            if (event && event.key !== "Enter") {
+                return;
+            }
+
+            let netPrice = 0;
+            let productPrice = document.getElementById("myText").value;  //To store the value entered in textarea
+            let numberValue = parseInt(productPrice, 10); //value is converted from string to int, 10 tells JavaScript to treat the string as a base-10 (decimal) number.
+
+            
+            if (numberValue<40){
+                netPrice+=numberValue+10;    
+            }
+            else{
+            netPrice+=numberValue;
+            }
+            document.querySelector(".cal")
+            .innerHTML=`$ ${netPrice}`;
+            
+        }
+
+        /* document.getElementById("myText").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                shippingCalculator();
+            }
+        }); */
+    </script>
+</body>
+</html>
