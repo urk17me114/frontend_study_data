@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors</title>
+    <title>Rock Paper Scissors autoplay</title>
     <link rel="stylesheet" href="../styling/style.css">
     
 </head>
@@ -13,21 +13,22 @@
     </header>
 
     <main>
-        <button class="gesture gesture1" >
+        <button class="gesture" onclick="play('rock')">
             ✊
         </button>
 
-        <button class="gesture gesture2" >
+        <button class="gesture" onclick="play('paper')">
             ✋
         </button>
 
-        <button class="gesture gesture3" >
+        <button class="gesture" onclick="play('scissors')">
             ✌️
         </button>
         <br>
         <p class="result"></p>
         <br>
         <button class="resetButton" onclick="play('Reset')">Reset Score </button>
+        <button class="resetButton" onclick="autoPlay()">AutoPlay</button>
 
         
         
@@ -36,6 +37,6 @@
     <br>
 
     
-    <script src="../js/10-rock_paper_scissors.js"> </script>
+    <script src="../js/12-rock_paper_scissors_autoplay.js"> </script>
 </body>
 </html>

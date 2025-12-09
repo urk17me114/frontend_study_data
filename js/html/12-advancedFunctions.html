@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced functions</title>
+
+</head>
+<body>
+<div class="greeting"></div>
+<button >click</button>
+    
+    <script>
+        function greeting(){
+            return "hello there!"
+        }
+
+        document.querySelector(".greeting").innerHTML = greeting();
+        
+
+
+        /* Savig a function inside a variable */
+        const a = function(){    /* A function without a name is called an anonymous function usually used to set callback function */
+            console.log("Hi beautiful people!");
+        };
+
+        console.log(a);
+        console.log(typeof a);
+        greeting();
+
+
+        function display(name){  /* This is called passing a value to a function */
+            console.log(`Hello ${name}`);
+        }
+
+        display("glen");
+
+
+        /* passing a function into another function */
+        function run(param){
+            param();
+        }
+        
+        run(function(){  /* This is called a call back function */
+            console.log("This is a function passed as an argument"); 
+        });
+
+        /* Another example of passing a function into a function */
+        function greet(name, callback) {
+            console.log("Hello " + name);
+            callback();   // this runs the passed function
+            }
+
+            function sayBye() {
+            console.log("Goodbye!");
+            }
+
+            greet("Alex", sayBye);
+
+
+            /* settimeout is an inbuilt function which accepts a callback function and a time delay as arguments */
+            setTimeout(function() {
+                document.body.innerHTML = "Welcome to the page!";
+                
+            }, 3000); /* time is in milliseconds */
+
+            /* setInterval(function() {
+                console.log("This message is shown every 2 seconds");
+            }, 2000); */ /* time is in milliseconds */
+
+            console.log("This message is shown immediately");
+
+            /*another method for looping through an array called forEach method which accepts a callback function as an argument */
+
+            /* forEach method */
+            const colors = ["red", "green", "blue"]; /* forEach methods dont have continue so we use return instead */
+            colors.forEach((value,index) => {
+                if(value=="green"){
+                    return;
+                }
+                console.log(value);
+                console.log(index);
+            })
+    
+    
+            /* Arrow functions */
+            const arrowFunction = ()  =>{
+                console.log("hello");
+                return 5;
+            };
+            arrowFunction();
+            
+
+            /* Normally written as */
+            const arrowsFunction = function(){
+                console.log("bro");
+                return 7;
+            }
+
+            arrowsFunction();
+
+            const oneparaam = param =>{  /* here param is the parameter in a anonymus function */
+                console.log(param);
+            }
+            oneparaam(1111110);
+
+
+            const oneline = () =>  2+3;
+            
+            
+            /* this is same as below */
+            const onesline = () => {
+                return (2+3);
+            }
+            console.log(onesline);
+
+    </script>
+    
+</body>
+</html> 

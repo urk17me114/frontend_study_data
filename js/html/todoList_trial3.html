@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo list</title>
+    <link rel="stylesheet" href="../styling/style.css">
+</head>
+<body>
+    <header>Todo List</header><br>
+    
+    
+    <input placeholder="List of items to do" class="js-name-input">
+    <input type="date" class="js-dueDate">
+    <button  class="addButton" >Add</button>
+    <div class="js-todo-list"></div>
+   
+    <script>        
+        
+        /* Inorder to group the date and todolist together we use objects */
+        const todoList=[{name:"make dinner", dueDate:"12/10/2025"},
+                        {name:"wash dishes",dueDate: "13/10/2025"}]; 
+        /* if grouped a single index can be used to access both */
+
+        document.querySelector(".addButton").addEventListener("click",()=>{addTodo()});
+
+
+        function renderTodoList(){
+            let todolistHTML="";
+            /* for(let i=0;i<todoList.length;i++){
+                const todoObject = todoList[i];
+                // const name = todoObject.name;
+                //const dueDate = todoObject.dueDate; 
+
+                // when the variable name and the property name a re the same we can use 
+                //shortcut called destructuring 
+                const { name , dueDate} = todoObject;
+
+                   
+                const html = `
+                <div>${name}</div>
+                <div ><div class = "dateclass"> ${dueDate}</div></div>
+                <button onclick ="todoList.splice(${i},1); renderTodoList()"; class = "deleteButton">Delete</button>`;  //Generating the html using js
+                todolistHTML+=html;
+                console.log(todolistHTML);
+                
+                    
+            } */
+
+            /* using forEach method */
+            todoList.forEach((todoObject,i) => {
+                
+                const { name , dueDate} = todoObject;
+
+                   
+                const html = `
+                <div>${name}</div>
+                <div ><div class = "dateclass"> ${dueDate}</div></div>
+                <button  class = "deleteButton">Delete</button>`;  //Generating the html using js
+                todolistHTML+=html;
+                console.log(todolistHTML);
+                document.querySelector(".js-todo-list").innerHTML = (todolistHTML);
+                document.querySelectorAll(".deleteButton").forEach((Delete,index) => {
+                    Delete.addEventListener("click", ()=>{todoList.splice(index,1); renderTodoList();});
+                });});
+            
+                
+                
+                
+       
+            
+           
+    }
+
+        function addTodo(){
+            let inputElement = document.querySelector(".js-name-input").value;
+            let dateInputElement = document.querySelector(".js-dueDate").value;
+            
+            todoList.push({name:inputElement,dueDate:dateInputElement});
+            document.querySelector(".js-name-input").value="";
+            renderTodoList();
+            
+
+        }
+
+        
+    </script>
+        
+
+        
+</body>
+</html>

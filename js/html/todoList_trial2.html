@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo list</title>
+</head>
+<body>
+    <header>Todo List</header><br>
+    
+    
+    <input placeholder="List of items to do" class="js-name-input">
+    <button onclick="addTodo()">Add</button>
+    <div class="js-todo-list"></div>
+   
+    <script>        /* needs to try with event listener and event delegation */
+        const todoList=["make dinner","wash dishes"]; //save the data
+        
+        /* Inorder to group the date and todolist together we use objects */
+        /* const todoList=[{name:"make dinner", dueDate:"12/10/2025"},
+                        {name:"wash dishes",dueDate: "13/10/2025"}]; */
+        /* if grouped a single index can be used to access both */
+
+
+        function renderTodoList(){
+            let todolistHTML="";
+            for(let i=0;i<todoList.length;i++){
+                const todo = todoList[i];
+                /* The below loc with html tag p or span determines the layout whether it should be block or inline
+                and not by the div container above */    
+                const html = `<p>${todo}  <button onclick ="todoList.splice(${i},1); renderTodoList()"; >Delete</button></p>`;  /* Generating the html using js */
+                todolistHTML+=html;
+                console.log(todolistHTML);
+                
+                    
+            }
+       
+        document.querySelector(".js-todo-list").innerHTML = (todolistHTML);
+           
+    }
+
+        function addTodo(){
+            let inputElement = document.querySelector(".js-name-input").value;
+            
+            todoList.push(inputElement);
+            document.querySelector(".js-name-input").value="";
+            renderTodoList();
+            
+
+        }
+
+        
+    </script>
+        
+
+        
+</body>
+</html>

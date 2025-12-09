@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do list</title>
+</head>
+<body>
+    <header>
+        Todo List Practice 1
+    </header><br>
+    <p> here it prints the list of things to do in the console only</p>
+
+    <input id="lists" placeholder="Todo name"> </input>
+    <button onclick="toDoList()" >Add</button>
+    <script>
+         let array1 = [];
+        function toDoList(){
+            
+            array1.push(document.getElementById("lists").value);
+            console.log(array1);
+            document.getElementById("lists").value = ""; //To reset the value of input column to  blank
+            
+        }
+    </script>
+
+    <!-- array-of-objects / state-driven rendering approach -->
+    <header><br>
+        Todo List Practice 2
+    </header><br>
+
+    <input  placeholder="Todo name" class="js-name-input"> </input>
+    <button onclick="addTodo()">Add</button>
+    <div class="js-todo-list"></div>
+
+    <script>
+      const todoList=[];
+      let todoListHTML = "";
+      /* for(let i=0;  i<todoList.length;  i++){
+        const todo = todoList[i];
+        const html = `<p>${todo}`;
+        todoListHTML += html;
+      } */
+      
+      todoList.forEach(function(todo){
+        const html = `<p>${todo} </p>`;
+        todoListHTML += html;
+      });
+
+      console.log(todoListHTML);
+      document.querySelector(".js-todo-list").innerHTML = todoListHTML;
+
+      function addTodo(){
+        const inputElement = document.querySelector('.js-name-input');
+        const name = inputElement.value;
+
+        todoList.push(name);
+        console.log(todoList);
+
+        inputElement.value = "";
+        renderTodoList();
+      }
+
+      /* always use a separate function to render the data */
+      function renderTodoList() {
+        let todoListHTML = '';
+
+        for (let i = 0; i < todoList.length; i++) {
+            const todo = todoList[i];
+            const html = `<p>${todo} </p>`;
+            todoListHTML += html;
+        }
+
+        document.querySelector('.js-todo-list').innerHTML = todoListHTML;
+        }
+    </script>
+    <br>
+    <p><a href="11-to_do_list_final.html" target="_blank">Click here</a> for the final version of to do list project</p>
+
+
+    
+</body>
+</html>

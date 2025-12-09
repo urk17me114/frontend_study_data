@@ -19,3 +19,55 @@ Front end developer
 	JS
 	GitHub
 	reactjs (project with certification)
+
+
+
+
+Strong Data Structures & Algorithms (DSA)
+
+Arrays
+
+Strings
+
+Recursion
+
+Linked Lists
+
+Stacks/Queues
+
+Trees
+
+Hashmaps
+
+Sorting
+
+Basic time complexity
+
+This is important because their interviews test problem-solving ability.
+
+
+
+2️⃣ Understanding of Software Engineering concepts
+
+OOP (classes, inheritance, abstraction, polymorphism)
+
+DBMS (joins, normalization)
+
+OS basics (processes, deadlocks)
+
+Computer networks (TCP/IP, HTTP)
+
+
+
+The 4 CS Fundamentals You Need
+
+Operating Systems (OS)
+
+Database Management Systems (DBMS)
+
+Object-Oriented Programming (OOP)
+
+Computer Networks (CN)
+
+
+

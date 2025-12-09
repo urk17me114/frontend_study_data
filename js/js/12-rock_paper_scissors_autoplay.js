@@ -5,28 +5,7 @@ const score ={
             };
         
 
-        buttonElement1 = document.querySelector(".gesture1");
-        buttonElement1.addEventListener("click" ,() => {play("rock");});
-        
-        buttonElement2 = document.querySelector(".gesture2");
-        buttonElement2.addEventListener("click" ,() => {play("paper");});
-        
-        buttonElement3 = document.querySelector(".gesture3");
-        buttonElement3.addEventListener("click" ,() => {play("scissors");});
-        
-
-        document.body.addEventListener("keydown", (event) => {
-            if(event.key === "r"){
-                play("rock");}
-            else if(event.key === "p"){
-                play("paper");
-            }
-            else if(event.key === "s"){
-                play("scissors");
-            }
-            });
-            
-            function play(humanChoice) {
+        function play(humanChoice) {
 
             
             let a = Math.random();
@@ -107,3 +86,10 @@ const score ={
                 `;
             }
         }
+
+        function autoPlay() {
+            
+            
+            setInterval(function(){
+                const humanChoice = computerChoice;  play(humanChoice);
+            },1000);}

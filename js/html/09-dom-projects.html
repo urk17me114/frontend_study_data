@@ -19,7 +19,7 @@
     <p>
         Order under $40 = +$10 shipping.<br>
         Order over $40 = FREE shipping.<br><br>
-        <input id = "myText" onkeydown="shippingCalculator(event)" placeholder="Cost of order"></input><button class="calculateButton" onclick="shippingCalculator()">calculate</button>
+        <input class="inputClass"  placeholder="Cost of order"></input><button class="calculateButton" onclick="shippingCalculator()">calculate</button>
     </p>
     <p class="cal"></p>
 
@@ -40,16 +40,21 @@
                 }
         }
 
+        document.querySelector(".inputClass").addEventListener("keydown",(event) => {
+            if(event.key=="Enter"){
+                shippingCalculator()
+            }});
         
         
-        function shippingCalculator(event){
+        function shippingCalculator(){
 
-            if (event && event.key !== "Enter") {
+            /* if (event && event.key !== "Enter") {
                 return;
-            }
+            } */
+
 
             let netPrice = 0;
-            let productPrice = document.getElementById("myText").value;  //To store the value entered in textarea
+            let productPrice = document.querySelector(".inputClass").value;  //To store the value entered in textarea
             let numberValue = parseInt(productPrice, 10); //value is converted from string to int, 10 tells JavaScript to treat the string as a base-10 (decimal) number.
 
             

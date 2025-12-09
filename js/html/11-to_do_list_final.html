@@ -1,0 +1,76 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do list project</title>
+    <link rel="stylesheet" href="../styling/style.css">
+</head>
+<body>
+    <header>
+        Todo List
+    </header> <br>
+    <input placeholder="Create your todo list here" id="lists2"></input>
+    <input type="date" id = "todo_date"></input>
+    <!-- <button onclick="date1()" onclick="toDoList2()">Add</button> --> <!-- This LOC wont work -->
+    
+    <!-- HTML does not allow multiple onclicks on the same element. Only the last one will work 
+    (toDoList2() in this case).You should call both functions from a single onclick:
+    So inorder to call multiple fnctions in a single click create a function and add the multiple 
+    functions to be called into that function . Here we added todolist and date1 into a function
+    called addTodo() -->
+
+    <button onclick="addTodo()">Add</button>
+    <div class = container1>
+        <p class="goals" ></p>
+        <p class = dates></p>
+        <div id="container"></div>
+    </div>
+    
+
+    <script>
+        let dateArray= [];
+        function date1(){
+            dateOutput = "";
+            dateArray.push(document.getElementById("todo_date").value);
+            for (let i =0;i<dateArray.length;i++){
+                dateOutput +=  dateArray[i] + "<br>";
+                  
+            }
+            /* const date = document.getElementById("todo_date").value; */
+            document.querySelector(".dates").innerHTML=(dateOutput);
+        }
+
+        let array2 = [];
+        function toDoList2(){
+            output="";
+            array2.push(document.getElementById("lists2").value);
+            
+            for (let i =0;i<array2.length;i++){
+                output +=  array2[i] + "<br>";
+                  
+            }
+            document.querySelector(".goals").innerHTML=(output);
+            document.getElementById("lists2").value = ""; //To reset the value of input column to  blank
+            
+        }
+
+        function deleteButton(){
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            document.getElementById("container").appendChild(deleteButton);
+
+        }
+
+        function addTodo() {
+            toDoList2();
+            date1();
+            deleteButton();
+        }
+
+    </script>
+
+</body>
+</html>

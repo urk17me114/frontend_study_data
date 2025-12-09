@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>part 2 adavanced functions</title>
+
+</head>
+<body>
+    <button class="clickMe">submit</button>   <!-- use event listeners instead of onclick attribute -->
+    <p class="para"></p>
+
+    <script>
+        const buttonElement = document.querySelector(".clickMe");
+        const text1 = () => console.log("hi there");
+        const text2 = () => console.log("hellooooooooooo");
+ 
+        buttonElement.addEventListener("click" ,text1);
+        buttonElement.removeEventListener("click", text1);
+        buttonElement.addEventListener("click" ,text2);
+    
+    
+    /* filter method */
+    const a =[1,-3,5];
+    const b = a.filter((value,index) =>   {
+        /* if (value>0){
+            return true;
+        } */
+       return value>0; /* same as above */
+    });
+    
+
+
+
+
+    /* map method */  /* map will transform an array into another array based on the return value */
+
+    const c =[1,-3,5];
+    const d = c.map((value,index) => {
+        return 10 + value;
+    });
+    document.querySelector(".para").innerHTML=(`${b} <br> ${d}`);
+
+        
+    </script>
+</body>
+</html>
