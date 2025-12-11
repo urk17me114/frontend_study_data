@@ -1,6 +1,6 @@
 
         //Save the data
-const products = [
+/* const products = [
     {   image:"images/products/athletic-cotton-socks-6-pairs.jpg",
         name:  "Black and Gray Athletic Cotton Socks - 6 Pairs",
         priceCents:1090,
@@ -23,7 +23,7 @@ const products = [
         rating:{stars:4.5,
                 count:56}
     }
-]; 
+];  */
 
     //Generate the HTML
     
@@ -82,7 +82,7 @@ const products = [
     }
         
 );
-console.log(productsHTML);
+
 
 //put it on the webpage using DOM
 document.querySelector(".js-products-grid").innerHTML=productsHTML;
