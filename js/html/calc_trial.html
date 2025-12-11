@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="../styling/practise_style.css">
+</head>
+<body>
+    <div class="result"></div>
+    <div class="arr">
+        <button class="one">1</button>
+        <button class="two">2</button>
+        <button class="three">3</button>
+        <button class="colourChange plus" >+</button>
+        <button class="four">4</button>
+        <button class="five">5</button>
+        <button class="six">6</button>
+        <button class="colourChange minus">-</button>
+        <button class="seven">7</button>
+        <button class="eight">8</button>
+        <button class="nine">9</button>
+        <button class="colourChange multiply" >*</button>
+        <button class="zero">0</button>
+        <button>.</button>
+        <button class="equal">=</button>
+        <button class="colourChange divide">/</button>
+        <button class="Clear">Clear</button>
+    </div>
+
+    <script>
+        
+        let concat = "";
+        const display = document.querySelector(".result");
+        
+        //displaying numbers
+        /* document.querySelector(".one").addEventListener("click",()=>{
+            concat+="1";
+            display.innerHTML = concat;
+            
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="1"){
+            concat+="1";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+
+        document.querySelector(".two").addEventListener("click",()=>{
+            concat+="2";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="2"){
+            concat+="2";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".three").addEventListener("click",()=>{
+            concat+="3";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="3"){
+            concat+="3";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".four").addEventListener("click",()=>{
+            concat+="4";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="4"){
+            concat+="4";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".five").addEventListener("click",()=>{
+            concat+="5";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="5"){
+            concat+="5";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".six").addEventListener("click",()=>{
+            concat+="6";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="6"){
+            concat+="6";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".seven").addEventListener("click",()=>{
+            concat+="7";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="7"){
+            concat+="7";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".eight").addEventListener("click",()=>{
+            concat+="8";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="8"){
+            concat+="8";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+
+        document.querySelector(".nine").addEventListener("click",()=>{
+            concat+="9";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="9"){
+            concat+="9";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+ */
+
+        //Displaying operators
+
+        /* document.querySelector(".plus").addEventListener("click",()=>{
+            concat+="+";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="+"){
+            concat+="+";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+        document.querySelector(".minus").addEventListener("click",()=>{
+            concat+="-";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="-"){
+            concat+="-";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+        document.querySelector(".multiply").addEventListener("click",()=>{
+            concat+="*";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="*"){
+            concat+="*";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        })
+
+        document.querySelector(".divide").addEventListener("click",()=>{
+            concat+="/";
+            display.innerHTML = concat;
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="/"){
+            concat+="/";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        }) */
+
+        /* document.querySelector(".Clear").addEventListener("click",()=>{
+            concat="0";
+            display.innerHTML = concat;
+        }) */
+        /* document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="Delete"){
+            concat="0";
+            display.innerHTML = concat; //this updates the display
+            }
+        
+        }) */
+
+        /* document.querySelector(".equal").addEventListener("click",()=>{
+            equal();
+        })
+        document.body.addEventListener("keydown",(event)=>{
+            if(event.key ==="="){
+            equal(); //this updates the display
+            }
+        
+        }) */
+
+        
+        //Handles button events
+        document.querySelectorAll("button").forEach(btn => { //shortcut instead of defining loc for each button
+        btn.addEventListener("click", () => handleInput(btn.innerText));
+         });
+
+        
+         //Handles keyboard events
+
+         document.addEventListener("keydown",(event)=>{
+            if (("0123456789+-*/").includes(event.key)){
+                handleInput(event.key)
+            }
+            if(event.key === "="){
+                equal();
+                return;
+            }
+            if(event.key==="Delete"){
+                concat="0";
+                display.innerHTML = concat;
+                return;
+
+            }});
+         
+    
+
+        function handleInput(btnClick){
+            if(btnClick === "="){
+                equal();
+                return;
+            }
+            if(btnClick==="Clear"){
+                concat="0";
+                display.innerHTML = concat;
+                return;
+
+            }
+            concat+=btnClick;
+            display.innerHTML = concat;
+        }
+
+        /* This is called parse after evaluate */
+        function equal(){
+
+            
+            let currentNumber="";
+            let currentOperator = "+";
+            let result = 0;
+            for (i=0;i<concat.length;i++){
+                let char = concat[i];
+                if(!isNaN(char)){
+                    currentNumber+=char;
+                }
+                else{
+                    let num = Number(currentNumber);
+                    
+                    if(currentOperator == "+"){
+                        result+=num;
+                    } 
+                    else if(currentOperator == "-"){
+                        result-=num;
+                    }
+                    else if(currentOperator == "*"){
+                        result*=num;
+                    }
+                    else if(currentOperator == "/"){
+                        result/=num;
+                    }
+                    currentOperator =char;
+                    currentNumber = "";
+                }
+            }
+                
+
+                let num = Number(currentNumber);
+                    
+                    if(currentOperator == "+"){
+                        result+=num;
+                    } 
+                    else if(currentOperator == "-"){
+                        result-=num;
+                    }
+                    else if(currentOperator == "*"){
+                        result*=num;
+                    }
+                    else if(currentOperator == "/"){
+                        result/=num;
+                    }
+                    display.innerHTML=result;
+                concat = "";  
+        }    
+
+    </script>

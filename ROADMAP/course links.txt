@@ -69,5 +69,11 @@ Object-Oriented Programming (OOP)
 
 Computer Networks (CN)
 
+Mini projects completed till now:
+To do list
+calculator
+rock paper scissors game
+
+
 
 

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="../styling/practise_style.css">
+</head>
+<body>
+    <div class="result"></div>
+    <div class="arr">
+        <button class="one">1</button>
+        <button class="two">2</button>
+        <button class="three">3</button>
+        <button class="colourChange plus" >+</button>
+        <button class="four">4</button>
+        <button class="five">5</button>
+        <button class="six">6</button>
+        <button class="colourChange minus">-</button>
+        <button class="seven">7</button>
+        <button class="eight">8</button>
+        <button class="nine">9</button>
+        <button class="colourChange multiply" >*</button>
+        <button class="zero">0</button>
+        <button>.</button>
+        <button class="equal">=</button>
+        <button class="colourChange">/</button>
+        <button class="Clear">Clear</button>
+    </div>
+
+
+    <script>
+        let concat = "";
+        
+        
+        /* console.log(concat_num); */
+        const resultDiv = document.querySelector(".result");
+        value = resultDiv.innerHTML;
+        
+        document.querySelector(".one")
+        .addEventListener("click",()=>{
+            concat += "1"
+            resultDiv.innerHTML = concat;
+        });
+        
+        
+        document.querySelector(".two")
+        .addEventListener("click",()=>{concat += "2"
+            resultDiv.innerHTML = concat;
+        });
+        
+        document.querySelector(".three")
+        .addEventListener("click",()=>{concat += "3"
+            resultDiv.innerHTML = concat;
+        });
+        
+        document.querySelector(".Clear")
+        .addEventListener("click",()=>{clear();});
+         
+        document.querySelector(".minus")
+        .addEventListener("click",()=>{
+            concat += "-"
+            resultDiv.innerHTML = concat;
+        });
+
+        document.querySelector(".plus")
+        .addEventListener("click",()=>{
+            concat += "+"
+            resultDiv.innerHTML = concat;
+        });
+        
+        document.querySelector(".multiply")
+        .addEventListener("click",()=>{concat += "*"
+            resultDiv.innerHTML = concat;});
+
+        document.querySelector(".equal")
+        .addEventListener("click",()=>{equal()});
+
+        
+        function equal(){
+            let exp = concat;
+            let currentNumber = "";
+            let currentOperator = "+";
+            let result = 0;
+            for(let i =0;i<exp.length;i++){
+                let char = exp[i];
+                if(!isNaN(char) ||char==="."){
+                    currentNumber += char;
+                }
+                else{
+                    let num = Number(currentNumber);
+                    if(currentOperator == "+"){
+                        result+=num;
+                    }
+                    else if(currentOperator == "-"){
+                        result-=num;
+                    }
+                    else if(currentOperator == "*"){
+                        result*=num;
+                    }
+                    else if(currentOperator == "/"){
+                        result/=num;
+                    }
+                    currentOperator = char;
+                    currentNumber = "";
+                }
+            }
+        
+        let num = Number(currentNumber);
+        if (currentOperator === "+") result += num;
+        else if (currentOperator === "-") result -= num;
+        else if (currentOperator === "*") result *= num;
+        else if (currentOperator === "/") result /= num;
+
+        document.querySelector(".result").innerHTML=(result);
+        concat = "";
+}
+               
+        
+
+        function clear(){
+            total = 0;
+            resultDiv.innerHTML=total;
+            total_m =1;
+            concat="";
+        }
+        
+
+    </script>
+    
+</body>
+</html>

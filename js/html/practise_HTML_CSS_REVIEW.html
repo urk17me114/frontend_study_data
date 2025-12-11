@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buttons</title>
+    <link rel="stylesheet" href="../styling/practise_style.css">
+
+</head>
+<body>
+    <!-- <button>click</button><br><br>
+    <button>Glen</button>
+    <button>Chocolate</button><br><br> -->
+    
+    <div class="para"></div>
+    <button class="cart">Add to cart</button><button class="buy">Buy now</button>
+
+    <script>
+        /* const a = "<p>hello world</p>";
+        const b = "<p>Today I went to the grocery store</p>";
+        document.querySelector(".para").innerHTML=`${a}
+        ${b}`; */
+        console.log("welcome");
+
+        /* Challenge Exercies */
+        let a = "<p>Adults Plain Cotton T-shirt</p>";
+        /* a= a.toUpperCase(); */
+        const b = "<p>Price: $7.99</p>";
+        document.querySelector(".para").innerHTML=`${a}
+        ${b}`;
+        document.querySelector(".cart").addEventListener("click",()=>{alert("added");});
+        document.querySelector(".buy").addEventListener("click",()=>{buyNow();});
+
+        function buyNow(){
+            alert("purchased");
+            console.log("Loading...");
+        }
+
+
+
+    </script>
+
+
+    
+</body>
+</html>
