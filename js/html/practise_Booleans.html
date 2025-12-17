@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boolean practise</title>
+</head>
+<body>
+    <!-- <script>
+        let hour=15;
+        const name ="Glen";
+        if(hour>6 && hour<12){
+            console.log(`good morning ${name}`);
+        }
+        else if(hour>13 && hour<17){
+            console.log(`good Afternoon ${name}`);
+        }
+        else{
+            console.log(`Goodnight ${name}`);
+        }
+
+        const age =4;
+        const isHoliday = true;
+        if((age<=6 || age>=65)&& isHoliday == false){
+            console.log("Discount");
+        }
+        else{
+            console.log("No Discount");
+        }
+
+
+ 
+ 
+
+
+        
+    </script> -->
+
+    <!-- Coin flip game -->
+     <button class="head">Heads</button>
+     <button class="tail">Tails</button>
+     <script>
+        function computerGuess(){
+        const randomNumber = Math.random();
+        let computerResult ="";
+        if(randomNumber>0.5){
+            computerResult = "Heads";
+        }
+        else{
+            computerResult="Tails";
+        }
+        return computerResult;
+    }
+
+        document.querySelector(".head").addEventListener("click",()=>{
+            guess("Heads");
+            
+        });
+        
+        document.querySelector(".tail").addEventListener("click",()=>{
+            guess("Tails");
+            
+        });
+
+        document.addEventListener("keydown",(event)=>{
+            if(event.key==="h"){
+                guess("Heads");
+            }
+        })
+        document.addEventListener("keydown",(event)=>{
+            if(event.key==="t"){
+                guess("Tails");
+            }
+        })
+
+        function guess(userGuess){
+            const computerResult = computerGuess(); //calling the variable from that function
+            if(userGuess===computerResult){
+                    console.log("You win");
+            }
+            else{
+                    console.log("You loose");
+        }
+        
+    }
+     </script>
+
+
+</body>
+</html>

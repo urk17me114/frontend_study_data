@@ -1,8 +1,6 @@
 
-  import {cart,addToCart} from "../data/cart.js"
+  import {cart} from "../data/cart.js"
   import {products} from "../data/products.js"
-  import { formatCurrency} from "./utils/money.js";
-  
         
         //Save the data
 /* const products = [
@@ -54,7 +52,7 @@
           </div>
 
           <div class="product-price">
-            $${formatCurrency(value.priceCents)}
+            $${(value.priceCents/100).toFixed(2)}
           </div>
 
           <div class="product-quantity-container">
@@ -95,31 +93,45 @@
 
 //put it on the webpage using DOM
 document.querySelector(".js-products-grid").innerHTML=productsHTML;
-
-
-
-function updateCartQuantity(){
-  let cartQuantity =0;
-
-    cart.forEach((value)=>{
-      cartQuantity+=value.quantity;
-      })
-  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
-  
-}
-updateCartQuantity();
 document.querySelectorAll(".js-add-to-cart").forEach((button)=>{
-  button.addEventListener("click",()=>{ 
-    const productID = button.dataset.productId;
-    const productName = button.dataset.productName;
-    
-    
-    addToCart(productID,productName);
-    updateCartQuantity();
-
-     
+  button.addEventListener("click",()=>{
+      quantityCheck(button);
 })});
     
+function quantityCheck(button){
+  alert("Added to cart");
+      const productID = button.dataset.productId; /* kebab case gets changed to camelCase (produt-id to productId)*/
+      const productName = button.dataset.productName; 
+      
+      /* Logic : Check the cart → if item exists, increase quantity in cart → otherwise add it in matchingItem.” */
+      let matchingItem;
+      
+      if (cart.forEach((value)=>{
+        if (productID===value.id){
+          matchingItem=value;
+
+        }
+  }));
+      
+      if(matchingItem){
+          matchingItem.quantity+=1;
+      }
+      else{
+        cart.push({
+          id: productID,
+          name:productName,
+          quantity:1
+        });
+      }
+
+      let cartQuantity =0;
+
+      cart.forEach((value)=>{
+        cartQuantity+=value.quantity;
+        })
+    document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+    console.log(cart);
+}
     
 
 
