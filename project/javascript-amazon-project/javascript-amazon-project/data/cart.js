@@ -3,19 +3,22 @@
 /* export const cart = []; */
 export let cart = JSON.parse(localStorage.getItem("key")); /* To convert string to array */
 
-/* if(!cart){
+if(!cart){
 cart = [
   
 {
   id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
   name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
-  quantity:1},
+  quantity:1,
+  deliveryOptionId: "1"
+  },
   {
   id: "3ebe75dc-64d2-4137-8860-1f5a963e534b",
   name: "6 Piece White Dinner Plate Set",
-  quantity:1
+  quantity:1,
+  deliveryOptionId: "2"
 }
-]} */
+]}
 
 /* To make it a module
 first export the variable that is to be used in other js
@@ -42,7 +45,8 @@ export function addToCart(productID,productName){
       cart.push({
         id: productID,
         name:productName,
-        quantity:1
+        quantity:1,
+        deliveryOptionId: "1"
       });
     }
     saveToStorage();
@@ -64,4 +68,17 @@ export function removeFromCart(product_id){
 
 function saveToStorage(){
   localStorage.setItem("key",JSON.stringify(cart));
+}
+
+export function updateDeliveryOption(productID,deliveryOptionId){
+  let matchingItem;
+  cart.forEach((value)=>{
+    if (productID===value.id){
+        matchingItem=value;
+
+      }
+});
+  
+matchingItem.deliveryOptionId=deliveryOptionId;
+saveToStorage();
 }
