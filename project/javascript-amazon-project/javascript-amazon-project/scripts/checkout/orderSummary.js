@@ -4,6 +4,7 @@ import { formatCurrency} from "../utils/money.js";
 /* for dayjs the syntax is different as it is export default dayjs() in the ext file */
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js" 
 import {deliveryOptions} from "../../data/deliveryOptions.js";
+import { renderPaymentSummary } from "./paymentSummary.js";
 
 
 /* esm vertion of external library means using an export tag. when esm is not there in 
@@ -143,7 +144,7 @@ export function renderOrderSummary(){
       const {productId,deliveryOptionId} = element.dataset; 
       updateDeliveryOption(productId,deliveryOptionId);
       renderOrderSummary(); //calling a function inside a fn called recursion
-      
+      renderPaymentSummary();
     });});
   }
   
