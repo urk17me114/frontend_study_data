@@ -90,6 +90,7 @@ export function renderOrderSummary(){
           document.querySelector(`.js-cart-item-container-${productID}`).remove();
           /* console.log(container); */
           updateCartQuantity();
+          renderPaymentSummary();
           
           })
       });
