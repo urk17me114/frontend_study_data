@@ -1,29 +1,36 @@
 
 
 /* export const cart = []; */
-export let cart = JSON.parse(localStorage.getItem("key")); /* To convert string to array */
-
-if(!cart){
-cart = [
-  
-{
-  id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
-  name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
-  quantity:1,
-  deliveryOptionId: "1"
-  },
-  {
-  id: "3ebe75dc-64d2-4137-8860-1f5a963e534b",
-  name: "6 Piece White Dinner Plate Set",
-  quantity:1,
-  deliveryOptionId: "2"
-}
-]}
+export let cart;
 
 /* To make it a module
 first export the variable that is to be used in other js
 import the variable using the syntax import {variable name} from "file location"
 in html file in script like how u define classes give type="module" */
+
+
+export function loadFromStorage(){
+  cart = JSON.parse(localStorage.getItem("key")); /* To convert string to array */
+
+  if(!cart){
+  cart = [
+    
+  {
+    id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
+    name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
+    quantity:1,
+    deliveryOptionId: "1"
+    },
+    {
+    id: "3ebe75dc-64d2-4137-8860-1f5a963e534b",
+    name: "6 Piece White Dinner Plate Set",
+    quantity:1,
+    deliveryOptionId: "2"
+  }
+  ]}
+}
+
+loadFromStorage();
 
 
 export function addToCart(productID,productName){
