@@ -5,6 +5,9 @@ import { formatCurrency } from "../../scripts/utils/money.js";
 
 
 export function renderPaymentSummary(){
+    
+    const container = document.querySelector(".js-payment-summary");
+    if (!container) return;  // <-- prevent TypeError in tests
     let productPriceCents = 0;
     let shippingPriceCents = 0;
     let totalBeforeTax = 0;
@@ -29,7 +32,7 @@ export function renderPaymentSummary(){
     </div>
 
     <div class="payment-summary-row">
-    <div>Items (3):</div>
+    <div>Items (${cart.length}):</div>
     <div class="payment-summary-money">$${formatCurrency(productPriceCents)}</div>
     </div>
 
@@ -58,7 +61,7 @@ export function renderPaymentSummary(){
     </button>
     `
 
-    document.querySelector(".js-payment-summary").innerHTML=paymentSummaryHTML;
+    container.innerHTML=paymentSummaryHTML;
     console.log("Cart contents:", cart);
 
 

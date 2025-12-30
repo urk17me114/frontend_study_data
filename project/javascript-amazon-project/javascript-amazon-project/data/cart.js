@@ -70,6 +70,8 @@ export function removeFromCart(product_id){
   saveToStorage();
 }
 
+
+
 //Here we need to add a local storage as the variable gets resetted when a new page is loaded
 //Local storage can only save strings
 

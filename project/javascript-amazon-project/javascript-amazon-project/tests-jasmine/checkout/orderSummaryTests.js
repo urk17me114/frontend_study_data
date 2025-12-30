@@ -42,22 +42,23 @@ describe("TestSuite: OrderSummary",()=>{
         });
 
     it("remove a product",()=>{
-                document.querySelector(`.js-delete-link-${"3ebe75dc-64d2-4137-8860-1f5a963e534b"}`).click();
+                document.querySelector(`.js-delete-link[data-product-id="e43638ce-6aa0-4b85-b27f-e1d07eb678c6"]`).click();
                 expect(
                 
                 document.querySelectorAll(".cart-item-container").length).toEqual(1);
                 
                 
                 expect(
-                document.querySelector(`.js-cart-item-container-${"3ebe75dc-64d2-4137-8860-1f5a963e534b"}`)).toBeNull();
+                document.querySelector(`.js-cart-item-container-${"3ebe75dc-64d2-4137-8860-1f5a963e534b"}`)).not.toEqual(null);
         
                 expect(
-                document.querySelector(`.js-cart-item-container-${"e43638ce-6aa0-4b85-b27f-e1d07eb678c6"}`)).not.toBeNull();
+                document.querySelector(`.js-cart-item-container-${"e43638ce-6aa0-4b85-b27f-e1d07eb678c6"}`)).toEqual(null);
+        
                 
                 expect(
-                cart.length).toEqual(1);
+                cart.length).toBe(1);
 
-                expect(cart[0].id).toEqual("e43638ce-6aa0-4b85-b27f-e1d07eb678c6")
+                expect(cart[0].id).toEqual("3ebe75dc-64d2-4137-8860-1f5a963e534b")
         
             })
                 
