@@ -3,7 +3,7 @@
 
 function Cart(localStorageKey){
     const cart={
-    cartItems :  undefined,
+    cartItems :  [],
     
  
 loadFromStorage(){ //this function loadFromStorage inside an object cart is called method
