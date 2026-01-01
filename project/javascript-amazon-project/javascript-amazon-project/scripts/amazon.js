@@ -3,6 +3,7 @@
   import {products} from "../data/products.js"
   import { formatCurrency} from "./utils/money.js";
   
+  
 
         
         //Save the data
@@ -48,7 +49,7 @@
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${(value.rating.stars)*10}.png">
+              src="${value.getStarsUrl()}">
             <div class="product-rating-count link-primary">
               ${value.rating.count}
             </div>
