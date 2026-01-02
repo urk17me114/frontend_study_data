@@ -771,3 +771,11 @@ class Clothing extends Product{//here clothing inherits all the methods and ppts
   
   console.log(products);
 
+
+//Try exercises with this to learn more about .call method
+  /* function toPrint(){
+    console.log(this);
+  }
+  toPrint();
+
+toPrint.call("Hello");  */
