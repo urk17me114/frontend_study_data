@@ -32,7 +32,10 @@
     }
 ];  */
 
-    //Generate the HTML
+    
+//Here in value.extraInfoHTML() This is called polymorphism as we dont know which class (parent /child) is used here
+
+//Generate the HTML
     
     let productsHTML = "";
     products.forEach((value,index)=>{
@@ -73,6 +76,8 @@
               <option value="10">10</option>
             </select>
           </div>
+
+          ${value.extraInfoHTML()} 
 
           <div class="product-spacer"></div>
 
