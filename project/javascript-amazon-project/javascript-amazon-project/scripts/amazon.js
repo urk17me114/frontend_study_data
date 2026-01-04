@@ -1,11 +1,20 @@
 
+ 
+  
   import {cart,addToCart} from "../data/cart.js"
-  import {products} from "../data/products.js"
+  import {products,loadProducts} from "../data/products.js"
   import { formatCurrency} from "./utils/money.js";
   
   
-
-        
+  
+  /* Here loadProducts will send a request to the backend but it takes time for the request 
+  to send and comeback. SO here the request have been send but the response have not been 
+  loaded yet and products array is still empty. So we need to wait till the response comeback
+  and then run the rest of the code starting from let productsHTML = ""; 
+  For this we use a callback function*/
+  
+  loadProducts(() => {renderProductsGrid()}); 
+      
         //Save the data
 /* const products = [
     {   image:"images/products/athletic-cotton-socks-6-pairs.jpg",
@@ -32,7 +41,7 @@
     }
 ];  */
 
-    
+function renderProductsGrid(){   
 //Here in value.extraInfoHTML() This is called polymorphism as we dont know which class (parent /child) is used here
 
 //Generate the HTML
@@ -126,6 +135,7 @@ document.querySelectorAll(".js-add-to-cart").forEach((button)=>{
 
      
 })});
+};
     
     
 

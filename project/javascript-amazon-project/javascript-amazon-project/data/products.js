@@ -1,3 +1,5 @@
+
+
   export function getProduct(productID){
     let matchingProduct;   //if the productID in cart matches with the id of products then store all the respective
         products.forEach((product)=>{   //details into a reference called matchingProduct
@@ -100,8 +102,12 @@ class Clothing extends Product{//here clothing inherits all the methods and ppts
 
     console.log(tshirt);
  */
-  //map loops through an array and for each value it runs a function
-  export const products = [
+  
+  
+  
+  
+    //map loops through an array and for each value it runs a function
+  /* export const products = [
     {
       id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
       image: "images/products/athletic-cotton-socks-6-pairs.jpg",
@@ -769,13 +775,65 @@ class Clothing extends Product{//here clothing inherits all the methods and ppts
 
   
   
-  console.log(products);
+  console.log(products); */
 
 
-//Try exercises with this to learn more about .call method
+  //To access the data from the backend (alt option)
+
+  export let products = [];
+  /* A callback is a function you give to another function,
+so it can be called later when something finishes. */
+  
+export function loadProducts(callback){//call back is connected to loadProducts(renderProductsGrid); in amazon.js
+    const xhr = new XMLHttpRequest();
+    
+    xhr.addEventListener("load",()=>{
+      products = JSON.parse(xhr.response) //converted json string to array
+      .map((productDetails)=>{
+      if(productDetails.type=="clothing"){
+        return new Clothing(productDetails);
+      }
+      return new Product( productDetails);
+    });
+    console.log(products); 
+    
+    callback();
+  
+  })
+    
+    xhr.open("GET","https://supersimplebackend.dev/products");
+    xhr.send();
+  }
+  
+
+
+  //Try exercises with this to learn more about .call method
   /* function toPrint(){
     console.log(this);
   }
   toPrint();
 
 toPrint.call("Hello");  */
+
+/* Try this to learn about callback method
+
+function greet(callback) {
+  console.log("Hello");
+  callback();
+}
+
+function ask(callback) {
+  console.log("How are you?");
+  callback();
+}
+
+function bye() {
+  console.log("Bye");
+}
+
+greet(() => {
+  ask(() => {
+    bye();
+  });
+}); */
+
