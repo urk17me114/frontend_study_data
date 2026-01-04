@@ -91,3 +91,19 @@ export function updateDeliveryOption(productID,deliveryOptionId){
 matchingItem.deliveryOptionId=deliveryOptionId;
 saveToStorage();
 }
+
+
+export function loadCart(callback){//call back is connected to loadProducts(renderProductsGrid); in amazon.js
+    const xhr = new XMLHttpRequest();
+    
+    xhr.addEventListener("load",()=>{
+      
+    console.log(xhr.response); 
+    
+    callback();
+  
+  })
+    
+    xhr.open("GET","https://supersimplebackend.dev/cart");
+    xhr.send();
+  }

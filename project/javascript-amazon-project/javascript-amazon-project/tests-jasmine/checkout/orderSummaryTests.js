@@ -2,9 +2,15 @@
 //Integration Tests
 import {renderOrderSummary} from "../../scripts/checkout/orderSummary.js";
 import {loadFromStorage,cart} from "../../data/cart.js";
+import {loadProducts} from "../../data/products.js";
 
 describe("TestSuite: OrderSummary",()=>{
-    
+    beforeAll((done)=>{ //done function asks here for the code to wait and execute only after loading loadProducts
+        loadProducts(()=>{
+            done();
+        });
+       
+    });
     beforeEach(()=>{
         document.querySelector(".js-test-container").innerHTML=`
         <div class="js-order-summary"></div>

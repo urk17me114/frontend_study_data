@@ -806,7 +806,41 @@ export function loadProducts(callback){//call back is connected to loadProducts(
   }
   
 
+  //promises is a builtin class that is an alt option to callback
+  
+  /* function loadProducts1(callback){
+    console.log("moidutti")
+    callback();
+  };
+  function nextStep(){
+    console.log("next step")
+    
+  };
 
+  new Promise((resolve)=>{
+      loadProducts1(()=>{
+        resolve();
+      });
+    }).then(()=>{
+      nextStep();
+    });
+   */
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   //Try exercises with this to learn more about .call method
   /* function toPrint(){
     console.log(this);
