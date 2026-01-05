@@ -781,8 +781,8 @@ class Clothing extends Product{//here clothing inherits all the methods and ppts
   //To access the data from the backend (alt option)
 
   export let products = [];
-  /* A callback is a function you give to another function,
-so it can be called later when something finishes. */
+  // A callback is a function you give to another function,
+//so it can be called later when something finishes. 
   
 export function loadProducts(callback){//call back is connected to loadProducts(renderProductsGrid); in amazon.js
     const xhr = new XMLHttpRequest();
@@ -825,7 +825,27 @@ export function loadProducts(callback){//call back is connected to loadProducts(
       nextStep();
     });
    */
-  
+
+
+
+    //An alternate option to using XMLHttpRequest is fetch and fetch uses promises
+
+    export function loadProductsFetch(){
+      const promise = fetch("https://supersimplebackend.dev/products").then((response)=>{
+        return response.json();
+      }).then((productsData)=>{
+        products = productsData.map((productDetails)=>{
+          if(productDetails.type=="clothing"){
+        return new Clothing(productDetails);
+      }
+      return new Product( productDetails);
+    
+        });
+        console.log("load Products")
+      });
+      return promise;
+    }
+    
   
   
   
