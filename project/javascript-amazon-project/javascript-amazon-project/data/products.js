@@ -778,6 +778,10 @@ class Clothing extends Product{//here clothing inherits all the methods and ppts
   console.log(products); */
 
 
+  
+  
+  
+  
   //To access the data from the backend (alt option)
 
   export let products = [];
@@ -798,14 +802,22 @@ export function loadProducts(callback){//call back is connected to loadProducts(
     console.log(products); 
     
     callback();
-  
   })
-    
+
+    /* xhr.addEventListener("error",()=>{//we usually setup a separtae callback just for errors
+      console.log("unexpected error . Please try again later");//error handling
+    }); */
+
     xhr.open("GET","https://supersimplebackend.dev/products");
     xhr.send();
   }
   
 
+  
+  
+  
+  
+  
   //promises is a builtin class that is an alt option to callback
   
   /* function loadProducts1(callback){
@@ -828,6 +840,8 @@ export function loadProducts(callback){//call back is connected to loadProducts(
 
 
 
+    
+    
     //An alternate option to using XMLHttpRequest is fetch and fetch uses promises
 
     export function loadProductsFetch(){
@@ -842,7 +856,9 @@ export function loadProducts(callback){//call back is connected to loadProducts(
     
         });
         console.log("load Products")
-      });
+      }).catch(()=>{
+        console.log("unexpected errorrrrr . Please try again later");//error handling
+      })
       return promise;
     }
     

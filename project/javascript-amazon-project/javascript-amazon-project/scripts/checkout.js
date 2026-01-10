@@ -1,7 +1,7 @@
 import {renderOrderSummary} from "../scripts/checkout/orderSummary.js";
 import {renderPaymentSummary} from "../scripts/checkout/paymentSummary.js";
 /* import "../data/backend-practice.js"; */
-import { loadProducts,loadProductsFetch } from "../data/products.js"; 
+import { loadProducts,loadProductsFetch } from "../data/products.js"; //loadProductsFetch to be imported
 import { loadCart } from "../data/cart.js"; 
 
 
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }); */
 
 
-    /* Promise.all([ //using loadProductsFetch
+   /*  Promise.all([ //using loadProductsFetch
       loadProductsFetch(),
       new Promise((resolve)=>{
         loadCart(()=>{
@@ -72,34 +72,81 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
  
+    
     //asyncawait  await let us write asynchronous code like normal code
       async function loadPage(){ //async makes a function return a promise 
+        try{
+          //throw "error1" // behaves like all the loc inside tryblock is commented
+        await loadProductsFetch(); //syntax when not using a callback function       
         
-        //await loadProductsFetch(); syntax when not using a callback function
-
-        const a = await new Promise((resolve)=>{ //syntax when using a callback function
-          loadProducts(()=>{
-            resolve("value 6");
+        await new Promise((resolve)=>{
+          loadCart(()=>{
+            resolve(); //here the value of a is passed onto b using resolve
           });
-        });
+        })
+          renderOrderSummary();
+          renderPaymentSummary(); 
+      } catch(error){ //try catch syntax when the first fn is a fetch fn
+          console.log("errrrr");
+          console.log(error);//the value error1 is stored in error
+        }
+        //console.log(b);
+
+        }
+        loadPage();
+
+
+
+
+
+
+
+        /* 
+        //To be figured out later as it is not working
+        //try catch syntax is different when a call back is used
+      async function loadPage(){ //async makes a function return a promise
+       const a = await new Promise((resolve)=>{ //syntax when using a callback function
+          loadProducts(()=>{
+            try{
+            resolve("value 6")
+          }
+         catch(error)  { // error callback
+        console.log("errrrrrrrr");
+          };
+        })});
         console.log(a);
         
-       const b =  await new Promise((resolve)=>{
+        const b = await new Promise((resolve)=>{
           loadCart(()=>{
             resolve(a); //here the value of a is passed onto b using resolve
           });
-        });
-        console.log(b);
+        })
+          
+          renderOrderSummary();
+          renderPaymentSummary(); 
+          console.log(b);
+      } 
 
-        renderOrderSummary();
-        renderPaymentSummary();
-      }
-      loadPage();
+
+        
+              loadPage(); */
  
  
   });
 
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   /* //we cant use await inside a normal function
     async function outerFunction(){
       console.log("hello");

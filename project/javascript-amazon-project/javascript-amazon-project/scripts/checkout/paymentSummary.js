@@ -2,6 +2,7 @@ import {cart} from "../../data/cart.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
 import { formatCurrency } from "../../scripts/utils/money.js"; 
+import {addOrder} from "../../data/orders.js"
 
 
 export function renderPaymentSummary(){
@@ -56,13 +57,69 @@ export function renderPaymentSummary(){
     <div class="payment-summary-money">$${formatCurrency(totalCents)}</div>
     </div>
 
-    <button class="place-order-button button-primary">
+    <button class="place-order-button button-primary js-place-order">
     Place your order
     </button>
     `
 
     container.innerHTML=paymentSummaryHTML;
     console.log("Cart contents:", cart);
+
+    /* There are 4 types of requests
+    GET: get something from the backend
+    POST: create something
+    PUT: update something
+    DELETE: delete something
+     */
+    
+    document.querySelector(".js-place-order").addEventListener("click", async () => {
+    const button = document.querySelector(".js-place-order");
+      
+        /* button.disabled = true;
+
+        if (!cart || !Array.isArray(cart) || cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        } */
+
+        const payload = {
+            cart: cart.map(item => ({//as per the backend it is productId and not id
+                productId: item.id,
+                quantity: item.quantity,
+                deliveryOptionId: item.deliveryOptionId
+            }))
+        };
+
+        const response = await fetch("https://supersimplebackend.dev/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+       /*  if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Server error ${response.status}: ${errText}`);
+        } */
+
+        const order = await response.json();
+        console.log("Order successful:", order);
+         addOrder(order);
+        /* // ✅ Clear cart safely
+        cart.length = 0;              // clear array without reassigning
+        localStorage.removeItem("key"); */
+/*
+    } catch (err) {
+        console.error("Failed to place order:", err);
+        alert("Failed to place order. Check console for details.");
+    } finally {
+        button.disabled = false;
+    } */
+
+        window.location.href = "orders.html"; //this will replace everything after 127.0.0.1:5500/ from checkout.html to orders.html
+});
+
+
+
 
 
 }

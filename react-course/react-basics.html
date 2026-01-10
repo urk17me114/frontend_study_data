@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    
+    
+    
+    <!-- 
+    In react we dont use normal js instead we use an enhance version of the js called JSX or JSXML
+    The advantage is that we can write HTML directly in js code -->
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    
+    
+    
+    <!-- Babel is an ext library that complies and translates 
+                                  other languages into js --> 
+    <script type="text/babel"> 
+        /* const button = <button>submit</button>
+        const para = <p>Helooooooooooo</p> */
+        const container = document.querySelector('.js-container');
+       ;
+    
+    //Displaying multiple eements on a container using react
+    const div = <div>
+                   <button>submit</button>
+                   <p>Helooooooooooo</p>
+
+                </div>
+    ReactDOM.createRoot(container).render(div);
+    
+    </script>
+  </body>
+</html>
