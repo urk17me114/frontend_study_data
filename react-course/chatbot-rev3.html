@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    
+    
+    
+    <!-- 
+    In react we dont use normal js instead we use an enhance version of the js called JSX or JSXML
+    The advantage is that we can write HTML directly in js code -->
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    
+    
+    
+    <!-- Babel is an ext library that complies and translates 
+                                  other languages into js --> 
+    <script type="text/babel"> 
+    function ChatInput({chatMessage,setChatMessage}){ 
+            const [inputText,setInputText]=React.useState("") 
+            
+            function saveInputText(event){ 
+              setInputText(event.target.value)//here its different as it is a string 
+
+            }
+
+            function sendMessage(){
+                setChatMessage([...chatMessage,{
+                            message: inputText,
+                            imgsrc: "user",
+                            id:crypto.randomUUID()
+                        } //this takes the value in this array(old array) and copies them to new array setChatMessages
+                    ])
+                    setInputText("");
+            }
+            
+                return( /* Here value is called a controlled input */
+                <>    
+                    <input placeholder = "Send a message to chatbot" onChange = {saveInputText} value={inputText}></input>
+                    <button onClick = {sendMessage}>Send</button>
+                </>
+                );
+                
+    } 
+
+
+    function ChatMessage({message,imgsrc}){
+            
+          
+             return(<div>   
+                        {imgsrc === "robot" && <img src= "images/robot_img.png" width = "30"></img>}
+                        {message} 
+                        {imgsrc === "user" && <img src= "images/user_img.png" width = "30"></img>}
+                        
+                    </div>);
+    } 
+                    
+        
+    
+    function ChatMessages({chatMessage}){     
+            console.log(chatMessage)
+            return ( <>
+                
+                {chatMessage.map((chatMessage)=>{return (<ChatMessage       message = {chatMessage.message} 
+                                                                            imgsrc = {chatMessage.imgsrc}
+                                                                            key = {chatMessage.id}/>
+                                                        );} ) }</>) 
+    }
+                                                
+                                   
+    
+    function App(){
+
+            const [chatMessage,setChatMessage] =  React.useState([{ //This returns an array 
+                    message:"Hi",
+                    imgsrc:"user",
+                    id: "id1"
+                },
+                {
+                    message:"How can I help you",
+                    imgsrc:"robot",
+                    id: "id2"
+            },{
+                    message:"I am fine.. Whats the weather today",
+                    imgsrc:"user",
+                    id: "id3"
+                },
+                {
+                    message:"It is sunny",
+                    imgsrc:"robot",
+                    id: "id4"
+            }]);
+             
+                return( <>
+                        <ChatInput  
+                            chatMessage = {chatMessage}
+                            setChatMessage = {setChatMessage}></ChatInput>
+                        <ChatMessages chatMessage = {chatMessage}/>
+                        
+                    </>)
+    }/* creating our own html element */
+    
+        
+    
+    const container = document.querySelector(".js-container");
+    ReactDOM.createRoot(container).render(<App />);
+    
+    </script>
+  </body>
+</html>
+
+
+<!-- Memorize patterns, not code
+
+Don’t memorize lines — memorize patterns:
+
+Pattern 1: State
+const [state, setState] = useState(initialValue);
+
+Pattern 2: Passing state down
+<Child state={state} setState={setState} />
+
+Pattern 3: Updating array state
+setState(prev => [...prev, newItem]);
+
+Pattern 4: Rendering lists
+array.map(item => <Component key={item.id} />)
+
+
+If you know these 4 patterns, you can rebuild 80% of React apps.
+ -->

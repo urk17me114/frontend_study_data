@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot Practise</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    
+    
+    
+    <!-- 
+    In react we dont use normal js instead we use an enhance version of the js called JSX or JSXML
+    The advantage is that we can write HTML directly in js code -->
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    
+    
+
+    <!-- Let me create the template first ie function MessageList({message , imgsrc}).”
+    Test the child with hardcoded data <MessageList message = "Hi" imgsrc = "user"/>
+      -->
+    
+   <script type = "text/babel">
+
+    function ChatInputContainer(){
+        return(<>
+                    <input placeholder = "Send a message to chatbot"></input>
+                    <button>Send</button>
+        </>
+    );}
+
+    
+    function MessageList({message , imgsrc}){ //This is called props destructuring
+        return(
+        <div>
+            {imgsrc === "robo" && <img src="images/robot_img.png" width = "30" />}
+            {message}
+            {imgsrc === "user" && <img src="images/user_img.png" width = "30" />}
+        </div>);
+
+    }
+    
+    
+    
+    function Application(){
+        return( //components are reusable templates,props are input data
+        <>
+            <ChatInputContainer />
+            <MessageList message = "Hi" imgsrc = "user"/>
+            <MessageList message = "How can i help you" imgsrc = "robo"/>
+            <MessageList message = "whats the weather today" imgsrc = "user"/>
+            <MessageList message = "Its cold" imgsrc = "robo"/>
+        </>
+        );
+    }
+    
+
+    document.querySelector(".js-container");
+    ReactDOM.createRoot(document.querySelector(".js-container")).render(<Application />);
+    
+    </script>
+  </body>
+</html>
+
+
