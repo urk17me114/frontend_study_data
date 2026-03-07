@@ -1,0 +1,257 @@
+
+<!-- updater function is used to update the state and html 
+ 
+    state is the data that changes over time and is connected to html
+    
+    lifting the state up lets us share the state between the componenets-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  
+
+    <style>
+        .body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            
+        }
+        .send-button{
+            color: white;
+            background-color: rgb(25,135,84);
+            width: 4rem;
+            height: 2.5rem;
+            border-radius: 0.5rem ;
+            padding: 15px,15px,10px,10px;
+            border: none;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            
+            
+        }
+
+               
+        .chat-input{
+            
+            flex-grow: 1;
+            height: 2.2rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            padding-left: 20px;
+            
+            
+            
+        }
+
+        .chat-input-container{
+            display: flex;
+            margin-bottom: 40px;
+            margin-top: 20px;
+            flex-grow: 1;
+            
+            
+        }
+
+        
+        .app-container{
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            height: 100vh;
+            
+           
+            
+        }
+
+        .chat-message-user{
+            margin-top: 15px;
+            display: flex;
+            justify-Content: flex-end;
+            align-items: start;
+        }
+
+        .chat-message{
+            background-color: antiquewhite;
+            border: antiquewhite;
+            padding: 0.5rem;
+            margin-right: 10px;
+            border-radius: 1rem;
+            max-width: 300px;
+        }
+
+        .chat-message-container{
+            flex-grow: 1;
+            overflow: scroll;
+            scrollbar-width: none; /* To make thescroll bar look disappear */
+        }
+
+        
+    </style>
+    </head>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    
+    
+    <script src="https://unpkg.com/supersimpledev/Chatbot.js"></script>
+    
+    <!-- 
+    In react we dont use normal js instead we use an enhance version of the js called JSX or JSXML
+    The advantage is that we can write HTML directly in js code -->
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    
+    
+    
+    
+    <!-- Babel is an ext library that complies and translates 
+                                  other languages into js --> 
+    
+    <!-- useEffect,useState etc are called hooks -->
+    <script type="text/babel"> 
+    function ChatInput({chatMessage,setChatMessage}){ 
+            const [inputText,setInputText]=React.useState("") 
+            
+            function saveInputText(event){ 
+              setInputText(event.target.value)//here its different as it is a string 
+
+            }
+
+            function sendMessage(){
+                
+                const response = Chatbot.getResponse(inputText);
+                setChatMessage([...chatMessage,{
+                            message: inputText,
+                            imgsrc: "user",
+                            id:crypto.randomUUID()
+                        },{
+                            message: response,
+                            imgsrc: "robot",
+                            id:crypto.randomUUID()
+                        } //this takes the value in this array(old array) and copies them to new array setChatMessages
+                    ]);
+                    
+                    
+                    //console.log(response);
+                    setInputText("");
+            }
+            
+                return( /* Here value is called a controlled input */
+                <div className = "chat-input-container">    
+                    <input className = "chat-input" placeholder = "Send a message to chatbot" onChange = {saveInputText} value={inputText}></input>
+                    <button onClick = {sendMessage} className = "send-button">Send</button>
+                </div>
+                );
+                
+    } 
+
+
+    function ChatMessage({message,imgsrc}){
+            
+          
+             return(<div className = {imgsrc==="user" ? "chat-message-user":"chat-message-robot" }>   
+                        {imgsrc === "robot" && <img src= "images/robot_img.png" width = "30" ></img>}
+                        <div className = "chat-message">{message}</div> 
+                        {imgsrc === "user" && <img src= "images/user_img.png" width = "30" ></img>}
+                        
+                    </div>);
+    } 
+                    
+        
+    
+    function ChatMessages({chatMessage}){ 
+        
+       /*  ref is a container with special react features. It can save a HTML element from the component inside the ref container */
+        const chatMessagesRef =  React.useRef(null);     
+
+
+        /* useEffect lets us run some code after the component is created or updated */
+            React.useEffect(()=>{const containerElem = chatMessagesRef.current
+                                     if(containerElem){
+                containerElem.scrollTop = containerElem.scrollHeight; }
+            },[chatMessage]);
+           
+            
+                 /* here the array controls when the useEffect is to be executed */
+            
+            return ( <div className = "chat-message-container" 
+                        ref = {chatMessagesRef}>
+
+                        {chatMessage.length === 0 && (
+                        <div style={{ textAlign: "center", marginTop: "20px", color: "#666" }}>
+                        Welcome to the chatbot project! Send a message using the textbox below.
+                        </div>
+                    )}
+                
+                {chatMessage.map((chatMessage)=>{return (<ChatMessage        message = {chatMessage.message} 
+                                                                            imgsrc = {chatMessage.imgsrc}
+                                                                            key = {chatMessage.id}/>
+                                                        );} ) }</div>) 
+    }
+                                                
+                                   
+    
+    function App(){
+
+            const [chatMessage,setChatMessage] =  React.useState([/* { //This returns an array 
+                    message:"Hi",
+                    imgsrc:"user",
+                    id: "id1"
+                },
+                {
+                    message:"How can I help you",
+                    imgsrc:"robot",
+                    id: "id2"
+            },{
+                    message:"I am fine.. Whats the weather today",
+                    imgsrc:"user",
+                    id: "id3"
+                },
+                {
+                    message:"It is sunny",
+                    imgsrc:"robot",
+                    id: "id4"
+            } */]);
+             
+                return( <div className = "app-container">
+                        <ChatMessages className = "ChatMessages" chatMessage = {chatMessage}/>
+                        <ChatInput 
+                            chatMessage = {chatMessage}
+                            setChatMessage = {setChatMessage}></ChatInput>
+                    </div>)
+    }/* creating our own html element */
+    
+        
+    
+    const container = document.querySelector(".js-container");
+    ReactDOM.createRoot(container).render(<App />);
+    
+    </script>
+  </body>
+</html>
+
+
+<!-- Memorize patterns, not code
+
+Don’t memorize lines — memorize patterns:
+
+Pattern 1: State
+const [state, setState] = useState(initialValue);
+
+Pattern 2: Passing state down
+<Child state={state} setState={setState} />
+
+Pattern 3: Updating array state
+setState(prev => [...prev, newItem]);
+
+Pattern 4: Rendering lists
+array.map(item => <Component key={item.id} />)
+
+
+If you know these 4 patterns, you can rebuild 80% of React apps.
+ -->

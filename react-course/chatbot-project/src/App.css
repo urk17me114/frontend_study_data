@@ -1,0 +1,73 @@
+
+/* The styling for the app goes onto the app.css */
+
+        .send-button{
+            color: white;
+            background-color: rgb(25,135,84);
+            width: 4rem;
+            height: 2.5rem;
+            border-radius: 0.5rem ;
+            padding: 15px,15px,10px,10px;
+            border: none;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            
+            
+        }
+
+               
+        .chat-input{
+            
+            flex-grow: 1;
+            height: 2.2rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            padding-left: 20px;
+            
+            
+            
+        }
+
+        .chat-input-container{
+            display: flex;
+            margin-bottom: 40px;
+            margin-top: 20px;
+            flex-grow: 1;
+            
+            
+        }
+
+        
+        .app-container{
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            height: 100vh;
+            
+           
+            
+        }
+
+        .chat-message-user{
+            margin-top: 15px;
+            display: flex;
+            justify-Content: flex-end;
+            align-items: start;
+        }
+
+        .chat-message{
+            background-color: antiquewhite;
+            border: antiquewhite;
+            padding: 0.5rem;
+            margin-right: 10px;
+            border-radius: 1rem;
+            max-width: 300px;
+        }
+
+        .chat-message-container{
+            flex-grow: 1;
+            overflow: scroll;
+            scrollbar-width: none; /* To make thescroll bar look disappear */
+        }
+

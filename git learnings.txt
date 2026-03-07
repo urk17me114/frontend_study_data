@@ -28,3 +28,44 @@ To ignore certain files from being added to the git version add a file called .g
 .gitignore give the name of the file with extension that is to be ignored
 
 cmd:	 Remove-Item .git -Recurse -Force
+
+In cmd of VScode (make directory) mkdir <filename> to create a folder
+In cmd of VScode to check for the file path it is pwd(print working directory)
+
+React setup:
+npm install supersimpledev
+npx create-vite@6.5.0
+ Select a framework:
+│  React
+│
+◇  Select a variant:
+│  JavaScript
+
+PS D:\FRONTEND LEARNINGS\react-course> cd chatbot-project
+PS D:\FRONTEND LEARNINGS\react-course\chatbot-project> pwd
+
+Path
+----
+D:\FRONTEND LEARNINGS\react-course\chatbot-project
+
+
+PS D:\FRONTEND LEARNINGS\react-course\chatbot-project> npm install //This installs all the packages in package.json in the chatbot-project
+
+added 202 packages, and audited 203 packages in 20s
+
+32 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+ D:\FRONTEND LEARNINGS\react-course\chatbot-project> npm run dev
+
+> chatbot-project@0.0.0 dev
+> vite
+
+
+  VITE v6.4.1  ready in 768 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
