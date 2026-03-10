@@ -69,3 +69,5 @@ found 0 vulnerabilities
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
   ➜  press h + enter to show help
+Routing creates multiple pages in react
+Routing lets us create multiple pages using a single HTML File
