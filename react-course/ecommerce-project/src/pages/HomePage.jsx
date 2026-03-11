@@ -1,19 +1,29 @@
 import {Header} from '../assets/components/Header.jsx'
 import './HomePage.css'
 import {products} from '../../starting-code/data/products.js'
+import axios from "axios"
 
 
 
 export function HomePage(){
     
-    //fetch is asynchronous so u have to use then
+    /* //fetch is asynchronous so u have to use then
     //response .json() is asynchronous so u have to use then
+    
+    
+    //axios is a cleaner way to make requests to the backend
     fetch('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
-        response.json().then((data)=>{
+        return response.json()}).then((data)=>{
             console.log(data);
         })
 
-    }) // To fetch the data from the backend
+     // To fetch the data from the backend */
+
+
+     axios.get('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
+        
+            console.log(response.data); /* here data is the inbiult ppty of axios */
+        })
     
     return(
     <>    
