@@ -1,3 +1,5 @@
+/* In react router we use link to intead of a href. this avoids reloading of pages and hence different pages renders quickly */
+
 import {Link} from "react-router" /* Link component helps us to go to anotherpage without reloading */
 import "./header.css"
 
