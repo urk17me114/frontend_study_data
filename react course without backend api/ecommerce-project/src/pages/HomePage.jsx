@@ -5,16 +5,6 @@ import {products} from '../../starting-code/data/products.js'
 
 
 export function HomePage(){
-    
-    //fetch is asynchronous so u have to use then
-    //response .json() is asynchronous so u have to use then
-    fetch('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
-        response.json().then((data)=>{
-            console.log(data);
-        })
-
-    }) // To fetch the data from the backend
-    
     return(
     <>    
         <title>Ecommerce Project</title>

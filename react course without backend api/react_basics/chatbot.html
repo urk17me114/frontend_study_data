@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    
+    
+    
+    <!-- 
+    In react we dont use normal js instead we use an enhance version of the js called JSX or JSXML
+    The advantage is that we can write js code directly in HTML  -->
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    
+    
+    
+    <!-- Babel is an ext library that compiles and translates 
+                                  other languages into js --> 
+    <script type="text/babel"> //only used when a single HTML filr is there in the whole project as it make it slow
+        function ChatInput(){  //use Pascal Case as during component elemnt in html requires PascalCase 
+            return(
+            <>    
+                <input placeholder = "Send a message to chatbot" ></input>
+                <button>Send</button>
+            </>
+            );
+        }  /* react uses fragment to group elements */
+
+
+        function ChatMessage({message,imgsrc}){ //better way of destructuring called props
+            
+            /* const message = props.message; 
+            const imgsrc = props.imgsrc; */
+
+            //const {message,imgsrc} = props; //This is called destructuring
+
+            /* if(imgsrc==="robot"){
+               return(<div>   
+                        <img src= "images/robot_img.png" width = "30"></img>
+                        {message} 
+                    </div>);
+                    } 
+            
+            else{
+            return(<div>   {message}
+                        <img src= "images/user_img.png" width = "30"></img>
+                    </div>);
+                    }} */
+
+
+            //alt way of doing the same where && is an if stt loc before && is the conditon and loc after && is the result 
+             return(<div>   
+                        {imgsrc === "robot" && <img src= "images/robot_img.png" width = "30"></img>}
+                        {message} 
+                        {imgsrc === "user" && <img src= "images/user_img.png" width = "30"></img>}
+                        
+                    </div>);
+                    } 
+                    
+        
+                        /* React help us create components inside components */
+
+            function App(){
+                    return( <>
+                        <ChatInput ></ChatInput>
+                        <ChatMessage imgsrc = "user" message = "Hi" />
+                        <ChatMessage message = "How can I help you" imgsrc = "robot"/>
+                        <ChatMessage message = "I am fine.. Whats the weather today" imgsrc = "user" />
+                        <ChatMessage message = "Its sunny" imgsrc = "robot"/>
+                    </>)}/* creating our own html element */
+    
+        const container = document.querySelector(".js-container");
+        ReactDOM.createRoot(container).render(<App />);
+    
+    </script>
+  </body>
+</html>
