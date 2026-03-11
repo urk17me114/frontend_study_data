@@ -1,7 +1,7 @@
 import {Header} from '../assets/components/Header.jsx'
 import './HomePage.css'
-import {products} from '../../starting-code/data/products.js'
 import axios from "axios"
+import { useEffect,useState } from 'react'
 
 
 
@@ -19,11 +19,15 @@ export function HomePage(){
 
      // To fetch the data from the backend */
 
+    const [products,setProducts] = useState([]); //iniially the products array is se to []
 
-     axios.get('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
+    useEffect (()=>{axios.get('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
         
-            console.log(response.data); /* here data is the inbiult ppty of axios */
-        })
+            setProducts(response.data); /* here data is the inbiult ppty of axios */
+        })},[])
+
+    /* The issue here is everytime u call the homepage the data from the backend is loaded again. But we only have to d it once. so 
+    for that we use "useEffect" */
     
     return(
     <>    
