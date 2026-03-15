@@ -2,14 +2,16 @@
 
 import {Link} from "react-router" /* Link component helps us to go to anotherpage without reloading */
 import "./header.css"
+import { cartQuantity } from "../utils/cartQuantity"
 
 export function Header( {cart}){
-    
-    let totalQuantity = 0;
+     const totalQuantity = cartQuantity(cart);
+    /* let totalQuantity = 0;
     
     cart.forEach((cartItem) => {
         totalQuantity += cartItem.quantity
-    });
+    }); */
+
     return(
         <>
              <div className="header">

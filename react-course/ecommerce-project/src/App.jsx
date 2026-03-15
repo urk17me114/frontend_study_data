@@ -11,8 +11,9 @@ import { useEffect,useState } from 'react'
 
 function App() {
   const [cart,setCart] = useState([]);
-  useEffect(()=>{axios.get('/api/cart-items').then((response)=>{
-            setCart(response.data)})},[])
+  useEffect(()=> 
+    {axios.get('/api/cart-items?expand=product')//Here anything after ? is called the query paramter. It lets us ass additional info to our request
+      .then((response)=>{setCart(response.data)})},[])
 
   return (
     <>
