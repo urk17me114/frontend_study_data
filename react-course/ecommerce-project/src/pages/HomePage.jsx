@@ -19,12 +19,14 @@ export function HomePage(){
 
      // To fetch the data from the backend */
 
-    const [products,setProducts] = useState([]); //iniially the products array is se to []
+    const [products,setProducts] = useState([]); //iniially the products array is set to []
+    const [cart,setCart] = useState([]);
 
-    useEffect (()=>{axios.get('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend
-        
-            setProducts(response.data); /* here data is the inbiult ppty of axios */
-        })},[])
+    useEffect (()=>{axios.get('http://localhost:3000/api/products').then((response)=>{  // To fetch the data from the backend   
+        setProducts(response.data); /* here data is the inbiult ppty of axios */
+        }),axios.get('http://localhost:3000/api/cart-items').then((response)=>{
+            setCart(response.data)
+        })},[]) //Here [] is called the dependency array
 
     /* The issue here is everytime u call the homepage the data from the backend is loaded again. But we only have to d it once. so 
     for that we use "useEffect" */
@@ -34,7 +36,7 @@ export function HomePage(){
         <title>Ecommerce Project</title>
         
        
-        <Header/>
+        <Header cart= {cart}/>
         <div className="home-page">
         <div className="products-grid">
             
