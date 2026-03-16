@@ -3,11 +3,21 @@ import './checkout-header.css'
 import './checkout.css'
 import {Money}   from '../assets/utils/money'
 import { cartQuantity } from '../assets/utils/cartQuantity';
-
+import axios from 'axios';
+import { useEffect,useState } from 'react';
+import dayjs from 'dayjs'
 
 
 export function Checkout({cart}){
 const totalQuantity = cartQuantity(cart);
+
+const [deliveryOptions,setDeliveryOptions] = useState([])
+useEffect(()=>{
+    axios.get('/api/delivery-options?expand=estimatedDeliveryTime').then((response)=>{
+      setDeliveryOptions(response.data) 
+      
+    })
+},[])
 return(
         <>
         <title>Checkout</title>
@@ -38,10 +48,16 @@ return(
 
             <div className="checkout-grid">
                 <div className="order-summary">
-                {cart.map((cartItem)=>{
+                {deliveryOptions.length>0 && cart.map((cartItem)=>{ /* The deliveryoptions start as empty as defined in useState. 
+                                            If its empty we maynot find the selectedDeliveryOption. 
+                                            To fix this we check deliveryOptions.length>0 */
+                    const selectedDeliveryOption = deliveryOptions.find((deliveryOption)=>{
+                            return deliveryOption.id === cartItem.deliveryOptionId
+                    })
                     return(<div key = {cartItem.productId} className="cart-item-container">
                     <div className="delivery-date">
-                    Delivery date: Tuesday, June 21
+                    {`Delivery date: ${dayjs(selectedDeliveryOption.estimatedDeliveryTimeMs).format("dddd, MMMM, D")}`}
+                    {console.log(selectedDeliveryOption)}
                     </div>
 
                     <div className="cart-item-details-grid">
@@ -72,45 +88,34 @@ return(
                         <div className="delivery-options-title">
                         Choose a delivery option:
                         </div>
-                        <div className="delivery-option">
-                        <input type="radio" checked
-                            className="delivery-option-input"
-                            name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                            Tuesday, June 21
-                            </div>
-                            <div className="delivery-option-price">
-                            FREE Shipping
-                            </div>
-                        </div>
-                        </div>
-                        <div className="delivery-option">
-                        <input type="radio"
-                            className="delivery-option-input"
-                            name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                            Wednesday, June 15
-                            </div>
-                            <div className="delivery-option-price">
-                            $4.99 - Shipping
-                            </div>
-                        </div>
-                        </div>
-                        <div className="delivery-option">
-                        <input type="radio"
-                            className="delivery-option-input"
-                            name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                            Monday, June 13
-                            </div>
-                            <div className="delivery-option-price">
-                            $9.99 - Shipping
-                            </div>
-                        </div>
-                        </div>
+                        {deliveryOptions.map((deliveryOption)=>{
+                            let priceString = "Free Shipping"
+                            if(deliveryOption.priceCents>0){
+                                priceString = `${Money(deliveryOption.priceCents)} - shipping`
+                            }
+                            return(
+                                 <div key={deliveryOption.id} className="delivery-option">
+                                <input type="radio" checked = {deliveryOption.id===cartItem.deliveryOptionId}
+                                    className="delivery-option-input"
+                                    name={`delivery-option-${cartItem.productId}`} /> {/* The name groups radio buttons together.
+                                                                All radio buttons with the same name belong to the same group, 
+                                                                meaning only one can be selected. Therefore we change the name 
+                                                                which is currently delivery-option-1 for all the products
+                                                                to delivery-option-productid */}
+                                    
+                                <div>
+                                    <div className="delivery-option-date">
+                                    {dayjs(deliveryOption.estimatedDeliveryTimeMs).format("dddd, MMMM, D")} {/* To give the particular estimated time in a particular format */}
+                                    </div>
+                                    <div className="delivery-option-price">
+                                    {priceString}
+                                    </div>
+                                </div>
+                                </div>
+                            )
+                        })}
+                       
+                       
                     </div>
                     </div>
                 </div>)
