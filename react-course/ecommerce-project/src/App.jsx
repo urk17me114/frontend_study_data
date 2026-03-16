@@ -1,8 +1,8 @@
 //import { useState } from 'react'
 import './App.css'
-import { Checkout } from './pages/Checkout.jsx'
-import {HomePage} from './pages/HomePage.jsx'
-import {Orders} from './pages/Orders.jsx'
+import { Checkout } from './pages/checkout/Checkout.jsx'
+import {HomePage} from './pages/home/HomePage.jsx'
+import {Orders} from './pages/orders/Orders.jsx'
 import {Tracking} from './pages/tracking.jsx'
 import {Routes,Route} from 'react-router-dom'
 import axios from "axios"

@@ -1,9 +1,9 @@
-import {Header} from '../assets/components/Header.jsx'
+import {Header} from '../../assets/components/Header.jsx'
 import './orders.css'
 import axios from 'axios'
 import { useEffect,useState,Fragment } from 'react'
 import dayjs from 'dayjs'
-import { Money } from '../assets/utils/money.js'
+import { Money } from '../../assets/utils/money.js'
 
 
 export function Orders({cart}){
