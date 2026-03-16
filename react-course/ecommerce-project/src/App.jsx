@@ -23,7 +23,7 @@ function App() {
         {/* Here index is same as giving path = "/" */}
         <Route index element = {<HomePage cart = {cart}/>}></Route> {/* Works like the url page in django */}
         <Route path = "checkout" element = {<Checkout cart = {cart}/>}></Route> {/* Works like the url page in django */}
-        <Route path = "orders" element = {<Orders/>}></Route> {/* Works like the url page in django */}
+        <Route path = "orders" element = {<Orders cart = {cart}/>}></Route> {/* Works like the url page in django */}
         <Route path = "tracking" element = {<Tracking/>}></Route> {/* Works like the url page in django */}
      
      </Routes> 
